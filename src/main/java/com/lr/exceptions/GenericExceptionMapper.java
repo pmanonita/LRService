@@ -7,27 +7,30 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import com.lr.response.ErrorMessage;
+import com.lr.response.ErrorResponse;
 
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
 	@Override 
 	public Response toResponse(Throwable ex) {
+		ErrorResponse eResponse = new ErrorResponse();
 		ErrorMessage errorMsg = new ErrorMessage();	
 		if( null != ex.getMessage() && !ex.getMessage().equals("")) {
-			errorMsg.setErrorMessage(ex.getMessage());
+			errorMsg.setMessage(ex.getMessage());
 		} else {
-				errorMsg.setErrorMessage("Server can not process your request");
+				errorMsg.setMessage("Server can not process your request");
 		}
-		setHTTPStatus(ex, errorMsg);		
-		return Response.status(errorMsg.getErrorCode()).entity(errorMsg).build();		
+		setHTTPStatus(ex, eResponse);
+		eResponse.setError(errorMsg);
+		return Response.status(eResponse.getCode()).entity(eResponse).build();		
 	}
 
-	private void setHTTPStatus(Throwable ex, ErrorMessage errorMsg) {
+	private void setHTTPStatus(Throwable ex, ErrorResponse eResponse) {
 		if (ex instanceof WebApplicationException) {
-			errorMsg.setErrorCode(((WebApplicationException) ex).getResponse().getStatus());			
+			eResponse.setCode(((WebApplicationException) ex).getResponse().getStatus());			
 		} else {
-			errorMsg.setErrorCode(Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			eResponse.setCode(Status.INTERNAL_SERVER_ERROR.getStatusCode());
 		}		
 	}		
 }

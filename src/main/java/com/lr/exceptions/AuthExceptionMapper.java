@@ -6,12 +6,16 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import com.lr.response.ErrorMessage;
+import com.lr.response.ErrorResponse;
 
 @Provider
 public class AuthExceptionMapper implements ExceptionMapper<AuthException> {
 	
 	@Override
-	public Response toResponse(AuthException ex) {		
-		ErrorMessage errorMsg = new ErrorMessage(ex.getMessage(),401);
-		return Response.status(Status.UNAUTHORIZED).entity(errorMsg).build();	}		
+	public Response toResponse(AuthException ex) {
+		ErrorResponse eResponse = new ErrorResponse();
+		eResponse.setCode(401);
+		ErrorMessage errorMsg = new ErrorMessage(ex.getMessage());
+		eResponse.setError(errorMsg);
+		return Response.status(eResponse.getCode()).entity(eResponse).build();	}		
 }

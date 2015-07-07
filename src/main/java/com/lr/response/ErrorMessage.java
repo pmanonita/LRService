@@ -4,27 +4,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ErrorMessage {
-	private String errorMessage;
-	private int errorCode;
+	private String message;
+	//private int errorCode;
 	
 	
 	public ErrorMessage()	{}
 	
-	public ErrorMessage(String errorMessage,
-			int errorCode)
+	public ErrorMessage(String errorMessage/*,int errorCode*/)
 	{
 		super();
-		this.errorMessage = errorMessage;
-		this.errorCode    = errorCode;		
+		this.message   = errorMessage;
+		//this.errorCode = errorCode;		
 	}
 
-	public String getErrorMessage() {
-		return errorMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setMessage(String errorMessage) {
+		this.message = errorMessage;
 	}
+	
+	/*
 
 	public int getErrorCode() {
 		return errorCode;
@@ -32,6 +33,6 @@ public class ErrorMessage {
 
 	public void setErrorCode(int errorCode) {
 		this.errorCode = errorCode;
-	}
+	}*/
 
 }
