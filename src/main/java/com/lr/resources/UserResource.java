@@ -20,7 +20,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.lr.filters.LRHTTPHeaders;
+import com.lr.response.LoginResponse;
+import com.lr.response.Result;
 import com.lr.service.AutheticationService;
+import com.lr.service.UserService;
 
 
 
@@ -31,28 +34,24 @@ public class UserResource {
 	@POST
     @Path("/login" )
     @Produces( MediaType.APPLICATION_JSON )
-    public Response login(
+    public Result login(
         @Context HttpHeaders httpHeaders,
         @FormParam( "username" ) String username,
         @FormParam( "password" ) String password )
-    {
-		Response response = null;
-		AutheticationService service = AutheticationService.getInstance();
+    {		
+		AutheticationService authService = AutheticationService.getInstance();
 		
-		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);
-		 
-        String authToken = service.login(serviceKey, username, password);
+		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);		 
+        String authToken  = authService.login(serviceKey, username, password);
+                
+        //JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+        //jsonObjBuilder.add( "auth_token", authToken );
+        //JsonObject jsonObj = jsonObjBuilder.build();
+        //return Response.status(Status.OK).entity(jsonObj.toString()).build();
         
-        System.out.println(authToken);
- 
-        JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
-        jsonObjBuilder.add( "auth_token", authToken );
-        JsonObject jsonObj = jsonObjBuilder.build();
- 
-        response = Response.status(Status.OK).entity(jsonObj.toString()).build();
         
-        System.out.println(jsonObj.toString());
-        		
-		return response;
+        LoginResponse response = UserService.createLoginResponse(authService, authToken, serviceKey);        
+        Result result = new Result(response);       		
+		return result;
     }
 }

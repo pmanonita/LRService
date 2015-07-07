@@ -1,4 +1,4 @@
-package com.lr.message;
+package com.lr.response;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
