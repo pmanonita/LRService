@@ -8,16 +8,9 @@ import org.hibernate.cfg.Configuration;
 public class HibernateSessionManager {
 	private static final SessionFactory sessionFactory = buildSessionFactory();
 
-	@SuppressWarnings("deprecation")
 	private static SessionFactory buildSessionFactory() {
-		System.out.println("Building session factory");
 		try {
-			// Create the SessionFactory from hibernate.cfg.xml
-			/*SessionFactory sessionFactory = new Configuration().configure(
-												"/com/lr/db/hibernate.cfg.xml")
-												.addResource("/com/lr/model/User.hbm.xml")
-												.buildSessionFactory();*/
- 
+			// Create the SessionFactory from hibernate.cfg.xml 
 			Configuration configuration = new Configuration().configure("/com/lr/db/hibernate.cfg.xml");												
 			StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().
 			applySettings(configuration.getProperties());
@@ -38,7 +31,7 @@ public class HibernateSessionManager {
 	}
 
 	public static void shutdown() {
-	// Close caches and connection pools
+		// Close caches and connection pools
 		getSessionFactory().close();
 	}
 }

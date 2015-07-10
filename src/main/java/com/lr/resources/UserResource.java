@@ -48,17 +48,29 @@ public class UserResource {
 		Response response    = null;
 		UserService uService = new UserService();
 		
-		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);		 
-              
+		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);
+		
+		//validate Input
+		uService.validateSignUpData(userName, password);
+		
+		//Convert View To Model object if any (To-do : This can be done in better way)
+		Long lmobile = 0L;
+		try {
+		    lmobile = Long.parseLong(mobile);
+		} catch (NumberFormatException ex) {					
+			//Suppress the warning
+		}	
+		
+		//Send to model              
 		boolean  isSuccess = uService.signUp(serviceKey, userName, password,
         							firstName, lastName, email,
-        							mobile);
+        							lmobile);
 		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
         
 		if (isSuccess) {
 			jsonObjBuilder.add( "Status", "Successfullt created the user");
 	        JsonObject jsonObj = jsonObjBuilder.build();
-			response = Response.status(Status.OK).entity(jsonObj.toString()).build();			
+			response = Response.status(Status.CREATED).entity(jsonObj.toString()).build();			
 		} else {
 			jsonObjBuilder.add( "Status", "Issue while creating the user");
 			JsonObject jsonObj = jsonObjBuilder.build();
