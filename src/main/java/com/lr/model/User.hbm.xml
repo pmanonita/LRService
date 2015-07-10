@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.User" table="User">
+    <id name="userId" type="int" column="userId" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="userName" unique="true" not-null="true">
+      <column name="userName" />
+    </property>
+    <property name="password" not-null="true">
+      <column name="password" />
+    </property>
+    <property name="firstName">
+      <column name="firstName" />
+    </property>
+    <property name="lastName">
+      <column name="lastName" />
+    </property>
+    <property name="email" unique="true">
+      <column name="email" />
+    </property>    
+    <property name="mobile" type="long">
+      <column name="mobile" />
+    </property>    
+    <property name="serviceKey" not-null="true">
+      <column name="serviceKey" />
+    </property>    
+    <property name="authKey">
+      <column name="authKey" />
+    </property>    
+    <property name="createDate" type="date">
+      <column name="createDate"/>
+    </property>
+ </class>
+</hibernate-mapping>

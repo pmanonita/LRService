@@ -1,75 +1,112 @@
 package com.lr.model;
 
-public class User {	
+import java.io.Serializable;
+import java.util.Date;
 
-	private String _username;
-	private String _password;
-	private String _firstName;
-	private String _LastName;
-	private String _initials;
-	private String _email;
-	private long  _mobile;
-	private String _apiKey;
+public class User implements Serializable {	
+
+	private static final long serialVersionUID = -6779738051490200702L;
 	
-	public User() {	}	
+	private int    userId;
+	private String userName;
+	private String password;
+	private String firstName;
+	private String lastName;	
+	private String email;
+	private long   mobile;
+	private String serviceKey;
+	private String authKey;
+	private Date   createDate;
 	
-	public String get_username() {
-		return _username;
-	}
-	public void set_username(String _username) {
-		this._username = _username;
-	}
-	public String get_password() {
-		return _password;
-	}
-	public void set_password(String _password) {
-		this._password = _password;
-	}
-	public String get_firstName() {
-		return _firstName;
+	public User() {
+		
 	}
 
-	public void set_firstName(String _firstName) {
-		this._firstName = _firstName;
+	public int getUserId() {
+		return userId;
 	}
 
-	public String get_LastName() {
-		return _LastName;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
-	public void set_LastName(String _LastName) {
-		this._LastName = _LastName;
+	public String getUserName() {
+		return userName;
 	}
 
-	public String get_initials() {
-		return _initials;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
-	public void set_initials(String _initials) {
-		this._initials = _initials;
+	public String getPassword() {
+		return password;
 	}
 
-	public String get_email() {
-		return _email;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public void set_email(String _email) {
-		this._email = _email;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public long get_mobile() {
-		return _mobile;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public void set_mobile(long _mobile) {
-		this._mobile = _mobile;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public String get_apiKey() {
-		return _apiKey;
-	}
-	public void set_apiKey(String _apiKey) {
-		this._apiKey = _apiKey;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public long getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(long mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getServiceKey() {
+		return serviceKey;
+	}
+
+	public void setServiceKey(String serviceKey) {
+		this.serviceKey = serviceKey;
+	}
+
+	public String getAuthKey() {
+		return authKey;
+	}
+
+	public void setAuthKey(String authKey) {
+		this.authKey = authKey;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
+	
+	
 }

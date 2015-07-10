@@ -88,13 +88,8 @@ public class AutheticationService {
         if ( serviceKeysStorage.containsKey( serviceKey ) ) {
             String usernameMatch1 = serviceKeysStorage.get( serviceKey ); 
             if ( authorizationTokensStorage.containsKey( authToken ) ) {
-                String usernameMatch2 = authorizationTokensStorage.get( authToken );
- 
-                if ( usernameMatch1.equals( usernameMatch2 ) ) { 
-                    /**
-                     * When a client logs out, the authentication token will be
-                     * remove and will be made invalid.
-                     */
+                String usernameMatch2 = authorizationTokensStorage.get( authToken ); 
+                if ( usernameMatch1.equals( usernameMatch2 ) ) {                   
                     authorizationTokensStorage.remove( authToken );
                     return;
                 }
