@@ -1,23 +1,27 @@
 package com.lr.service;
 
+import java.security.GeneralSecurityException;
 import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import com.lr.db.HibernateSessionManager;
+import com.lr.exceptions.AuthException;
 import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.User;
-
-import com.lr.response.LoginResponse;
-import com.lr.response.UserLoginResponse;
+import com.lr.response.UserResponse;
+import com.lr.response.UserView;
 
 public class UserService {
 	private final static int successCode = 1;
 	//private final static int errorCode   = 0;
 	
 	//view level validation
-	public void validateSignUpData(String userName, String password)
+	public void validateAuthData(String userName, String password)
 		throws InsufficientDataException
 	{
 		String errorMsg = "";
@@ -27,74 +31,265 @@ public class UserService {
 			errorMsg = "User name and password can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
 		}		
-	}	
-	
-	public boolean signUp(final String serviceKey, final String userName, final String password,
-			 final String firstName, final String lastName, final String email, final Long mobile)
-	{
-		//Get hibernate session manager		
-		try {
-			System.out.println("Hibernate stuff ...");
-			Session session = HibernateSessionManager.getSessionFactory().openSession();		 
-			session.beginTransaction();			
-			
-			//Populate data into controller
-			User.Controller ctrl = new User.DefaultController() {				
-				@Override
-				public String mUserName() 	{	return userName; 	}
-				@Override
-				public String mPassword() 	{ 	return password; 	}
-				@Override
-				public String mFirstName() 	{ 	return firstName; }
-				@Override
-				public String mLastName() 	{ 	return lastName; 	}
-				@Override
-				public String mEmail() 		{ 	return email; 	}
-				@Override
-				public Long mMobile() 		{ 	return mobile; }
-				@Override
-				public String mServiceKey() { 	return serviceKey; }
-				@Override
-				public String mAuthKey() 	{ 	return null; }
-				@Override
-				public Date mCreateDate() 	{ 	return new Date(); }
-			};
-			
-			//Create user using controller
-			User user = new User(ctrl);
-			
-			session.save(user);
-			session.getTransaction().commit();
-
-			return true;
-
-		} catch(HibernateException ex) {
-			System.out.println("Hibernate exception" + ex.getMessage());
-			ex.printStackTrace();
-			return false;
-		}
-
 	}
-
-	public LoginResponse createLoginResponse(AutheticationService authService,
-													String authToken,
-													String serviceKey) 
+	
+	private User.DefaultController createControllerFromView(final String serviceKey, 
+															 final String userName,
+															 final String password,
+			 												 final String firstName,
+			 												 final String lastName, 
+			 												 final String email,
+			 												 final Long   mobile,
+			 												 final String role) 
 	{
-
-		//To-do: pull data from db for the user and construct response
+		//Create controller object and populate data
+		return new User.DefaultController() {
+			public String mUserName() 	{	return userName; 	}
+			public String mPassword() 	{ 	return password; 	}
+			public String mFirstName() 	{ 	return firstName; 	}			
+			public String mLastName() 	{ 	return lastName; 	}
+			public String mEmail() 		{ 	return email; 		}
+			public Long mMobile() 		{ 	return mobile; 		}			
+			public String mServiceKey() { 	return serviceKey; 	}
+			public String mAuthKey() 	{ 	return null; 		}
+			public Date mCreateDate() 	{ 	return new Date(); 	}
+			public String mRole() 		{	return role;		}
+		};
+	}
+	
+	public User signUp(final String serviceKey,
+						  final String userName,
+						  final String password,
+						  final String firstName,
+						  final String lastName,
+						  final String email,
+						  final Long   mobile,
+						  final String role)
+	{
+		validateAuthData(userName, password);
 		
-		/** Code **/
-		int code = successCode;
+		//Get hibernate session manager
+		Session session = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx  = null;
+		User user       = null;
+		
+		try {
+			
+			tx = session.beginTransaction();			
+
+			User.Controller ctrl = createControllerFromView(serviceKey, userName, password,
+					  							    		 firstName, lastName, email,
+					  										 mobile, role);
+						
+			//Create user object using controller
+			user = new User(ctrl);
+			
+			session.save(user);			
+			session.flush();
+			
+			tx.commit();		
+
+		} catch(RuntimeException  ex) {
+			user = null;
+			if (tx != null) 	{ tx.rollback(); }
+			ex.printStackTrace();			
+		} finally {
+			session.close();
+		}
+		
+		return user;
+	}
+	
+	private User.Controller CreateContoller(final String userName,
+			                                    final String serviceKey,
+			                                    final String role,
+			                                    final String password,
+			                                    final Long   mobile,
+			                                    final String lastName,
+			                                    final String firstName,
+			                                    final String email,
+			                                    final Date   cDate,
+			                                    final String authKey) 
+	{
+		return new User.DefaultController() {
+			public String mUserName() 	{	return userName;	}
+			public String mServiceKey() {	return serviceKey;	}
+			public String mRole() 		{	return role;		}
+			public String mPassword() 	{	return password;	}							
+			public Long mMobile() 		{	return mobile;		}							
+			public String mLastName() 	{	return lastName;	}							
+			public String mFirstName() 	{	return firstName;	}							
+			public String mEmail() 		{	return email;		}							
+			public Date mCreateDate() 	{	return cDate;		}							
+			public String mAuthKey() 	{	return authKey;		}
+		};
+	}
+	
+	//login
+	public User login( String serviceKey, String userName, String password )
+			throws AuthException
+	{
+		validateAuthData(userName, password);
+		
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+    	Transaction tx   = null;
+    	User user        = null;
+    	
+    	try {
+    		tx = session.beginTransaction();        	
+    		user = User.findByUserNameAndServiceKey(session, userName, serviceKey);
+    		
+    		if (null == user) {
+    			tx.rollback();
+    			session.close();    			
+    			throw new AuthException("Authentication failure. User doesn't exist"); 
+    		}
+    		
+    		if ( null != user) {
+
+    			//Check password
+    			
+    			//Wrong password
+    			if (null == user.getPassword() 
+    					|| (null != user.getPassword()
+    						&& (!user.getPassword().equals(password)))) 
+    			{
+    				tx.rollback();
+        			session.close();
+    				throw new AuthException("Authentication failure. Username and password doesn't match");
+    			}
+    			
+    			//Correct Password
+    			if(null != user.getPassword() 
+    					&& (user.getPassword().equals(password)))
+    			{
+    				//Check if auth key is not present
+    				if( null == user.getAuthKey() ||(null != user.getAuthKey() 
+    								&& user.getAuthKey().equals("")))
+    				{
+    					//Create auth key
+    					String authToken = UUID.randomUUID().toString();    					
+    					
+    					//Get existing data    					
+    					final String uName  = user.getUserName();
+    					final String pass   = user.getPassword();
+    					final String fName  = user.getFirstName();
+    					final String lName  = user.getLastName();
+    					final String email  = user.getEmail();
+    					final long   mobile = user.getMobile();    					
+    					final String sKey   = user.getServiceKey();	
+    					final String role   = user.getRole();
+    					final Date   cDate  = user.getCreateDate();	
+
+    					//New changed data
+    					final String authKey = authToken;
+   					
+    					//Create Controller
+    					User.Controller ctrl = CreateContoller(uName,sKey,role,pass,mobile,lName,fName,
+    														   email,cDate,authKey);
+											
+    					//Update Data
+						user.changeTo(ctrl);
+						
+						session.save(user);			
+						session.flush();
+						
+						//store in cache
+    					Map<String, String> authToUserNameMap = AutheticationService.getAuthToUserNameMap();
+    					if (authToUserNameMap != null) {
+    						authToUserNameMap.put(user.getAuthKey(), user.getUserName());
+    					}   					
+    				}   				
+    			}    			
+    		}
+    		
+    		tx.commit();    		
+    		
+    	} catch (HibernateException e) {
+    		user = null;
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+            
+        } finally {
+            session.close(); 
+        }
+    	
+    	return user;        
+    }
+	
+    //logout	
+    public void logout( String serviceKey, String authToken ) throws GeneralSecurityException {
+    	Session session  = HibernateSessionManager.getSessionFactory().openSession();
+    	Transaction tx   = null;
+    	
+    	try {
+    		tx = session.beginTransaction();        	
+    		final User user = User.findByServiceAndAuthKey(session, serviceKey, authToken);
+    		
+    		if (null == user) {
+    			System.err.println("ERROR ERROR : User not found");
+    			throw new GeneralSecurityException( "Invalid service key and authorization token match." );
+    		} else {
+
+    			//Get existing data    					
+				final String uName  = user.getUserName();
+				final String pass   = user.getPassword();
+				final String fName  = user.getFirstName();
+				final String lName  = user.getLastName();
+				final String email  = user.getEmail();
+				final long   mobile = user.getMobile();    					
+				final String sKey   = user.getServiceKey();	
+				final String role   = user.getRole();
+				final Date   cDate  = user.getCreateDate();	
+
+				//New changed data
+				final String authKey = null;
+				
+				//Create Controller
+				User.Controller ctrl = CreateContoller(uName,sKey,role,pass,mobile,lName,fName,
+													   email,cDate,authKey);
+				user.changeTo(ctrl);
+    			
+    			session.save(user);			
+    			session.flush();
+    			
+    			//Delete it from cache if present
+    			Map<String, String> authToUserNameMap = AutheticationService.getAuthToUserNameMap();
+				if (authToUserNameMap != null) {
+					if(authToUserNameMap.containsKey(authToken)) {
+						authToUserNameMap.remove(authToken);
+					}
+				}    			
+    		}    		
+			
+    		tx.commit();
+    		
+    	} catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+            
+        } finally {
+            session.close(); 
+        }       
+    }
+	
+	
+
+	public UserResponse createUserResponse(User user) 
+	{
 		
 		/** User data visible to UI **/		
-		//Hard coded as the data not avilable in db
-		UserLoginResponse user = new UserLoginResponse(authService.getUserName(serviceKey),
-													   "test@gmail.com",
-													   123456789,
-													   authToken,
-													   "no",
-													   "no");
-		LoginResponse response = new LoginResponse(code, user);		
+		UserView userView = new UserView();
+		userView.setId(user.getId());
+		userView.setUsername(user.getUserName());
+		userView.setFirstname(user.getFirstName());
+		userView.setLastname(user.getLastName());
+		userView.setEmail(user.getEmail());
+		userView.setMobile(user.getMobile());
+		userView.setAuthToken(user.getAuthKey());
+		userView.setRole(user.getRole());
+		
+		UserResponse response = new UserResponse(userView);		
 		
 		return response;
 	}

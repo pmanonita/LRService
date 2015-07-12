@@ -12,9 +12,9 @@ public class InsufficientDataExceptionMapper implements ExceptionMapper<Insuffic
 	
 	@Override
 	public Response toResponse(InsufficientDataException ex) {
-		ErrorResponse eResponse = new ErrorResponse();
-		eResponse.setCode(403);
-		ErrorMessage errorMsg = new ErrorMessage(ex.getMessage());
+		ErrorResponse eResponse = new ErrorResponse();		
+		ErrorMessage errorMsg = new ErrorMessage(ex.getMessage(), 403);		
 		eResponse.setError(errorMsg);
-		return Response.status(eResponse.getCode()).entity(eResponse).build();	}		
+		return Response.status(errorMsg.getErrorCode()).entity(eResponse).build();
+	}
 }

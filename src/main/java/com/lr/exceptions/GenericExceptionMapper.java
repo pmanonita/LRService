@@ -13,24 +13,24 @@ import com.lr.response.ErrorResponse;
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
 	@Override 
-	public Response toResponse(Throwable ex) {
-		ErrorResponse eResponse = new ErrorResponse();
+	public Response toResponse(Throwable ex) {		
 		ErrorMessage errorMsg = new ErrorMessage();	
 		if( null != ex.getMessage() && !ex.getMessage().equals("")) {
 			errorMsg.setMessage(ex.getMessage());
 		} else {
 				errorMsg.setMessage("Server can not process your request");
 		}
-		setHTTPStatus(ex, eResponse);
-		eResponse.setError(errorMsg);
-		return Response.status(eResponse.getCode()).entity(eResponse).build();		
+		setHTTPStatus(ex, errorMsg);
+		
+		ErrorResponse eResponse = new ErrorResponse(errorMsg);
+		return Response.status(errorMsg.getErrorCode()).entity(eResponse).build();		
 	}
 
-	private void setHTTPStatus(Throwable ex, ErrorResponse eResponse) {
+	private void setHTTPStatus(Throwable ex, ErrorMessage errorMsg) {
 		if (ex instanceof WebApplicationException) {
-			eResponse.setCode(((WebApplicationException) ex).getResponse().getStatus());			
+			errorMsg.setErrorCode(((WebApplicationException) ex).getResponse().getStatus());			
 		} else {
-			eResponse.setCode(Status.INTERNAL_SERVER_ERROR.getStatusCode());
+			errorMsg.setErrorCode(Status.INTERNAL_SERVER_ERROR.getStatusCode());
 		}		
 	}		
 }

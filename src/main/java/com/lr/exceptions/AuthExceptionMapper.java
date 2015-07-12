@@ -12,10 +12,9 @@ import com.lr.response.ErrorResponse;
 public class AuthExceptionMapper implements ExceptionMapper<AuthException> {
 	
 	@Override
-	public Response toResponse(AuthException ex) {
-		ErrorResponse eResponse = new ErrorResponse();
-		eResponse.setCode(401);
-		ErrorMessage errorMsg = new ErrorMessage(ex.getMessage());
-		eResponse.setError(errorMsg);
-		return Response.status(eResponse.getCode()).entity(eResponse).build();	}		
+	public Response toResponse(AuthException ex) {				
+		ErrorMessage errorMsg = new ErrorMessage(ex.getMessage(), 401);		
+		ErrorResponse eResponse = new ErrorResponse(errorMsg);
+		return Response.status(errorMsg.getErrorCode()).entity(eResponse).build();
+	}		
 }

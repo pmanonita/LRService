@@ -1,21 +1,19 @@
 package com.lr.response;
 
-public class ErrorResponse {
-	private int code;
+public class ErrorResponse implements AppResponse {
+	private static final int code = 0; //Fail
 	private ErrorMessage error;
 	
 	public ErrorResponse() {}
-	public ErrorResponse(int code, ErrorMessage error ) {
-		this.code = code;
+	public ErrorResponse(ErrorMessage error ) {
+
 		this.error = error;
 	}
 	
 	public int getCode() {
 		return code;
 	}
-	public void setCode(int code) {
-		this.code = code;
-	}
+	
 	public ErrorMessage getError() {
 		return error;
 	}

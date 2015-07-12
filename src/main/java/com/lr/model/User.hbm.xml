@@ -5,7 +5,7 @@
 
 <hibernate-mapping>
   <class name="com.lr.model.User" table="User">
-    <id name="userId" type="int" column="userId" >
+    <id name="id" type="int" column="id" >
       <generator class="increment"/>
     </id>
   
@@ -32,9 +32,35 @@
     </property>    
     <property name="authKey">
       <column name="authKey" />
+    </property>
+    <property name="role">
+      <column name="role" />
     </property>    
     <property name="createDate" type="date">
       <column name="createDate"/>
     </property>
  </class>
+ 
+ <query name="com.lr.model.User.countByServiceAndAuthKey">
+     select count(*)
+       from com.lr.model.User as user
+     where user.serviceKey = :serviceKey
+       and user.authKey    = :authKey      
+ </query>
+ 
+ <query name="com.lr.model.User.findByServiceAndAuthKey">
+     select user
+       from com.lr.model.User as user
+     where user.serviceKey = :serviceKey
+       and user.authKey    = :authKey      
+ </query>
+
+ <query name="com.lr.model.User.findUserByNameAndServiceKey">
+     select user
+       from com.lr.model.User as user
+     where user.userName   = :userName
+       and user.serviceKey = :serviceKey      
+ </query>
+ 
+ 
 </hibernate-mapping>

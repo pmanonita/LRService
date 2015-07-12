@@ -1,17 +1,17 @@
 package com.lr.response;
 
 public class Result {
-	private Response result;
+	private AppResponse result;
 	
-	public Result(Response result) {
+	public Result(AppResponse result) {
 		this.result = result; 
 	}
 
-	public Response getResult() {
+	public AppResponse getResult() {
 		return result;
 	}
 
-	public void setResult(Response result) {
+	public void setResult(AppResponse result) {
 		this.result = result;
 	}
 

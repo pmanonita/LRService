@@ -1,115 +1,84 @@
 package com.lr.service;
 
-import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import com.lr.exceptions.AuthException;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import com.lr.db.HibernateSessionManager;
 import com.lr.key.ApiKey;
+import com.lr.model.User;
 
 
 public class AutheticationService {
+
+	private static Map<String, String> authToUserNameMap = new HashMap<String, String>();
 	
-	private static  AutheticationService authService = null;
-	
-	//To-do : Move to db
-    private final Map<String, String> usersStorage              = new HashMap();
-    private final Map<String, String> serviceKeysStorage        = new HashMap();
+	public static Map<String, String> getAuthToUserNameMap() {
+		return authToUserNameMap;
+	}
+ 
+    //Check from file rather than checking in db.
+    public boolean isServiceKeyValid( String serviceKey ) {
+    	
+    	if(null == serviceKey || (null != serviceKey)
+    							&& serviceKey.equals(""))
+    	{
+    		return false;
+    	}
+    	
+    	if(serviceKey.equals(ApiKey.getKey())) {
+    		return true;
+    	}
+    	
+    	return false;       
+    }
     
-    //To-do : Store in cache ? Investigate
-    private final Map<String, String> authorizationTokensStorage = new HashMap();
- 
-    private AutheticationService() {
-        usersStorage.put( "praja", "praja" );
-        usersStorage.put( "admin", "admin" );        
-        serviceKeysStorage.put( "824bb1e8-de0c-401c-9f83-8b1d18a0ca9d", "praja" );
-        serviceKeysStorage.put( "e94c0841-927c-4985-bdf0-85015ab063ab", "admin" );
-    }
- 
-    public static AutheticationService getInstance() {
-        if ( authService == null ) {
-        	authService = new AutheticationService();
-        } 
-        return authService;
-    }
- 
-    //login
-    public String login( String serviceKey, String username, String password ) throws AuthException {
-        if ( serviceKeysStorage.containsKey( serviceKey ) ) {
-            String usernameMatch = serviceKeysStorage.get( serviceKey ); 
-            if ( usernameMatch.equals( username ) && usersStorage.containsKey( username ) ) {
-                String passwordMatch = usersStorage.get( username ); 
-                if ( passwordMatch.equals( password ) ) {                   
-                    String authToken = UUID.randomUUID().toString();
-                    authorizationTokensStorage.put( authToken, username ); 
-                    return authToken;
-                }
-            }
-        }
-        
-        throw new AuthException("Username and Password is not correct");
-    }
- 
-    /**
-     * The method that pre-validates if the client which invokes the REST API is
-     * from a authorized and authenticated source.
-     *
-     * @param serviceKey The service key
-     * @param authToken The authorization token generated after login
-     * @return TRUE for acceptance and FALSE for denied.
-     */
     public boolean isAuthTokenValid( String serviceKey, String authToken ) {
+    	
+    	if(null == authToken || (null != authToken
+    							&& authToken.equals(""))) 
+    	{
+    		return false;
+    	}
+    	
         if ( isServiceKeyValid( serviceKey ) ) {
-            String userName = serviceKeysStorage.get( serviceKey ); 
-            if ( authorizationTokensStorage.containsKey( authToken ) ) { 
-                if ( userName.equals( authorizationTokensStorage.get( authToken ) ) ) {
-                    return true;
-                }
-            }
+        	
+        	//Check in cache to avoid db calls
+        	if (authToUserNameMap.containsKey(authToken)) {
+        		return true;
+        	}	
+        	
+        	//Check in db
+        	//To-do : Use a single session from a util class. Don't send it to model
+        	Session session = HibernateSessionManager.getSessionFactory().openSession();
+        	Transaction tx = null;
+        	
+        	try {
+        		tx = session.beginTransaction();        	
+        		final int count = User.countByServiceAndAuthKey(session, serviceKey, authToken);        	
+        		tx.commit();
+        		
+        		if (count == 1) {
+        			return true;
+        		}
+        	} catch (HibernateException e) {
+                if (tx!=null) tx.rollback();
+                e.printStackTrace();
+                return false;
+             } finally {
+                session.close(); 
+             }       	
         }
         
         return false;
     }
  
-    /**
-     * This method checks is the service key is valid
-     *
-     * @param serviceKey
-     * @return TRUE if service key matches the pre-generated ones in service key
-     * storage. FALSE for otherwise.
-     */
-    public boolean isServiceKeyValid( String serviceKey ) {
-        return serviceKeysStorage.containsKey( serviceKey );
-    }
+    
  
-    //logout
-    public void logout( String serviceKey, String authToken ) throws GeneralSecurityException {
-        if ( serviceKeysStorage.containsKey( serviceKey ) ) {
-            String usernameMatch1 = serviceKeysStorage.get( serviceKey ); 
-            if ( authorizationTokensStorage.containsKey( authToken ) ) {
-                String usernameMatch2 = authorizationTokensStorage.get( authToken ); 
-                if ( usernameMatch1.equals( usernameMatch2 ) ) {                   
-                    authorizationTokensStorage.remove( authToken );
-                    return;
-                }
-            }
-        }
-        
-        throw new GeneralSecurityException( "Invalid service key and authorization token match." );
-    }
 
-    //Not needed, get it from db once ready and move it to user service
-	public String getUserName(String serviceKey) {
-		if (null == serviceKey || serviceKey.equals("")) {
-			return "";
-		}
-		
-		String userName = serviceKeysStorage.get(serviceKey);
-		if (userName != null && !userName.equals("")) {
-		    return userName;
-		}
-		return "";
-	}
+
 
 }
