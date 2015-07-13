@@ -97,12 +97,7 @@ public class UserResource {
 		
 		//Send to model using service 
         User user  = uService.login(serviceKey, userName, password);
-                
-        //JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
-        //jsonObjBuilder.add( "auth_token", authToken );
-        //JsonObject jsonObj = jsonObjBuilder.build();
-        //return Response.status(Status.OK).entity(jsonObj.toString()).build();
-        
+      
         if(null != user
         		&& null != user.getAuthKey()
         		&& !user.getAuthKey().equals("")) 

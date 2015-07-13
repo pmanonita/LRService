@@ -64,7 +64,7 @@ public class AutheticationService {
         		if (count == 1) {
         			return true;
         		}
-        	} catch (HibernateException e) {
+        	} catch (RuntimeException e) {
                 if (tx!=null) tx.rollback();
                 e.printStackTrace();
                 return false;
