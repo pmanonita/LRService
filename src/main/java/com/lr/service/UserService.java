@@ -12,6 +12,7 @@ import org.hibernate.Transaction;
 import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
 import com.lr.exceptions.InsufficientDataException;
+import com.lr.exceptions.SignupException;
 import com.lr.model.User;
 import com.lr.response.UserResponse;
 import com.lr.response.UserView;
@@ -75,7 +76,16 @@ public class UserService {
 		
 		try {
 			
-			tx = session.beginTransaction();			
+			tx = session.beginTransaction();
+			
+			//check if user already exists
+			user = User.findByUserNameAndServiceKey(session, userName, serviceKey);
+			if (user != null && user.getUserName().equalsIgnoreCase(userName)) {
+				tx.rollback();
+    			session.close();    			
+    			throw new SignupException("Signup failure. User already exists");				
+			}
+			
 
 			User.Controller ctrl = createControllerFromView(serviceKey, userName, password,
 					  							    		 firstName, lastName, email,
@@ -281,9 +291,9 @@ public class UserService {
 		/** User data visible to UI **/		
 		UserView userView = new UserView();
 		userView.setId(user.getId());
-		userView.setUsername(user.getUserName());
-		userView.setFirstname(user.getFirstName());
-		userView.setLastname(user.getLastName());
+		userView.setUserName(user.getUserName());
+		userView.setFirstName(user.getFirstName());
+		userView.setLastName(user.getLastName());
 		userView.setEmail(user.getEmail());
 		userView.setMobile(user.getMobile());
 		userView.setAuthToken(user.getAuthKey());
