@@ -58,6 +58,7 @@ public class UserService {
 		};
 	}
 	
+	//Signup
 	public User signUp(final String serviceKey,
 						  final String userName,
 						  final String password,
