@@ -174,7 +174,7 @@ public class User implements Serializable {
         qry.setString("authKey",    authKey);
         qry.setMaxResults(1);       
         
-        final Integer ret = (Integer) (qry.uniqueResult());
+        final Long ret = (Long) (qry.uniqueResult());        
 
         return ret.intValue();
     }
