@@ -33,11 +33,11 @@ import com.lr.service.UserService;
 
 
 
-@Path("/")
+@Path("/v1")
 public class UserResource {
 	
 	@POST
-    @Path("/signup" )
+    @Path("/user-service/signup" )
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse signup(
         @Context HttpHeaders httpHeaders,
@@ -80,7 +80,7 @@ public class UserResource {
     }
 	
 	@POST
-    @Path("/login" )
+    @Path("/user-service/login" )
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse login(
         @Context HttpHeaders httpHeaders,
@@ -112,7 +112,7 @@ public class UserResource {
     }
 	
 	@POST
-    @Path("/logout")
+    @Path("/user-service/logout")
 	public Response logout(
 	    @Context HttpHeaders httpHeaders )
 	{

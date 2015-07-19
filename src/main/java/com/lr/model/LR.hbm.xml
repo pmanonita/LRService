@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.LR" table="lr">
+    <id name="id" type="long" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="transid" type="int">
+      <column name="transid" />
+    </property> 
+    <property name="vehicleNo" type="string">
+      <column name="vehicleNo" />
+    </property>
+    <property name="consignor" type="string">
+      <column name="consignor" />
+    </property>    
+    <property name="consignee" type="string">
+      <column name="consignee" />
+    </property>    
+    <property name="consignerServtax" type="string">
+      <column name="consignerServtax" />
+    </property>    
+    <property name="consigneeServtax" type="string">
+      <column name="consigneeServtax" />
+    </property>
+    <property name="vehicleOwner" type="string">
+      <column name="vehicleOwner" />
+    </property>
+    <property name="billingToParty" type="string">
+      <column name="billingToParty" />
+    </property>
+    <property name="lrDate" type="date">
+      <column name="lrDate" />
+    </property>
+     <property name="multiLoad" type="string">
+      <column name="multiLoad"/>
+    </property>   
+    <property name="userid" type="string">
+      <column name="userid"/>
+    </property>
+    <property name="updatetimestamp" type="date">
+      <column name="updatetimestamp"/>
+    </property>
+ </class>
+ 
+ 
+ 
+</hibernate-mapping>
