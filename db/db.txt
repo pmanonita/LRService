@@ -17,64 +17,44 @@ CREATE TABLE  `lr_test`.`user` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
+
 DROP TABLE IF EXISTS `lr_test`.`lr`;
 CREATE TABLE  `lr_test`.`lr` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `transid` int(11) NOT NULL DEFAULT '0',
-  `billNo` int(11) DEFAULT NULL,
-  `chalanNo` int(11) DEFAULT NULL,
-  `vehicleNo` varchar(45) NOT NULL DEFAULT '',
+  `id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `transid` int(11) DEFAULT NULL,
+  `vehicleNo` varchar(45) DEFAULT NULL,
   `consignor` varchar(200) DEFAULT NULL,
   `consignee` varchar(200) DEFAULT NULL,
   `consignerServtax` varchar(45) DEFAULT NULL,
-  `consignorServtax` varchar(45) DEFAULT NULL,
+  `consigneeServtax` varchar(45) DEFAULT NULL,
   `vehicleOwner` varchar(200) DEFAULT NULL,
   `billingToParty` varchar(200) DEFAULT NULL,
-  `lrDate` datetime DEFAULT NULL,
-  `freigtToBroker` int(11) DEFAULT NULL,
-  `extraPayBroker` int(11) DEFAULT NULL,
-  `freightToBilling` int(11) DEFAULT NULL,
+  `lrDate` date DEFAULT NULL,
+  `multiLoad` varchar(1) DEFAULT NULL,
+  `userid` varchar(45) NOT NULL DEFAULT '',
+  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`lrexpenditure`;
+CREATE TABLE  `lr_test`.`lrexpenditure` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrNo` bigint(20) unsigned NOT NULL,
+  `freightToBroker` int(11) DEFAULT NULL,
+  `extraPayToBroker` int(11) DEFAULT NULL,
   `advance` int(11) DEFAULT NULL,
   `balanceFreight` int(11) DEFAULT NULL,
-  `loadingChrages` int(11) DEFAULT NULL,
+  `loadingCharges` int(11) DEFAULT NULL,
   `unloadingCharges` int(11) DEFAULT NULL,
-  `detAtLoading` int(11) DEFAULT NULL,
-  `detLoadingBroker` int(11) DEFAULT NULL,
-  `detLoadingBilling` int(11) DEFAULT NULL,
-  `detAtUnloading` int(11) DEFAULT NULL,
-  `detUnloadingBroker` int(11) DEFAULT NULL,
-  `detUnloadingBilling` int(11) DEFAULT NULL,
-  `other1` int(11) DEFAULT NULL,
-  `other1Remarks` varchar(200) DEFAULT NULL,
-  `other1Billing` int(11) DEFAULT NULL,
-  `other2` int(11) DEFAULT NULL,
-  `other2Remarks` varchar(200) DEFAULT NULL,
-  `other2Billing` int(11) DEFAULT NULL,
-  `other3` int(11) DEFAULT NULL,
-  `other3Remarks` varchar(200) DEFAULT NULL,
-  `other3Billing` int(11) DEFAULT NULL,
-  `multiLoad` tinyint(1) DEFAULT NULL,
-  `totalCostPayment` int(11) DEFAULT NULL,
-  `totalCostBill` int(11) DEFAULT NULL,
-  `expectedProfit` int(11) DEFAULT NULL,
-  `podReceived` tinyint(1) DEFAULT NULL,
-  `podDate` date DEFAULT NULL,
-  `billGenerated` tinyint(1) DEFAULT NULL,
-  `billDate` date DEFAULT NULL,
-  `summaryGenerated` tinyint(1) DEFAULT NULL,
-  `summaryDate` date DEFAULT NULL,
-  `paymentReceive` tinyint(1) DEFAULT NULL,
-  `paymentDate` date DEFAULT NULL,
-  `balancePaid` tinyint(1) DEFAULT NULL,
-  `balanacePaidDate` datetime DEFAULT NULL,
-  `balancePaidMode` varchar(45) DEFAULT NULL,
-  `balanceRefNo` varchar(45) DEFAULT NULL,
-  `paymentAmount` int(11) DEFAULT NULL,
-  `paymentDifferAmount` int(11) DEFAULT NULL,
-  `remarksDiffer` varchar(200) DEFAULT NULL,
-  `poNumber` int(11) DEFAULT NULL,
-  `doNumber` int(11) DEFAULT NULL,
-  `userid` varchar(45) NOT NULL DEFAULT '',
-  `update_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  
+  `loadingDetBroker` int(11) DEFAULT NULL,
+  `unloadingDetBroker` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`lrothers`;
+CREATE TABLE  `lr_test`.`lrothers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrNo` bigint(20) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `remarks` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
