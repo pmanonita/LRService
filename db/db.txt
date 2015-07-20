@@ -1,6 +1,7 @@
 create database lr_test;
 use lr_test;
 
+
 DROP TABLE IF EXISTS `lr_test`.`user`;
 CREATE TABLE  `lr_test`.`user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
