@@ -1,7 +1,9 @@
 package com.lr.service;
 
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,15 +13,16 @@ import org.hibernate.Transaction;
 
 import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
+import com.lr.exceptions.DataNotFoundException;
 import com.lr.exceptions.InsufficientDataException;
 import com.lr.exceptions.SignupException;
 import com.lr.model.User;
+import com.lr.response.AppResponse;
+import com.lr.response.UserListResponse;
 import com.lr.response.UserResponse;
 import com.lr.response.UserView;
 
-public class UserService {
-	private final static int successCode = 1;
-	//private final static int errorCode   = 0;
+public class UserService {	
 	
 	//view level validation
 	public void validateAuthData(String userName, String password)
@@ -100,12 +103,14 @@ public class UserService {
 			
 			tx.commit();		
 
-		} catch(RuntimeException  ex) {
+		} catch(HibernateException  ex) {
 			user = null;
 			if (tx != null) 	{ tx.rollback(); }
 			ex.printStackTrace();			
 		} finally {
-			session.close();
+			if(session.isOpen()) {
+        		session.close();
+        	}
 		}
 		
 		return user;
@@ -138,7 +143,7 @@ public class UserService {
 	
 	//login
 	public User login( String serviceKey, String userName, String password )
-			throws AuthException
+		throws AuthException
 	{
 		validateAuthData(userName, password);
 		
@@ -167,6 +172,7 @@ public class UserService {
     			{
     				tx.rollback();
         			session.close();
+        			System.err.println("Authentication failure. Username and password doesn't match");
     				throw new AuthException("Authentication failure. Username and password doesn't match");
     			}
     			
@@ -202,6 +208,11 @@ public class UserService {
     					//Update Data
 						user.changeTo(ctrl);
 						
+						//User.Controller ctrl1 = createProxyController(User.class, User.Controller.class);
+						//user.populate(ctrl1);
+						//ctrl1.mAuthKey(authToken);
+						//user.changeTo(ctrl1);
+						
 						session.save(user);			
 						session.flush();
 						
@@ -222,14 +233,18 @@ public class UserService {
             e.printStackTrace();
             
         } finally {
-            session.close(); 
+        	if (session.isOpen()) {
+        		session.close();
+        	}
         }
     	
     	return user;        
     }
 	
     //logout	
-    public void logout( String serviceKey, String authToken ) throws GeneralSecurityException {
+    public void logout( String serviceKey, String authToken ) 
+    	throws GeneralSecurityException 
+    {
     	Session session  = HibernateSessionManager.getSessionFactory().openSession();
     	Transaction tx   = null;
     	
@@ -280,11 +295,11 @@ public class UserService {
             e.printStackTrace();
             
         } finally {
-            session.close(); 
+        	if (session.isOpen()) {
+        		session.close();
+        	} 
         }       
-    }
-	
-	
+    }	
 
 	public UserResponse createUserResponse(User user) 
 	{
@@ -293,6 +308,7 @@ public class UserService {
 		UserView userView = new UserView();
 		userView.setId(user.getId());
 		userView.setUserName(user.getUserName());
+		userView.setPassword(user.getPassword());
 		userView.setFirstName(user.getFirstName());
 		userView.setLastName(user.getLastName());
 		userView.setEmail(user.getEmail());
@@ -302,6 +318,54 @@ public class UserService {
 		
 		UserResponse response = new UserResponse(userView);		
 		
+		return response;
+	}
+
+	//list all user
+	public List<User> listUser() {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+    	Transaction tx   = null;
+    	List<User> userList = null;
+    	try {
+    		tx = session.beginTransaction();        	
+    		userList = User.findAllUsers(session);
+    		
+    		if (null == userList) {
+    			System.err.println("ERROR ERROR : Not able to list users");
+    			throw new DataNotFoundException("Not able to list users" );
+    		} 			
+    		tx.commit();
+    		
+    	} catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+            
+        } finally {
+        	if (session.isOpen()) {
+        		session.close();
+        	} 
+        }
+		
+		return userList;		
+	}
+
+	public UserListResponse createListUserResponse(List<User> userList) {				
+		List<UserView> lUserView  = new ArrayList<UserView>();
+		for (User user : userList) {
+			if (null != user) {
+				UserView userView = new UserView();
+				userView.setId(user.getId());
+				userView.setUserName(user.getUserName());
+				userView.setPassword(user.getPassword());
+				userView.setFirstName(user.getFirstName());
+				userView.setLastName(user.getLastName());
+				userView.setEmail(user.getEmail());
+				userView.setMobile(user.getMobile());				
+				userView.setRole(user.getRole());				
+				lUserView.add(userView);			
+			}			
+		}
+		UserListResponse response = new UserListResponse(lUserView);
 		return response;
 	}
 	

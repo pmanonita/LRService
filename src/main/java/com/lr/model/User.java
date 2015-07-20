@@ -2,6 +2,7 @@ package com.lr.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -58,7 +59,7 @@ public class User implements Serializable {
 		_email      = ctrl.mEmail();
 		_mobile     = ctrl.mMobile();
 		_serviceKey = ctrl.mServiceKey();
-		_authKey    = ctrl.mAuthKey();
+		//_authKey    = ctrl.mAuthKey();
 		_createDate = ctrl.mCreateDate();
 		_role       = ctrl.mRole();
 		
@@ -79,6 +80,19 @@ public class User implements Serializable {
 		_createDate = ctrl.mCreateDate();
 		_role       = ctrl.mRole();
 		
+	}
+	
+	public void populate(Controller ctrl) {
+		ctrl.mUserName(_userName);
+		ctrl.mPassword(_password);
+		ctrl.mFirstName(_firstName);
+		ctrl.mLastName(_lastName);
+		ctrl.mEmail(_email);
+		ctrl.mMobile(_mobile);
+		ctrl.mServiceKey(_serviceKey);
+		ctrl.mAuthKey(_authKey);
+		ctrl.mCreateDate(_createDate);
+		ctrl.mRole(_role);
 	}
 
 	public interface Controller {
@@ -216,7 +230,17 @@ public class User implements Serializable {
         final User user = (User)(qry.uniqueResult());
     	return user;
     }
-     
+
+    private static final String QUERY_FOR_LIST_USER =
+    		User.class.getName() + ".findAllUsers";
+	public static List<User> findAllUsers(Session session) {
+		
+    	Query qry = session.getNamedQuery(QUERY_FOR_LIST_USER);	
+        
+        @SuppressWarnings("unchecked")
+		final List<User> userlist = qry.list();
+    	return userlist;
+	}    
 	
 	
 }
