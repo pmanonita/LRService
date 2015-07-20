@@ -79,6 +79,26 @@ public class UserResource {
 		return response;
     }
 	
+	@GET
+    @Path("/listuser" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse listUser()
+    {		
+		AppResponse response;
+		UserService uService = new UserService();			
+
+        List<User> userList  = uService.listUser();
+      
+        if (null != userList) {           
+        	response = uService.createListUserResponse(userList);
+        } else {
+        	ErrorMessage errorMsg = new ErrorMessage("Not able to list users", 500);
+			response = new ErrorResponse(errorMsg);
+        }
+              		
+		return response;
+    }
+	
 	@POST
     @Path("/user-service/login" )
     @Produces( MediaType.APPLICATION_JSON )

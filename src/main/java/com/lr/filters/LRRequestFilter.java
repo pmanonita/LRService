@@ -41,8 +41,7 @@ public class LRRequestFilter implements ContainerRequestFilter {
         // For any methods besides login and signup, the authToken must be verified
         if ( !path.startsWith("v1/user-service/login") 
         		&& !path.startsWith("v1/user-service/signup") ) 
-        {
-        	System.out.println("Not login or signup request. Need auth token");
+        {      	
         	
             String authToken = requestCtx.getHeaderString( LRHTTPHeaders.AUTH_TOKEN );
             

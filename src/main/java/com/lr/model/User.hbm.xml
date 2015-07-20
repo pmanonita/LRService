@@ -61,6 +61,8 @@
      where user.userName   = :userName
        and user.serviceKey = :serviceKey      
  </query>
- 
+ <query name="com.lr.model.User.findAllUsers">
+ 	select user from com.lr.model.User as user
+ </query> 
  
 </hibernate-mapping>
