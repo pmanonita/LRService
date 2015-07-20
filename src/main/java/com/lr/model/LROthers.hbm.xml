@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.LROthers" table="lrothers">
+    <id name="id" type="long" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="lrNo" type="long">
+      <column name="lrNo" />
+    </property> 
+    <property name="amount" type="int">
+      <column name="amount" />
+    </property>
+    <property name="remarks" type="string">
+      <column name="remarks" />
+    </property>    
+     </class>
+ 
+ 
+ 
+</hibernate-mapping>
