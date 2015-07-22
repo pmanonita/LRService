@@ -14,5 +14,6 @@
     <mapping resource="com/lr/model/User.hbm.xml"></mapping>	
     <mapping resource="com/lr/model/LR.hbm.xml"></mapping>
     <mapping resource="com/lr/model/LRExpenditure.hbm.xml"></mapping>
+    <mapping resource="com/lr/model/LROthers.hbm.xml"></mapping>
   </session-factory>
 </hibernate-configuration>
