@@ -48,8 +48,9 @@ CREATE TABLE  `lr_test`.`lrexpenditure` (
   `unloadingCharges` int(11) DEFAULT NULL,
   `loadingDetBroker` int(11) DEFAULT NULL,
   `unloadingDetBroker` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `lrNo` (`lrNo`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`lrothers`;
 CREATE TABLE  `lr_test`.`lrothers` (
