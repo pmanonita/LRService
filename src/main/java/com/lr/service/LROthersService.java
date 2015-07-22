@@ -108,10 +108,10 @@ public class LROthersService {
 		
 		/** User data visible to UI **/		
 		LROthersView lrOthersView = new LROthersView();
-		lrOthersView.setId(lrOthers.mId());
-		lrOthersView.setLrNo(lrOthers.mLRNo());
-		lrOthersView.setAmount(lrOthers.mAmount());
-		lrOthersView.setRemarks(lrOthers.mRemarks());
+		lrOthersView.setId(lrOthers.getId());
+		lrOthersView.setLrNo(lrOthers.getLrNo());
+		lrOthersView.setAmount(lrOthers.getAmount());
+		lrOthersView.setRemarks(lrOthers.getRemarks());
 		
 		LROthersResponse response = new LROthersResponse(lrOthersView);		
 		

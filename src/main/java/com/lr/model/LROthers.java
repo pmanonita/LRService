@@ -88,27 +88,32 @@ public class LROthers {
 				
 	}
 
-	//mter and mter
-	public long mId(){ 
-		return _id; 	
+	//getter and setter
+	
+	public long getId() {
+		return _id;
 	}
-	protected void mId(int id){
+
+	protected void setId(long id) {
 		this._id = id;
 	}
 	
 	
-	public long mLRNo(){return _lrNo;}
-	void mLRNo(long lrNo) {
+	public long getLrNo() {
+		return _lrNo;
+	}
+
+	void setLrNo(long lrNo) {
 		this._lrNo = lrNo;
 	}
 
-	public int mAmount(){ return _amount; }
-	void mAmount(int amount){
+	public int getAmount(){ return _amount; }
+	void setAmount(int amount){
 		this._amount = amount;
 	}
 
-	public String mRemarks(){ return _remarks; }
-	void mRemarks(String remarks){
+	public String getRemarks(){ return _remarks; }
+	void setRemarks(String remarks){
 		this._remarks = remarks;
 	}
 

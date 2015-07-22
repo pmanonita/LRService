@@ -9,13 +9,13 @@
       <generator class="increment"/>
     </id>
   
-    <property name="lrNo" type="long">
+    <property name="lrNo" type="long" not-null="true">
       <column name="lrNo" />
     </property> 
-    <property name="amount" type="int">
+    <property name="amount" type="int" not-null="true">
       <column name="amount" />
     </property>
-    <property name="remarks" type="string">
+    <property name="remarks" type="string" not-null="true">
       <column name="remarks" />
     </property>    
      </class>

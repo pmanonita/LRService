@@ -150,7 +150,7 @@ public class LRExpenditure {
 		return _id;
 	}
 
-	public void setId(long id) {
+	protected void setId(long id) {
 		this._id = id;
 	}
 
@@ -158,7 +158,7 @@ public class LRExpenditure {
 		return _lrNo;
 	}
 
-	public void setLrNo(long lrNo) {
+	void setLrNo(long lrNo) {
 		this._lrNo = lrNo;
 	}
 
@@ -166,7 +166,7 @@ public class LRExpenditure {
 		return _freightToBroker;
 	}
 
-	public void setFreightToBroker(int freightToBroker) {
+	void setFreightToBroker(int freightToBroker) {
 		this._freightToBroker = freightToBroker;
 	}
 
@@ -174,7 +174,7 @@ public class LRExpenditure {
 		return _extraPayToBroker;
 	}
 
-	public void setExtraPayToBroker(int extraPayToBroker) {
+	void setExtraPayToBroker(int extraPayToBroker) {
 		this._extraPayToBroker = extraPayToBroker;
 	}
 
@@ -182,7 +182,7 @@ public class LRExpenditure {
 		return _advance;
 	}
 
-	public void setAdvance(int advance) {
+	void setAdvance(int advance) {
 		this._advance = advance;
 	}
 
@@ -190,7 +190,7 @@ public class LRExpenditure {
 		return _balanceFreight;
 	}
 
-	public void setBalanceFreight(int balanceFreight) {
+	void setBalanceFreight(int balanceFreight) {
 		this._balanceFreight = balanceFreight;
 	}
 
@@ -198,7 +198,7 @@ public class LRExpenditure {
 		return _loadingCharges;
 	}
 
-	public void setLoadingCharges(int loadingCharges) {
+	void setLoadingCharges(int loadingCharges) {
 		this._loadingCharges = loadingCharges;
 	}
 
@@ -206,7 +206,7 @@ public class LRExpenditure {
 		return _unloadingCharges;
 	}
 
-	public void setUnloadingCharges(int unloadingCharges) {
+	void setUnloadingCharges(int unloadingCharges) {
 		this._unloadingCharges = unloadingCharges;
 	}
 
@@ -214,7 +214,7 @@ public class LRExpenditure {
 		return _loadingDetBroker;
 	}
 
-	public void setLoadingDetBroker(int loadingDetBroker) {
+	void setLoadingDetBroker(int loadingDetBroker) {
 		this._loadingDetBroker = loadingDetBroker;
 	}
 
@@ -222,7 +222,7 @@ public class LRExpenditure {
 		return _unloadingDetBroker;
 	}
 
-	public void setUnloadingDetBroker(int unloadingDetBroker) {
+	void setUnloadingDetBroker(int unloadingDetBroker) {
 		this._unloadingDetBroker = unloadingDetBroker;
 	}
 
