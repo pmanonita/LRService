@@ -60,3 +60,25 @@ CREATE TABLE  `lr_test`.`lrothers` (
   `remarks` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE  `lr_test`.`consigner` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `consignerCode` varchar(45) NOT NULL,
+  `consignerName` varchar(200) NOT NULL,
+  `address` varchar(200) DEFAULT NULL,
+  `serviceTax` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `consignerCode` (`consignerCode`),
+  UNIQUE KEY `consignerName` (`consignerName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE  `lr_test`.`consignee` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `consigneeCode` varchar(45) NOT NULL,
+  `consigneeName` varchar(200) NOT NULL,
+  `address` varchar(200) DEFAULT NULL,
+  `serviceTax` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `consigneeCode` (`consigneeCode`),
+  UNIQUE KEY `consigneeName` (`consigneeName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

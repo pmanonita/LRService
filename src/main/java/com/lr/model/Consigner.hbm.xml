@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.Consigner" table="consigner">
+    <id name="id" type="long" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="consignerCode" unique="true" not-null="true">
+      <column name="consignerCode" />
+    </property>
+    <property name="consignerName" unique="true" not-null="true">
+      <column name="consignerName" />
+    </property>
+    <property name="address">
+      <column name="address" />
+    </property>
+    <property name="serviceTax">
+      <column name="serviceTax" />
+    </property>
+    
+ </class>
+ 
+ 
+ <query name="com.lr.model.Consigner.findAllConsigners">
+ 	select consigner from com.lr.model.Consigner as consigner
+ </query> 
+ 
+</hibernate-mapping>
