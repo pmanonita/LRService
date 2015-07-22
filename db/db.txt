@@ -61,6 +61,7 @@ CREATE TABLE  `lr_test`.`LROthers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
 CREATE TABLE  `lr_test`.`Consigner` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `consignerCode` varchar(20) NOT NULL,
