@@ -21,6 +21,9 @@
     <property name="serviceTax">
       <column name="serviceTax" />
     </property>
+     <property name="toPlace">
+      <column name="toPlace" />
+    </property>
     
  </class>
  
@@ -28,5 +31,11 @@
  <query name="com.lr.model.Consignee.findAllConsignees">
  	select consignee from com.lr.model.Consignee as consignee
  </query> 
+ 
+ <query name="com.lr.model.Consignee.findConsigneeById">
+     select consignee
+       from com.lr.model.Consignee as consignee
+     where consignee.id = :consigneeId     
+ </query>
  
 </hibernate-mapping>

@@ -10,7 +10,7 @@ public class LRExpenditure {
 	private static final long serialVersionUID = -6779738051490200702L;
 	
 	private long   _id;
-	private long _lrNo;	
+	private long _lrId;	
 	private int _freightToBroker;	
 	private int _extraPayToBroker;
 	private int   _advance;
@@ -33,7 +33,7 @@ public class LRExpenditure {
 	private void validate(Controller ctrl) throws InsufficientDataException {
 		//Model level validation
 		String errorMsg = "";
-		if (ctrl.mLRNo() == 0 ) 
+		if (ctrl.mLRId() == 0 ) 
 		{
 			errorMsg = "LR No can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
@@ -46,7 +46,7 @@ public class LRExpenditure {
 
 		validate(ctrl);
 		
-		_lrNo = ctrl.mLRNo();	
+		_lrId = ctrl.mLRId();	
 		_freightToBroker = ctrl.mFreightToBroker();
 		_extraPayToBroker = ctrl.mExtraPayToBroker();
 		_advance = ctrl.mAdvance();
@@ -62,7 +62,7 @@ public class LRExpenditure {
 		
 		validate(ctrl);
 		
-		_lrNo = ctrl.mLRNo();	
+		_lrId = ctrl.mLRId();	
 		_freightToBroker = ctrl.mFreightToBroker();
 		_extraPayToBroker = ctrl.mExtraPayToBroker();
 		_advance = ctrl.mAdvance();
@@ -76,8 +76,8 @@ public class LRExpenditure {
 
 	public interface Controller {
 				
-		long mLRNo();
-		void mLRNo(long lrNo);		
+		long mLRId();
+		void mLRId(long lrNo);		
 
 		int mFreightToBroker();
 		void mFreightToBroker(int freightToBroker);
@@ -113,7 +113,7 @@ public class LRExpenditure {
 
 		
 		@Override
-		public void mLRNo(long lrNo) { }
+		public void mLRId(long lrId) { }
 		
 		@Override
 		public void mFreightToBroker(int freightToBroker) { }
@@ -154,12 +154,12 @@ public class LRExpenditure {
 		this._id = id;
 	}
 
-	public long getLrNo() {
-		return _lrNo;
+	public long getLrId() {
+		return _lrId;
 	}
 
-	void setLrNo(long lrNo) {
-		this._lrNo = lrNo;
+	void setLrId(long lrId) {
+		this._lrId = lrId;
 	}
 
 	public int getFreightToBroker() {

@@ -10,7 +10,7 @@ public class LROthers {
 	private static final long serialVersionUID = -6779738051490200702L;
 	
 	private long   _id;
-	private long _lrNo;	
+	private long _lrId;	
 	private int _amount;	
 	private String _remarks;
 	
@@ -28,7 +28,7 @@ public class LROthers {
 	private void validate(Controller ctrl) throws InsufficientDataException {
 		//Model level validation
 		String errorMsg = "";
-		if (ctrl.mLRNo() == 0 ) 
+		if (ctrl.mLRId() == 0 ) 
 		{
 			errorMsg = "LR No can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
@@ -41,7 +41,7 @@ public class LROthers {
 
 		validate(ctrl);
 		
-		_lrNo = ctrl.mLRNo();	
+		_lrId = ctrl.mLRId();	
 		_amount = ctrl.mAmount();
 		_remarks = ctrl.mRemarks();
 			
@@ -52,7 +52,7 @@ public class LROthers {
 		
 		validate(ctrl);
 		
-		_lrNo = ctrl.mLRNo();	
+		_lrId = ctrl.mLRId();	
 		_amount = ctrl.mAmount();
 		_remarks = ctrl.mRemarks();
 		
@@ -60,8 +60,8 @@ public class LROthers {
 
 	public interface Controller {
 				
-		long mLRNo();
-		void mLRNo(long lrNo);		
+		long mLRId();
+		void mLRId(long lrId);		
 
 		int mAmount();
 		void mAmount(int amount);
@@ -76,7 +76,7 @@ public class LROthers {
 
 		
 		@Override
-		public void mLRNo(long lrNo) { }
+		public void mLRId(long lrId) { }
 		
 		@Override
 		public void mAmount(int freightToBroker) { }
@@ -99,12 +99,12 @@ public class LROthers {
 	}
 	
 	
-	public long getLrNo() {
-		return _lrNo;
+	public long getLrId() {
+		return _lrId;
 	}
 
-	void setLrNo(long lrNo) {
-		this._lrNo = lrNo;
+	void setLrId(long lrId) {
+		this._lrId = lrId;
 	}
 
 	public int getAmount(){ return _amount; }

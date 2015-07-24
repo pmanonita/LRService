@@ -3,7 +3,7 @@ package com.lr.response;
 public class LRExpeditureView {
 
 	private long    id;
-	private long lrNo;
+	private long lrId;
 	private int freightToBroker;
 	private int extraPayToBroker;
 	private int advance;
@@ -27,13 +27,13 @@ public class LRExpeditureView {
 	}
 
 
-	public long getLrNo() {
-		return lrNo;
+	public long getLrId() {
+		return lrId;
 	}
 
 
-	public void setLrNo(long lrNo) {
-		this.lrNo = lrNo;
+	public void setLrId(long lrId) {
+		this.lrId = lrId;
 	}
 
 

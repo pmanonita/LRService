@@ -18,26 +18,24 @@ CREATE TABLE  `lr_test`.`User` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
-
-DROP TABLE IF EXISTS `lr_test`.`LR`;
-CREATE TABLE  `lr_test`.`LR` (
+DROP TABLE IF EXISTS `lr_test`.`lr`;
+CREATE TABLE  `lr_test`.`lr` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `transid` bigint(20) DEFAULT NULL,
   `vehicleNo` varchar(20) DEFAULT NULL,
-  `consignor` varchar(255) DEFAULT NULL,
-  `consignee` varchar(255) DEFAULT NULL,
-  `consignerServtax` varchar(20) DEFAULT NULL,
-  `consigneeServtax` varchar(20) DEFAULT NULL,
+  `consignerId` int(11) DEFAULT NULL,
+  `consigneeId` int(11) DEFAULT NULL,
   `vehicleOwner` varchar(255) DEFAULT NULL,
   `billingToParty` varchar(255) DEFAULT NULL,
   `lrDate` date DEFAULT NULL,
   `multiLoad` varchar(20) DEFAULT NULL,
   `userName` varchar(20) NOT NULL,
-  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `lr_test`.`LRExpenditure`;
-CREATE TABLE  `lr_test`.`LRExpenditure` (
+DROP TABLE IF EXISTS `lr_test`.`lrexpenditure`;
+CREATE TABLE  `lr_test`.`lrexpenditure` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `lrId` bigint(20) NOT NULL,
   `freightToBroker` int(11) DEFAULT NULL,
@@ -52,8 +50,8 @@ CREATE TABLE  `lr_test`.`LRExpenditure` (
   UNIQUE KEY `lrId` (`lrId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
-DROP TABLE IF EXISTS `lr_test`.`LROthers`;
-CREATE TABLE  `lr_test`.`LROthers` (
+DROP TABLE IF EXISTS `lr_test`.`lrothers`;
+CREATE TABLE  `lr_test`.`lrothers` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `lrId` bigint(20) NOT NULL,
   `amount` int(11) NOT NULL,
@@ -61,25 +59,36 @@ CREATE TABLE  `lr_test`.`LROthers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-CREATE TABLE  `lr_test`.`Consigner` (
+DROP TABLE IF EXISTS `lr_test`.`consigner`;
+CREATE TABLE  `lr_test`.`consigner` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `consignerCode` varchar(20) NOT NULL,
   `consignerName` varchar(255) NOT NULL,
   `address` varchar(255) DEFAULT NULL,
   `serviceTax` varchar(20) DEFAULT NULL,
+  `fromPlace` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `consignerCode` (`consignerCode`),
   UNIQUE KEY `consignerName` (`consignerName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
-CREATE TABLE  `lr_test`.`Consignee` (
+DROP TABLE IF EXISTS `lr_test`.`consignee`;
+CREATE TABLE  `lr_test`.`consignee` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `consigneeCode` varchar(20) NOT NULL,
   `consigneeName` varchar(255) NOT NULL,
   `address` varchar(255) DEFAULT NULL,
   `serviceTax` varchar(20) DEFAULT NULL,
+  `toPlace` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `consigneeCode` (`consigneeCode`),
   UNIQUE KEY `consigneeName` (`consigneeName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+SELECT * FROM `user` u;
+insert into user(username,password,servicekey,role,createdate,mobile) values ('praja','praja','824bb1e8-de0c-401c-9f83-8b1d18a0ca9d','admin','2015/07/23',6777788888);
+
+SELECT * FROM consignee c;
+insert into consignee(consigneeCode,consigneeName,address,serviceTax,toplace) values('CC04','CC Name2','ameerpet','45556','orissa');
+insert into consigner(consignerCode,consignerName,address,serviceTax,fromplace) values('CC06','CC Name5','ameerpet','45556','pune');
+

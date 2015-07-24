@@ -18,18 +18,18 @@ public class LRExpenditureService {
 	//private final static int errorCode   = 0;
 	
 	//view level validation
-	public void validateAuthData(String lrNo)
+	public void validateAuthData(String lrId)
 		throws InsufficientDataException
 	{
 		String errorMsg = "";
-		if (null != lrNo && lrNo.equals("")) 
+		if (null != lrId && lrId.equals("")) 
 		{
 			errorMsg = "LRNo can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
 		}		
 	}
 	
-	private LRExpenditure.DefaultController createControllerFromView(final long lrNo,						  
+	private LRExpenditure.DefaultController createControllerFromView(final long lrId,						  
 			  											final int freightToBroker,
 			  											final int extraPayToBroker,
 			  											final int advance,
@@ -43,7 +43,7 @@ public class LRExpenditureService {
 		return new LRExpenditure.DefaultController() {
 			
 			
-			public long mLRNo()	{return lrNo;}
+			public long mLRId()	{return lrId;}
 			
 
 			public int mFreightToBroker()	{return freightToBroker; }
@@ -72,7 +72,7 @@ public class LRExpenditureService {
 		};
 	}
 	
-	public LRExpenditure newLRExpenditure(final long lrNo,						  
+	public LRExpenditure newLRExpenditure(final long lrId,						  
 					final int freightToBroker,
 					final int extraPayToBroker,
 					final int advance,
@@ -102,7 +102,7 @@ public class LRExpenditureService {
 			}*/
 			
 
-			LRExpenditure.Controller ctrl = createControllerFromView(lrNo,						  
+			LRExpenditure.Controller ctrl = createControllerFromView(lrId,						  
 															freightToBroker,
 															extraPayToBroker,
 															advance,
@@ -143,7 +143,7 @@ public class LRExpenditureService {
 		/** User data visible to UI **/		
 		LRExpeditureView lrExpenditureView = new LRExpeditureView();
 		lrExpenditureView.setId(lrExpediture.getId());
-		lrExpenditureView.setLrNo(lrExpediture.getLrNo());
+		lrExpenditureView.setLrId(lrExpediture.getLrId());
 		lrExpenditureView.setFreightToBroker(lrExpediture.getFreightToBroker());
 		lrExpenditureView.setExtraPayToBroker(lrExpediture.getExtraPayToBroker());
 		lrExpenditureView.setAdvance(lrExpediture.getAdvance());

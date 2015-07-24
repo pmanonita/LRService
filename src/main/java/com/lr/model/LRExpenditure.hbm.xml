@@ -9,8 +9,8 @@
       <generator class="increment"/>
     </id>
   
-    <property name="lrNo" type="long" unique="true" not-null="true">
-      <column name="lrNo" />
+    <property name="lrId" type="long" unique="true" not-null="true">
+      <column name="lrId" />
     </property> 
     <property name="freightToBroker" type="int">
       <column name="freightToBroker" />

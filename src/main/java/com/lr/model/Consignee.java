@@ -3,6 +3,7 @@ package com.lr.model;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -18,6 +19,7 @@ public class Consignee {
 	private String _consigneeName;	
 	private String _address;	
 	private String _serviceTax;
+	private String _toPlace;
 	
 	
 	//For hibernate
@@ -50,6 +52,7 @@ public class Consignee {
 		_consigneeName = ctrl.mConsigneeName();
 		_address = ctrl.mAddress();
 		_serviceTax = ctrl.mServiceTax();
+		_toPlace = ctrl.mToPlace();
 			
 			
 	}
@@ -62,6 +65,7 @@ public class Consignee {
 		_consigneeName = ctrl.mConsigneeName();
 		_address = ctrl.mAddress();
 		_serviceTax = ctrl.mServiceTax();
+		_toPlace = ctrl.mToPlace();
 			
 		
 	}
@@ -79,6 +83,9 @@ public class Consignee {
 
 		String mServiceTax();
 		void mServiceTax(String serviceTax);
+		
+		String mToPlace();
+		void mToPlace(String toPlace);
 
 				
 	}
@@ -97,6 +104,9 @@ public class Consignee {
 
 		@Override
 		public void mServiceTax(String serviceTax) { }
+		
+		@Override
+		public void mToPlace(String toPlace) { }
 		
 		
 				
@@ -136,6 +146,12 @@ public class Consignee {
 	void setServiceTax(String serviceTax){
 		this._serviceTax = serviceTax;
 	}
+	
+	public String getToPlace(){ return _toPlace;}
+	void setToPlace(String toPlace){
+		this._toPlace = toPlace;
+	}
+
 
 	
 
@@ -152,6 +168,23 @@ public class Consignee {
 		final List<Consignee> consigneelist = qry.list();
 		return consigneelist;
 	} 
+	
+	private static final String QUERY_FOR_CONSIGNEE_BY_ID_SKEY =
+		Consignee.class.getName() + ".findConsigneeById";
+	 public static Consignee findConsigneeById(Session session, String consigneeId)
+		throws HibernateException
+		{
+		 	if (consigneeId == null || consigneeId == null) {
+			 return null;
+		 	}
+		 	Query qry = session.getNamedQuery(QUERY_FOR_CONSIGNEE_BY_ID_SKEY);
+		 	qry.setString("consigneeId",    consigneeId);		 	
+ 
+		 	qry.setMaxResults(1);
+ 
+		 	final Consignee consignee = (Consignee)(qry.uniqueResult());
+		 	return consignee;
+		}
 	
 	
 	

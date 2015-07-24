@@ -4,29 +4,25 @@
  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
 
 <hibernate-mapping>
-  <class name="com.lr.model.LR" table="lr">
+  <class name="com.lr.model.LR" table="LR">
     <id name="id" type="long" column="id" >
       <generator class="increment"/>
     </id>
+   
   
-    <property name="transid" type="int">
+    <property name="transid" type="long">
       <column name="transid" />
     </property> 
     <property name="vehicleNo" type="string">
       <column name="vehicleNo" />
-    </property>
-    <property name="consignor" type="string">
-      <column name="consignor" />
-    </property>    
-    <property name="consignee" type="string">
-      <column name="consignee" />
-    </property>    
-    <property name="consignerServtax" type="string">
-      <column name="consignerServtax" />
-    </property>    
-    <property name="consigneeServtax" type="string">
-      <column name="consigneeServtax" />
-    </property>
+    </property>     
+    
+   	<many-to-one name="consignerId" column="consignerId"  
+       class="com.lr.model.Consigner" />
+       
+    <many-to-one name="consigneeId" column="consigneeId" 
+       class="com.lr.model.Consignee" />  
+        
     <property name="vehicleOwner" type="string">
       <column name="vehicleOwner" />
     </property>
@@ -39,8 +35,8 @@
      <property name="multiLoad" type="string">
       <column name="multiLoad"/>
     </property>   
-    <property name="userid" type="string">
-      <column name="userid"/>
+    <property name="userName" type="string">
+      <column name="userName"/>
     </property>
     <property name="updatetimestamp" type="date">
       <column name="updatetimestamp"/>

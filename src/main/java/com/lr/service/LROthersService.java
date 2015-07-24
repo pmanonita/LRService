@@ -18,18 +18,18 @@ public class LROthersService {
 	//private final static int errorCode   = 0;
 	
 	//view level validation
-	public void validateAuthData(String lrNo)
+	public void validateAuthData(String lrId)
 		throws InsufficientDataException
 	{
 		String errorMsg = "";
-		if (null != lrNo && lrNo.equals("")) 
+		if (null != lrId && lrId.equals("")) 
 		{
 			errorMsg = "LRNo can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
 		}		
 	}
 	
-	private LROthers.DefaultController createControllerFromView(final long lrNo,						  
+	private LROthers.DefaultController createControllerFromView(final long lrId,						  
 			  											final int amount,
 			  											final String remarks) 
 	{
@@ -37,7 +37,7 @@ public class LROthersService {
 		return new LROthers.DefaultController() {
 			
 			
-			public long mLRNo()	{return lrNo;}
+			public long mLRId()	{return lrId;}
 			
 
 			public int mAmount()	{return amount; }
@@ -50,7 +50,7 @@ public class LROthersService {
 		};
 	}
 	
-	public LROthers newLROthers(final long lrNo,						  
+	public LROthers newLROthers(final long lrId,						  
 					final int amount,
 					final String remarks)
 	{
@@ -74,7 +74,7 @@ public class LROthersService {
 			}*/
 			
 
-			LROthers.Controller ctrl = createControllerFromView(lrNo,						  
+			LROthers.Controller ctrl = createControllerFromView(lrId,						  
 															amount,
 															remarks);
 						
@@ -109,7 +109,7 @@ public class LROthersService {
 		/** User data visible to UI **/		
 		LROthersView lrOthersView = new LROthersView();
 		lrOthersView.setId(lrOthers.getId());
-		lrOthersView.setLrNo(lrOthers.getLrNo());
+		lrOthersView.setLrId(lrOthers.getLrId());
 		lrOthersView.setAmount(lrOthers.getAmount());
 		lrOthersView.setRemarks(lrOthers.getRemarks());
 		

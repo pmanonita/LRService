@@ -1,12 +1,15 @@
 package com.lr.response;
 
+import com.lr.model.Consignee;
+import com.lr.model.Consigner;
+
 public class LRView {
 
 	private long    id;
 	private String vehicleNo;
 	private String vehicleOwner;
-	private String consignor;
-	private String consignee;
+	private Consigner consigner;
+	private Consignee consignee;
 	private String   servTaxConsigner;
 	private String servTaxConsignee;
 	private String billingParty;
@@ -41,28 +44,7 @@ public class LRView {
 
 	public void setVehicleOwner(String vehicleOwner) {
 		this.vehicleOwner = vehicleOwner;
-	}
-
-
-	public String getConsignor() {
-		return consignor;
-	}
-
-
-	public void setConsignor(String consignor) {
-		this.consignor = consignor;
-	}
-
-
-	public String getConsignee() {
-		return consignee;
-	}
-
-
-	public void setConsignee(String consignee) {
-		this.consignee = consignee;
-	}
-
+	}	
 
 	public String getServTaxConsigner() {
 		return servTaxConsigner;
@@ -94,8 +76,24 @@ public class LRView {
 	}
 
 
+	public Consigner getConsigner() {
+		return consigner;
+	}
 
-	
+
+	public void setConsigner(Consigner consigner) {
+		this.consigner = consigner;
+	}
+
+
+	public Consignee getConsignee() {
+		return consignee;
+	}
+
+
+	public void setConsignee(Consignee consignee) {
+		this.consignee = consignee;
+	}
 
    
 

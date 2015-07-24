@@ -15,20 +15,19 @@ public class LR implements Serializable {
 	private static final long serialVersionUID = -6779738051490200702L;
 	
 	private long    _id;
-	private int _transid;	
-	private String _vehicleNo;	
-	private String _consignor;
-	private String   _consignee;
-	private String _consignerServtax;
-	private String _consigneeServtax;
+	private long _transid;	
+	private String _vehicleNo;
 	private String _vehicleOwner;
 	private String   _billingToParty;
 	private Date   _lrDate;	
 	private String   _multiLoad;
-	private String _userid;
+	private String _userName;
 	private Date _updatetimestamp;
 	
 	private LRExpenditure _expId;
+	private Consigner _consignerId;
+	private Consignee _consigneeId;
+	
 	
 	
 	//For hibernate
@@ -44,7 +43,7 @@ public class LR implements Serializable {
 	private void validate(Controller ctrl) throws InsufficientDataException {
 		//Model level validation
 		String errorMsg = "";
-		if ((null == ctrl.mVehicleNo() || (null != ctrl.mMultiLoad() && ctrl.mUserid().equals("")))) 
+		if ((null == ctrl.mVehicleNo() || (null != ctrl.mMultiLoad() && ctrl.mUserName().equals("")))) 
 		{
 			errorMsg = "User name and password can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
@@ -58,14 +57,12 @@ public class LR implements Serializable {
 		
 		_transid = ctrl.mTransid();		
 		_vehicleNo = ctrl.mVehicleNo();	
-		_consignor = ctrl.mConsignor();
-		_consignee = ctrl.mConsignee();
-		_consignerServtax = ctrl.mConsignerServtax();
-		_consigneeServtax = ctrl.mConsigneeServtax();
+		_consignerId = ctrl.mConsignerId();
+		_consigneeId = ctrl.mConsigneeId();		
 		_vehicleOwner = ctrl.mVehicleOwner();
 		_billingToParty = ctrl.mBillingToParty();
 		_lrDate = ctrl.mLrDate();		
-		_userid = ctrl.mUserid();		
+		_userName = ctrl.mUserName();		
 	}
 	
 	public void changeTo(Controller ctrl) {
@@ -74,36 +71,29 @@ public class LR implements Serializable {
 		
 		_transid = ctrl.mTransid();		
 		_vehicleNo = ctrl.mVehicleNo();	
-		_consignor = ctrl.mConsignor();
-		_consignee = ctrl.mConsignee();
-		_consignerServtax = ctrl.mConsignerServtax();
-		_consigneeServtax = ctrl.mConsigneeServtax();
+		_consignerId = ctrl.mConsignerId();
+		_consigneeId = ctrl.mConsigneeId();		
 		_vehicleOwner = ctrl.mVehicleOwner();
 		_billingToParty = ctrl.mBillingToParty();
 		_lrDate = ctrl.mLrDate();		
-		_userid = ctrl.mUserid();
+		_userName = ctrl.mUserName();
 		
 	}
 
 	public interface Controller {
 				
-		int mTransid();
-		void mTransid(int transid);		
+		long mTransid();
+		void mTransid(long transid);		
 
 		String mVehicleNo();
 		void mVehicleNo(String _vehicleNo);
 
-		String mConsignor();
-		void mConsignor(String _consignor);
+		Consigner mConsignerId();
+		void mConsignerId(Consigner _consignerId);
 
-		String mConsignee();
-		void mConsignee(String _consignee);
-
-		String mConsignerServtax();
-		void mConsignerServtax(String _consignerServtax);
-		 
-		String mConsigneeServtax();
-		void mConsigneeServtax(String _consigneeServtax);
+		Consignee mConsigneeId();
+		void mConsigneeId(Consignee _consigneeId);
+		
 
 		String mVehicleOwner();
 		void mVehicleOwner(String _vehicleOwner);
@@ -117,25 +107,23 @@ public class LR implements Serializable {
 		String mMultiLoad();
 		void mMultiLoad(String _multiLoad);
 		
-		String mUserid();
-		void mUserid(String _userid);
+		String mUserName();
+		void mUserName(String _userName);
 
 		
 		
 	}
 	
 	public abstract static class DefaultController implements Controller {
-		public void mTransid(int transid) 		{	}
+		public void mTransid(long transid) 		{	}
 		public void mVehicleNo(String vehicleNo) 		{	}
-		public void mConsignor(String consignor)	{	}
-		public void mConsignee(String consignee) 		{	}
-		public void mConsignerServtax(String consignerServtax) 			{	}
-		public void mConsigneeServtax(String consignorServtax)	 		{	}
+		public void mConsignerId(Consigner consignerId)	{	}
+		public void mConsigneeId(Consignee consigneeId) 		{	}		
 		public void mVehicleOwner(String vehicleOwner) 	{	}
 		public void mBillingToParty(String billingToParty) 		{	}
 		public void mLrDate(Date lrDate)	 			{	}
 		public void mMultiLoad(String multiLoad) 	{	}
-		public void mUserid(String userid) 	{	}		
+		public void mUserName(String userName) 	{	}		
 	}
 
 	
@@ -149,11 +137,11 @@ public class LR implements Serializable {
 		this._id = id;
 	}
 
-	public int getTransid() {
+	public long getTransid() {
 		return _transid;
 	}
 
-	void setTransid(int transid) {
+	void setTransid(long transid) {
 		this._transid = transid;
 	}
 
@@ -165,37 +153,21 @@ public class LR implements Serializable {
 		this._vehicleNo = vehicleNo;
 	}
 
-	public String getConsignor() {
-		return _consignor;
+	public Consigner getConsignerId() {
+		return _consignerId;
 	}
 
-	public void setConsignor(String consignor) {
-		this._consignor = consignor;
+	public void setConsignerId(Consigner consignerId) {
+		this._consignerId = consignerId;
 	}
 
-	public String getConsignee() {
-		return _consignee;
+	public Consignee getConsigneeId() {
+		return _consigneeId;
 	}
 
-	public void setConsignee(String consignee) {
-		this._consignee = consignee;
-	}
-
-	public String getConsignerServtax() {
-		return _consignerServtax;
-	}
-
-	public void setConsignerServtax(String consignerServtax) {
-		this._consignerServtax = consignerServtax;
-	}
-
-	public String getConsigneeServtax() {
-		return _consigneeServtax;
-	}
-
-	public void setConsigneeServtax(String consigneeServtax) {
-		this._consigneeServtax = consigneeServtax;
-	}
+	public void setConsigneeId(Consignee consigneeId) {
+		this._consigneeId = consigneeId;
+	}	
 
 	public String getVehicleOwner() {
 		return _vehicleOwner;
@@ -229,12 +201,12 @@ public class LR implements Serializable {
 		this._multiLoad = multiLoad;
 	}
 
-	public String getUserid() {
-		return _userid;
+	public String getUserName() {
+		return _userName;
 	}
 
-	public void setUserid(String userid) {
-		this._userid = userid;
+	public void setUserName(String userName) {
+		this._userName = userName;
 	}
 	
 	
@@ -258,6 +230,8 @@ public class LR implements Serializable {
 	
 
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
+	
+	
 	
 	
 	

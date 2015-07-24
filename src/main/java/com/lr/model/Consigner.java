@@ -3,6 +3,7 @@ package com.lr.model;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -18,6 +19,7 @@ public class Consigner {
 	private String _consignerName;	
 	private String _address;	
 	private String _serviceTax;
+	private String _fromPlace;
 	
 	
 	//For hibernate
@@ -50,6 +52,8 @@ public class Consigner {
 		_consignerName = ctrl.mConsignerName();
 		_address = ctrl.mAddress();
 		_serviceTax = ctrl.mServiceTax();
+		_fromPlace = ctrl.mFromPlace();
+		
 			
 			
 	}
@@ -62,6 +66,7 @@ public class Consigner {
 		_consignerName = ctrl.mConsignerName();
 		_address = ctrl.mAddress();
 		_serviceTax = ctrl.mServiceTax();
+		_fromPlace = ctrl.mFromPlace();
 			
 		
 	}
@@ -79,6 +84,9 @@ public class Consigner {
 
 		String mServiceTax();
 		void mServiceTax(String serviceTax);
+		
+		String mFromPlace();
+		void mFromPlace(String fromPlace);
 
 				
 	}
@@ -97,6 +105,9 @@ public class Consigner {
 
 		@Override
 		public void mServiceTax(String serviceTax) { }
+		
+		@Override
+		public void mFromPlace(String fromPlace) { }
 		
 		
 				
@@ -136,6 +147,11 @@ public class Consigner {
 	void setServiceTax(String serviceTax){
 		this._serviceTax = serviceTax;
 	}
+	
+	public String getFromPlace(){ return _fromPlace;}
+	void setFromPlace(String fromPlace){
+		this._fromPlace = fromPlace;
+	}
 
 	
 
@@ -153,7 +169,20 @@ public class Consigner {
 		return consignerlist;
 	} 
 	
-	
-	
-
+	private static final String QUERY_FOR_CONSIGNER_BY_ID_SKEY =
+		Consigner.class.getName() + ".findConsignerById";
+	 public static Consigner findConsignerById(Session session, String consignerId)
+		throws HibernateException
+		{
+		 	if (consignerId == null || consignerId == null) {
+			 return null;
+		 	}
+		 	Query qry = session.getNamedQuery(QUERY_FOR_CONSIGNER_BY_ID_SKEY);
+		 	qry.setString("consignerId",    consignerId);		 	
+ 
+		 	qry.setMaxResults(1);
+ 
+		 	final Consigner consigner = (Consigner)(qry.uniqueResult());
+		 	return consigner;
+		}
 }

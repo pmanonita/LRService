@@ -9,8 +9,8 @@
       <generator class="increment"/>
     </id>
   
-    <property name="lrNo" type="long" not-null="true">
-      <column name="lrNo" />
+    <property name="lrId" type="long" not-null="true">
+      <column name="lrId" />
     </property> 
     <property name="amount" type="int" not-null="true">
       <column name="amount" />

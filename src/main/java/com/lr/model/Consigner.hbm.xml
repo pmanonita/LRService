@@ -21,6 +21,9 @@
     <property name="serviceTax">
       <column name="serviceTax" />
     </property>
+     <property name="fromPlace">
+      <column name="fromPlace" />
+    </property>
     
  </class>
  
@@ -28,5 +31,11 @@
  <query name="com.lr.model.Consigner.findAllConsigners">
  	select consigner from com.lr.model.Consigner as consigner
  </query> 
+ 
+  <query name="com.lr.model.Consigner.findConsignerById">
+     select consigner
+       from com.lr.model.Consigner as consigner
+     where consigner.id = :consignerId     
+ </query>
  
 </hibernate-mapping>
