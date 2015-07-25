@@ -80,7 +80,7 @@ public class UserResource {
     }
 	
 	@GET
-    @Path("/listuser" )
+    @Path("/user-service/listuser" )
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse listUser()
     {		

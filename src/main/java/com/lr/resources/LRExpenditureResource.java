@@ -17,12 +17,15 @@ import javax.ws.rs.core.Response;
 
 import com.lr.filters.LRHTTPHeaders;
 
+import com.lr.model.Consignee;
+import com.lr.model.LR;
 import com.lr.model.LRExpenditure;
 
 import com.lr.response.AppResponse;
 import com.lr.response.ErrorMessage;
 import com.lr.response.ErrorResponse;
 import com.lr.service.LRExpenditureService;
+import com.lr.service.LrService;
 
 
 
@@ -52,8 +55,9 @@ public class LRExpenditureResource {
     {
 		AppResponse response    = null;
 		LRExpenditureService lrExpenditureService = new LRExpenditureService();
+		LrService lrService = new LrService();
 		
-		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);
+		
 		
 		//validate Input
 		lrExpenditureService.validateAuthData(lrNo);	
@@ -124,26 +128,45 @@ public class LRExpenditureResource {
 			//Suppress the warning
 		}
 		
-				
+		LR lr = null;
+		if(lrNo!=null && !lrNo.equals("") && llrNo>0){
+			lr  = lrService.getLr(lrNo);
+			 if(null == lr) 
+		     {  
+				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
+				 response = new ErrorResponse(errorMsg);
+		     }else{
+		    	//Send to model using service              
+		 		LRExpenditure lrExpenditure = lrExpenditureService.newLRExpenditure(llrNo,
+		 								iferightToBroker,
+		 								iextraPayToBroker,
+		 								iadvance,
+		 								ibalanceFreight,
+		 								iloadingCharges,
+		 								iunloadingCharges,
+		 								iloadingDetBroker,
+		 								iunloadingDetBroker
+		 								);        
+		 		if (lrExpenditure != null) {
+		 			System.out.println("LR NO "+lr.getId());
+		 			lr=lrService.updateExpenditureToLR(lrExpenditure,lr);
+		 			if(null == lr){
+		 				ErrorMessage errorMsg = new ErrorMessage("Issue while updating LR with expediture. Please try again", 500);
+			 			response = new ErrorResponse(errorMsg);
+		 			}else{
+		 				response = lrExpenditureService.createLRExpenditureResponse(lrExpenditure);	
+		 			}
+		 		
+		 		} else {
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
+		 			response = new ErrorResponse(errorMsg);
+		 		}
+		             
+		    	 
+		     }
+		}	
 		
-		//Send to model using service              
-		LRExpenditure lrExpenditure = lrExpenditureService.newLRExpenditure(llrNo,
-								iferightToBroker,
-								iextraPayToBroker,
-								iadvance,
-								ibalanceFreight,
-								iloadingCharges,
-								iunloadingCharges,
-								iloadingDetBroker,
-								iunloadingDetBroker
-								);        
-		if (lrExpenditure != null) {
-			response = lrExpenditureService.createLRExpenditureResponse(lrExpenditure);			
-		} else {
-			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
-			response = new ErrorResponse(errorMsg);
-		}
-               		
+		   		
 		return response;
     }
 	

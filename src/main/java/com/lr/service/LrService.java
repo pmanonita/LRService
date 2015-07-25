@@ -19,6 +19,7 @@ import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
+import com.lr.model.LRExpenditure;
 import com.lr.model.User;
 import com.lr.response.ConsigneeListResponse;
 import com.lr.response.ConsigneeView;
@@ -44,12 +45,12 @@ public class LrService {
 		}		
 	}
 	
-	private LR.DefaultController createControllerFromView(final String serviceKey,						  
+	private LR.DefaultController createControllerFromView(						  
 			  											final String vehileNo,
 			  											final String vehicleOwner,
 			  											final Consigner consigner,
 			  											final Consignee consignee,			  											
-			  											final String billingParty) 
+			  											final String billingParty)
 	{
 		
 		return new LR.DefaultController() {
@@ -80,6 +81,55 @@ public class LrService {
 			
 			@Override
 			public String mUserName() {	return "";	}
+			
+			@Override
+			public LRExpenditure mLrexpenditureId()	{ return null; } 
+					
+			
+			
+		};
+	}
+	
+
+
+	private LR.Controller CreateContoller(final String vehileNo,
+					final String vehicleOwner,
+					final Consigner consigner,
+					final Consignee consignee,			  											
+					final String billingParty,
+					final LRExpenditure lrExpenditure) 
+	{
+		return new LR.DefaultController() {
+			
+			@Override
+			public long mTransid() {	return 0;	}
+			
+			@Override
+			public String mVehicleNo() {	return vehileNo;	}
+			
+			@Override
+			public Consigner mConsignerId() {	return consigner;	}
+			
+			@Override
+			public Consignee mConsigneeId() {	return consignee;	}
+			
+			@Override
+			public String mVehicleOwner() {		return vehicleOwner;	}
+			
+			@Override
+			public String mBillingToParty() {	return billingParty;	}
+			
+			@Override
+			public Date mLrDate() {		return new Date();	}
+			
+			@Override
+			public String mMultiLoad() {	return null;	}
+			
+			@Override
+			public String mUserName() {	return "";	}
+			
+			@Override
+			public LRExpenditure mLrexpenditureId()	{ return lrExpenditure; } 
 					
 			
 			
@@ -115,12 +165,12 @@ public class LrService {
 			}*/
 			
 
-			LR.Controller ctrl = createControllerFromView(serviceKey,
-															vehileNo,
+			LR.Controller ctrl = createControllerFromView(vehileNo,
 															vehicleOwner,
 															consigner,
 															consignee,															
-															billingParty);
+															billingParty
+															);
 						
 			//Create user object using controller
 			lr = new LR(ctrl);
@@ -140,6 +190,95 @@ public class LrService {
 		
 		return lr;
 	}
+	
+	public LR getLr( String lrNo )
+	
+	{	
+	
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
+		LR lr        = null;
+	
+		try {
+			tx = session.beginTransaction();        	
+			lr = LR.findLRById(session, lrNo);
+		
+			if (null == lrNo) {
+				tx.rollback();
+				session.close();    			
+				throw new AuthException("LR Not found"); 
+			}		
+		
+		
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lr = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();
+        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return lr;        
+	}
+	
+	public LR updateExpenditureToLR(LRExpenditure lrExpenditure,LR lr) {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
+		
+	
+		try {
+			tx = session.beginTransaction();  
+			//Create Controller
+			LR.Controller ctrl = CreateContoller(lr.getVehicleNo(),
+												lr.getVehicleOwner(),
+												lr.getConsignerId(),
+												lr.getConsigneeId(),
+												lr.getBillingToParty(),
+												lrExpenditure);
+								
+			//Update Data
+			lr.changeTo(ctrl);
+			
+			//User.Controller ctrl1 = createProxyController(User.class, User.Controller.class);
+			//user.populate(ctrl1);
+			//ctrl1.mAuthKey(authToken);
+			//user.changeTo(ctrl1);
+			//String lrNo=Long.toString(lr.getId());
+			
+			session.saveOrUpdate(lr);			
+			session.flush();
+			//lr = LR.findLRById(session,lrNo);
+		
+			/*if (null == lr) {
+				tx.rollback();
+				session.close();    			
+				throw new AuthException("LR Not found"); 
+			}*/		
+		
+		
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lr = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();
+        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return lr; 
+	}
+	
+	
+	
 	
 	public Consigner getConsigner( String consignerId )
 	

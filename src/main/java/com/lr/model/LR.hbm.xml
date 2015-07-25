@@ -22,6 +22,9 @@
        
     <many-to-one name="consigneeId" column="consigneeId" 
        class="com.lr.model.Consignee" />  
+       
+    <many-to-one name="lrexpenditureId" column="lrexpenditureId" unique="true"     
+       class="com.lr.model.LRExpenditure" />  
         
     <property name="vehicleOwner" type="string">
       <column name="vehicleOwner" />
@@ -42,6 +45,12 @@
       <column name="updatetimestamp"/>
     </property>
  </class>
+ 
+ <query name="com.lr.model.LR.findLRById">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.id = :lrNo     
+ </query>
  
  
  

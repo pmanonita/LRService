@@ -24,9 +24,10 @@ public class LR implements Serializable {
 	private String _userName;
 	private Date _updatetimestamp;
 	
-	private LRExpenditure _expId;
+	private LRExpenditure _lrexpenditureId;
 	private Consigner _consignerId;
 	private Consignee _consigneeId;
+	
 	
 	
 	
@@ -62,7 +63,8 @@ public class LR implements Serializable {
 		_vehicleOwner = ctrl.mVehicleOwner();
 		_billingToParty = ctrl.mBillingToParty();
 		_lrDate = ctrl.mLrDate();		
-		_userName = ctrl.mUserName();		
+		_userName = ctrl.mUserName();	
+		_lrexpenditureId = ctrl.mLrexpenditureId();
 	}
 	
 	public void changeTo(Controller ctrl) {
@@ -77,6 +79,7 @@ public class LR implements Serializable {
 		_billingToParty = ctrl.mBillingToParty();
 		_lrDate = ctrl.mLrDate();		
 		_userName = ctrl.mUserName();
+		_lrexpenditureId = ctrl.mLrexpenditureId();
 		
 	}
 
@@ -93,6 +96,9 @@ public class LR implements Serializable {
 
 		Consignee mConsigneeId();
 		void mConsigneeId(Consignee _consigneeId);
+		
+		LRExpenditure mLrexpenditureId();
+		void mLrexpenditureId(LRExpenditure _lrexpenditureId);
 		
 
 		String mVehicleOwner();
@@ -118,7 +124,8 @@ public class LR implements Serializable {
 		public void mTransid(long transid) 		{	}
 		public void mVehicleNo(String vehicleNo) 		{	}
 		public void mConsignerId(Consigner consignerId)	{	}
-		public void mConsigneeId(Consignee consigneeId) 		{	}		
+		public void mConsigneeId(Consignee consigneeId) 		{	}	
+		public void mLrexpenditureId(LRExpenditure lrexpenditureId) 		{	}	
 		public void mVehicleOwner(String vehicleOwner) 	{	}
 		public void mBillingToParty(String billingToParty) 		{	}
 		public void mLrDate(Date lrDate)	 			{	}
@@ -219,17 +226,34 @@ public class LR implements Serializable {
 		this._updatetimestamp = updatetimestamp;
 	}
 
-	public LRExpenditure getExpId() {
-		return _expId;
+	public LRExpenditure getLrexpenditureId() {
+		return _lrexpenditureId;
 	}
 
-	public void setExpId(LRExpenditure expId) {
-		this._expId = expId;
+	public void setLrexpenditureId(LRExpenditure lrexpenditureId) {
+		this._lrexpenditureId = lrexpenditureId;
 	}
 
 	
 
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
+	
+	private static final String QUERY_FOR_LR_BY_ID_SKEY =
+		LR.class.getName() + ".findLRById";
+	 public static LR findLRById(Session session, String lrNo)
+		throws HibernateException
+		{
+		 	if (lrNo == null || lrNo == null) {
+		 		return null;
+		 	}
+		 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_ID_SKEY);
+		 	qry.setString("lrNo",    lrNo);		 	
+ 
+		 	qry.setMaxResults(1);
+ 
+		 	final LR lr = (LR)(qry.uniqueResult());
+		 	return lr;
+		}
 	
 	
 	
