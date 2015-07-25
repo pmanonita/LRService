@@ -25,6 +25,7 @@ CREATE TABLE  `lr_test`.`lr` (
   `vehicleNo` varchar(20) DEFAULT NULL,
   `consignerId` int(11) DEFAULT NULL,
   `consigneeId` int(11) DEFAULT NULL,
+  `lrexpenditureId` bigint(20) DEFAULT NULL,
   `vehicleOwner` varchar(255) DEFAULT NULL,
   `billingToParty` varchar(255) DEFAULT NULL,
   `lrDate` date DEFAULT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE  `lr_test`.`lr` (
   `userName` varchar(20) NOT NULL,
   `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`lrexpenditure`;
 CREATE TABLE  `lr_test`.`lrexpenditure` (
