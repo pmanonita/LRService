@@ -2,6 +2,7 @@ package com.lr.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -27,6 +28,7 @@ public class LR implements Serializable {
 	private LRExpenditure _lrexpenditureId;
 	private Consigner _consignerId;
 	private Consignee _consigneeId;
+	private Set _otherExpenditures;
 	
 	
 	
@@ -65,6 +67,7 @@ public class LR implements Serializable {
 		_lrDate = ctrl.mLrDate();		
 		_userName = ctrl.mUserName();	
 		_lrexpenditureId = ctrl.mLrexpenditureId();
+		_otherExpenditures = ctrl.mOtherExpenditures();
 	}
 	
 	public void changeTo(Controller ctrl) {
@@ -80,6 +83,7 @@ public class LR implements Serializable {
 		_lrDate = ctrl.mLrDate();		
 		_userName = ctrl.mUserName();
 		_lrexpenditureId = ctrl.mLrexpenditureId();
+		_otherExpenditures = ctrl.mOtherExpenditures();
 		
 	}
 
@@ -115,6 +119,9 @@ public class LR implements Serializable {
 		
 		String mUserName();
 		void mUserName(String _userName);
+		
+		Set mOtherExpenditures();
+		void mOtherExpenditures(Set _otherExpenditures);
 
 		
 		
@@ -131,6 +138,7 @@ public class LR implements Serializable {
 		public void mLrDate(Date lrDate)	 			{	}
 		public void mMultiLoad(String multiLoad) 	{	}
 		public void mUserName(String userName) 	{	}		
+		public void mOtherExpenditures(Set otherExpenditures)	{	}
 	}
 
 	
@@ -232,6 +240,13 @@ public class LR implements Serializable {
 
 	public void setLrexpenditureId(LRExpenditure lrexpenditureId) {
 		this._lrexpenditureId = lrexpenditureId;
+	}
+	
+	public Set getOtherExpenditures() {
+		return _otherExpenditures;
+	}
+	public void setOtherExpenditures(Set otherExpenditures){
+		this._otherExpenditures = otherExpenditures;
 	}
 
 	

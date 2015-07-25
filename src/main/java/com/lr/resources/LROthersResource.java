@@ -23,6 +23,7 @@ import com.lr.response.AppResponse;
 import com.lr.response.ErrorMessage;
 import com.lr.response.ErrorResponse;
 import com.lr.service.LROthersService;
+import com.lr.service.LrService;
 import com.lr.service.UserService;
 
 
@@ -47,11 +48,8 @@ public class LROthersResource {
     {
 		AppResponse response    = null;
 		LROthersService lrOthersService = new LROthersService();
+		LrService lrService = new LrService();
 		
-		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);
-		
-		//validate Input
-		//lrService.validateAuthData(vehileNo);	
 		
 		//Convert View To Model object if any 
 		long llrNo = 0;
@@ -68,18 +66,31 @@ public class LROthersResource {
 			//Suppress the warning
 		}
 		
-		
-		//Send to model using service              
-		LROthers lrOthers = lrOthersService.newLROthers(llrNo,
-											iamount,
-											remarks);
-								      
-		if (lrOthers != null) {
-			response = lrOthersService.createLROthersResponse(lrOthers);			
-		} else {
-			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lrOthers. Please try again", 500);
-			response = new ErrorResponse(errorMsg);
+		LR lr = null;
+		if(lrNo!=null && !lrNo.equals("") && llrNo>0){
+			lr  = lrService.getLr(lrNo);
+			 if(null == lr) 
+		     {  
+				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
+				 response = new ErrorResponse(errorMsg);
+		     }else{
+		    	//Send to model using service              
+		 		LROthers lrOthers = lrOthersService.newLROthers(llrNo,
+		 											iamount,
+		 											remarks);
+		 								      
+		 		if (lrOthers != null) {
+		 			//lr=lrService.updateOtherExpenditureToLR(lrOthers,lr);
+		 			response = lrOthersService.createLROthersResponse(lrOthers);			
+		 		} else {
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lrOthers. Please try again", 500);
+		 			response = new ErrorResponse(errorMsg);
+		 		}
+		     }
 		}
+		
+		
+		
                		
 		return response;
     }

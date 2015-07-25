@@ -65,13 +65,6 @@ public class LROthersService {
 			
 			tx = session.beginTransaction();
 			
-			//check if user already exists
-			/*user = User.findByUserNameAndServiceKey(session, userName, serviceKey);
-			if (user != null && user.mUserName().equalsIgnoreCase(userName)) {
-				tx.rollback();
-    			session.close();    			
-    			throw new SignupException("Signup failure. User already exists");				
-			}*/
 			
 
 			LROthers.Controller ctrl = createControllerFromView(lrId,						  

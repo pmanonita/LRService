@@ -3,8 +3,10 @@ package com.lr.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -20,6 +22,7 @@ import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
 import com.lr.model.LRExpenditure;
+import com.lr.model.LROthers;
 import com.lr.model.User;
 import com.lr.response.ConsigneeListResponse;
 import com.lr.response.ConsigneeView;
@@ -83,7 +86,10 @@ public class LrService {
 			public String mUserName() {	return "";	}
 			
 			@Override
-			public LRExpenditure mLrexpenditureId()	{ return null; } 
+			public LRExpenditure mLrexpenditureId()	{ return null; }
+
+			@Override
+			public Set mOtherExpenditures() { return null; } 
 					
 			
 			
@@ -97,7 +103,8 @@ public class LrService {
 					final Consigner consigner,
 					final Consignee consignee,			  											
 					final String billingParty,
-					final LRExpenditure lrExpenditure) 
+					final LRExpenditure lrExpenditure,
+					final Set otherexpeditures) 
 	{
 		return new LR.DefaultController() {
 			
@@ -129,7 +136,12 @@ public class LrService {
 			public String mUserName() {	return "";	}
 			
 			@Override
-			public LRExpenditure mLrexpenditureId()	{ return lrExpenditure; } 
+			public LRExpenditure mLrexpenditureId()	{ return lrExpenditure; }
+
+			@Override
+			public Set mOtherExpenditures() { return null; }	
+				
+			
 					
 			
 			
@@ -239,28 +251,64 @@ public class LrService {
 												lr.getConsignerId(),
 												lr.getConsigneeId(),
 												lr.getBillingToParty(),
-												lrExpenditure);
+												lrExpenditure,
+												lr.getOtherExpenditures());
 								
 			//Update Data
 			lr.changeTo(ctrl);
 			
-			//User.Controller ctrl1 = createProxyController(User.class, User.Controller.class);
-			//user.populate(ctrl1);
-			//ctrl1.mAuthKey(authToken);
-			//user.changeTo(ctrl1);
-			//String lrNo=Long.toString(lr.getId());
+			
 			
 			session.saveOrUpdate(lr);			
 			session.flush();
-			//lr = LR.findLRById(session,lrNo);
+					
+			tx.commit();    		
 		
-			/*if (null == lr) {
-				tx.rollback();
-				session.close();    			
-				throw new AuthException("LR Not found"); 
-			}*/		
+		} catch (HibernateException e) {
+			lr = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();
+        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return lr; 
+	}
+	
+	public LR updateOtherExpenditureToLR(LROthers lrOthers,LR lr) {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
 		
-		
+	
+		try {
+			tx = session.beginTransaction();  
+			//Create Controller
+			Set lrOtherExpeditures=new HashSet();
+			if(lr.getOtherExpenditures()!=null){
+				lrOtherExpeditures = lr.getOtherExpenditures();
+			}
+			
+			lrOtherExpeditures.add(lrOthers);
+			
+			LR.Controller ctrl = CreateContoller(lr.getVehicleNo(),
+												lr.getVehicleOwner(),
+												lr.getConsignerId(),
+												lr.getConsigneeId(),
+												lr.getBillingToParty(),
+												lr.getLrexpenditureId(),
+												lrOtherExpeditures);
+								
+			//Update Data
+			lr.changeTo(ctrl);
+			
+			
+			
+			session.saveOrUpdate(lr);			
+			session.flush();
+					
 			tx.commit();    		
 		
 		} catch (HibernateException e) {

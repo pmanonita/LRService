@@ -147,8 +147,7 @@ public class LRExpenditureResource {
 		 								iloadingDetBroker,
 		 								iunloadingDetBroker
 		 								);        
-		 		if (lrExpenditure != null) {
-		 			System.out.println("LR NO "+lr.getId());
+		 		if (lrExpenditure != null) {		 			
 		 			lr=lrService.updateExpenditureToLR(lrExpenditure,lr);
 		 			if(null == lr){
 		 				ErrorMessage errorMsg = new ErrorMessage("Issue while updating LR with expediture. Please try again", 500);
