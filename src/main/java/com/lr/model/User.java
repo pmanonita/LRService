@@ -198,25 +198,25 @@ public class User implements Serializable {
     private static final String QUERY_FOR_USER_BY_SKEY_AKEY =
     		User.class.getName() + ".findByServiceAndAuthKey";
     public static User findByServiceAndAuthKey(Session session, String  serviceKey, String authKey)
-            throws HibernateException
+        throws HibernateException
     {
-        	if(null == serviceKey || null == authKey) {
-        		return null;
-        	}
-            Query qry = session.getNamedQuery(QUERY_FOR_USER_BY_SKEY_AKEY);
-            qry.setString("serviceKey",  serviceKey);
-            qry.setString("authKey",    authKey);
-            qry.setMaxResults(1);       
-            
-            final User user = (User)(qry.uniqueResult());
-        	return user;
+    	if(null == serviceKey || null == authKey) {
+    		return null;
+    	}
+        Query qry = session.getNamedQuery(QUERY_FOR_USER_BY_SKEY_AKEY);
+        qry.setString("serviceKey",  serviceKey);
+        qry.setString("authKey",    authKey);
+        qry.setMaxResults(1);       
+        
+        final User user = (User)(qry.uniqueResult());
+    	return user;
     }
 
    
     private static final String QUERY_FOR_USER_BY_NAME_SKEY =
     		User.class.getName() + ".findUserByNameAndServiceKey";
     public static User findByUserNameAndServiceKey(Session session, String userName, String serviceKey)
-    		throws HibernateException
+    	throws HibernateException
     {
     	if (serviceKey == null || userName == null) {
     		return null;
@@ -240,7 +240,21 @@ public class User implements Serializable {
         @SuppressWarnings("unchecked")
 		final List<User> userlist = qry.list();
     	return userlist;
-	}    
+	}
+	
+	private static final String QUERY_FOR_USER_BY_ID =
+    		User.class.getName() + ".findById";
+	public static User findById(Session session, Integer userId)
+		throws HibernateException
+	{
+		Query qry = session.getNamedQuery(QUERY_FOR_USER_BY_ID);
+    	qry.setInteger("id", userId);
+    	
+        qry.setMaxResults(1);
+        
+        final User user = (User)(qry.uniqueResult());
+    	return user;	
+	}
 	
 	
 }
