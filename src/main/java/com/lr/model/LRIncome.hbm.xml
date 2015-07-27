@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.LRIncome" table="lrincome">
+    <id name="id" type="long" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="lrId" type="long" unique="true" not-null="true">
+      <column name="lrId" />
+    </property> 
+    <property name="freightToBroker" type="int">
+      <column name="freightToBroker" />
+    </property>
+    <property name="extraPayToBroker" type="int">
+      <column name="extraPayToBroker" />
+    </property> 
+    <property name="loadingCharges" type="int">
+      <column name="loadingCharges" />
+    </property>
+    <property name="unloadingCharges" type="int">
+      <column name="unloadingCharges" />
+    </property>
+    <property name="loadingDetBroker" type="int">
+      <column name="loadingDetBroker" />
+    </property>
+    <property name="unloadingDetBroker" type="int">
+      <column name="unloadingDetBroker" />
+    </property>
+
+ </class>
+ 
+ 
+ 
+</hibernate-mapping>

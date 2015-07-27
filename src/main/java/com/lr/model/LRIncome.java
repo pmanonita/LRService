@@ -1,31 +1,29 @@
 package com.lr.model;
 
-import java.util.Date;
+
 
 import com.lr.exceptions.InsufficientDataException;
 
 
-public class LRExpenditure {
+public class LRIncome {
 	
 	private static final long serialVersionUID = -6779738051490200702L;
 	
 	private long   _id;
 	private long _lrId;	
 	private int _freightToBroker;	
-	private int _extraPayToBroker;
-	private int   _advance;
-	private int _balanceFreight;
+	private int _extraPayToBroker;	
 	private int _loadingCharges;
 	private int _unloadingCharges;
 	private int   _loadingDetBroker;
 	private int   _unloadingDetBroker;
 	
 	//For hibernate
-	public LRExpenditure() {
+	public LRIncome() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public LRExpenditure (Controller ctrl) {
+	public LRIncome (Controller ctrl) {
 		createFrom(ctrl);
 		
 	}
@@ -48,9 +46,7 @@ public class LRExpenditure {
 		
 		_lrId = ctrl.mLRId();	
 		_freightToBroker = ctrl.mFreightToBroker();
-		_extraPayToBroker = ctrl.mExtraPayToBroker();
-		_advance = ctrl.mAdvance();
-		_balanceFreight = ctrl.mBalanceFreight();
+		_extraPayToBroker = ctrl.mExtraPayToBroker();		
 		_loadingCharges = ctrl.mLoadingCharges();
 		_unloadingCharges = ctrl.mUnloadingCharges();
 		_loadingDetBroker = ctrl.mLoadingDetBroker();
@@ -64,9 +60,7 @@ public class LRExpenditure {
 		
 		_lrId = ctrl.mLRId();	
 		_freightToBroker = ctrl.mFreightToBroker();
-		_extraPayToBroker = ctrl.mExtraPayToBroker();
-		_advance = ctrl.mAdvance();
-		_balanceFreight = ctrl.mBalanceFreight();
+		_extraPayToBroker = ctrl.mExtraPayToBroker();		
 		_loadingCharges = ctrl.mLoadingCharges();
 		_unloadingCharges = ctrl.mUnloadingCharges();
 		_loadingDetBroker = ctrl.mLoadingDetBroker();
@@ -83,13 +77,7 @@ public class LRExpenditure {
 		void mFreightToBroker(int freightToBroker);
 
 		int mExtraPayToBroker();
-		void mExtraPayToBrokersignor(int extraPayToBroker);
-
-		int mAdvance();
-		void mAdvance(int advance);
-
-		int mBalanceFreight();
-		void mBalanceFreight(int balanceFreight);
+		void mExtraPayToBrokersignor(int extraPayToBroker);	
 		 
 		int mLoadingCharges();
 		void mLoadingCharges(int loadingCharges);
@@ -119,14 +107,7 @@ public class LRExpenditure {
 		public void mFreightToBroker(int freightToBroker) { }
 
 		@Override
-		public void mExtraPayToBrokersignor(int extraPayToBroker) { }
-		
-		
-		@Override
-		public void mAdvance(int advance) { }
-
-		@Override
-		public void mBalanceFreight(int balanceFreight) { }
+		public void mExtraPayToBrokersignor(int extraPayToBroker) { }			
 		
 
 		@Override
@@ -176,23 +157,7 @@ public class LRExpenditure {
 
 	void setExtraPayToBroker(int extraPayToBroker) {
 		this._extraPayToBroker = extraPayToBroker;
-	}
-
-	public int getAdvance() {
-		return _advance;
-	}
-
-	void setAdvance(int advance) {
-		this._advance = advance;
-	}
-
-	public int getBalanceFreight() {
-		return _balanceFreight;
-	}
-
-	void setBalanceFreight(int balanceFreight) {
-		this._balanceFreight = balanceFreight;
-	}
+	}	
 
 	public int getLoadingCharges() {
 		return _loadingCharges;

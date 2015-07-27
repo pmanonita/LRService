@@ -24,7 +24,16 @@
        class="com.lr.model.Consignee" />  
        
     <many-to-one name="lrexpenditureId" column="lrexpenditureId" unique="true"     
-       class="com.lr.model.LRExpenditure" />  
+       class="com.lr.model.LRExpenditure" />
+       
+    <many-to-one name="lrincomeId" column="lrincomeId" unique="true"     
+       class="com.lr.model.LRIncome" />
+       
+    <set name="otherExpenditures" cascade="all" lazy="false">
+         <key column="lrId"/>
+         <one-to-many class="com.lr.model.LROthers"/>
+    </set>
+         
         
     <property name="vehicleOwner" type="string">
       <column name="vehicleOwner" />

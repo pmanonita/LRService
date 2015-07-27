@@ -20,11 +20,13 @@ import com.lr.filters.LRHTTPHeaders;
 import com.lr.model.Consignee;
 import com.lr.model.LR;
 import com.lr.model.LRExpenditure;
+import com.lr.model.LRIncome;
 
 import com.lr.response.AppResponse;
 import com.lr.response.ErrorMessage;
 import com.lr.response.ErrorResponse;
 import com.lr.service.LRExpenditureService;
+import com.lr.service.LRIncomeService;
 import com.lr.service.LrService;
 
 
@@ -34,33 +36,31 @@ import com.lr.service.LrService;
  * Version 1 Services for the Scraper
  */
 @Path("/v1")
-public class LRExpenditureResource {
+public class LRIncomeResource {
 	
 		
 	//Create LRExpenditure	
 	@POST
-    @Path("/lr-service/addlrexpenditure" )
+    @Path("/lr-service/addlrincome" )
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse addlrexpenditure(
         @Context HttpHeaders httpHeaders,       
         @FormParam( "lrNo" ) String lrNo,
         @FormParam( "freightToBroker" ) String freightToBroker,
-        @FormParam( "extraPayToBroker" ) String extraPayToBroker,
-        @FormParam( "advance" ) String advance,
-        @FormParam( "balanceFreight" ) String balanceFreight,
+        @FormParam( "extraPayToBroker" ) String extraPayToBroker,       
         @FormParam( "loadingCharges" ) String loadingCharges,
 		@FormParam( "unloadingCharges" ) String unloadingCharges,
 		@FormParam( "loadingDetBroker" ) String loadingDetBroker,
 		@FormParam( "unloadingDetBroker" ) String unloadingDetBroker)		
     {
 		AppResponse response    = null;
-		LRExpenditureService lrExpenditureService = new LRExpenditureService();
+		LRIncomeService lrIncomeService = new LRIncomeService();
 		LrService lrService = new LrService();
 		
 		
 		
 		//validate Input
-		lrExpenditureService.validateAuthData(lrNo);	
+		lrIncomeService.validateAuthData(lrNo);	
 		
 		//Convert View To Model object if any 
 		long llrNo = 0;
@@ -82,23 +82,8 @@ public class LRExpenditureResource {
 			iextraPayToBroker = Integer.parseInt(extraPayToBroker);
 		} catch (NumberFormatException ex) {					
 			//Suppress the warning
-		}
+		}	
 		
-		
-		
-		int iadvance = 0;
-		try {
-			iadvance = Integer.parseInt(advance);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int ibalanceFreight = 0;
-		try {
-			ibalanceFreight = Integer.parseInt(balanceFreight);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
 		
 		int iloadingCharges = 0;
 		try {
@@ -137,23 +122,21 @@ public class LRExpenditureResource {
 				 response = new ErrorResponse(errorMsg);
 		     }else{
 		    	//Send to model using service              
-		 		LRExpenditure lrExpenditure = lrExpenditureService.newLRExpenditure(llrNo,
+		 		LRIncome lrIncome = lrIncomeService.newLRIncome(llrNo,
 		 								iferightToBroker,
-		 								iextraPayToBroker,
-		 								iadvance,
-		 								ibalanceFreight,
+		 								iextraPayToBroker,		 								
 		 								iloadingCharges,
 		 								iunloadingCharges,
 		 								iloadingDetBroker,
 		 								iunloadingDetBroker
 		 								);        
-		 		if (lrExpenditure != null) {		 			
-		 			lr=lrService.updateExpenditureToLR(lrExpenditure,lr);
+		 		if (lrIncome != null) {		 			
+		 			lr=lrService.updateIncomeToLR(lrIncome,lr);
 		 			if(null == lr){
-		 				ErrorMessage errorMsg = new ErrorMessage("Issue while updating LR with expediture. Please try again", 500);
+		 				ErrorMessage errorMsg = new ErrorMessage("Issue while updating LR with income. Please try again", 500);
 			 			response = new ErrorResponse(errorMsg);
 		 			}else{
-		 				response = lrExpenditureService.createLRExpenditureResponse(lrExpenditure);	
+		 				response = lrIncomeService.createLRIncomeResponse(lrIncome);	
 		 			}
 		 		
 		 		} else {
