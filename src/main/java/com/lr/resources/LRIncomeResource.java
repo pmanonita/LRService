@@ -29,9 +29,6 @@ import com.lr.service.LRExpenditureService;
 import com.lr.service.LRIncomeService;
 import com.lr.service.LrService;
 
-
-
-
 /*
  * Version 1 Services for the LR
  */
@@ -44,7 +41,7 @@ public class LRIncomeResource {
     @Path("/lr-service/addlrincome" )
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse addlrexpenditure(
-        @Context HttpHeaders httpHeaders,       
+        @Context HttpHeaders httpHeaders,
         @FormParam( "lrNo"               ) String lrNo,
         @FormParam( "freightToBroker"    ) String freightToBroker,
         @FormParam( "extraPayToBroker"   ) String extraPayToBroker,       

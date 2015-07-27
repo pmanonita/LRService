@@ -50,7 +50,7 @@ public class LR implements Serializable {
 	
 	private void createFrom(Controller ctrl) {
 
-		validate(ctrl);
+		//validate(ctrl);
 		
 		_transid = ctrl.mTransid();		
 		_vehicleNo = ctrl.mVehicleNo();	
@@ -67,7 +67,7 @@ public class LR implements Serializable {
 	
 	public void changeTo(Controller ctrl) {
 		
-		validate(ctrl);
+		//validate(ctrl);
 		
 		_transid = ctrl.mTransid();		
 		_vehicleNo = ctrl.mVehicleNo();	

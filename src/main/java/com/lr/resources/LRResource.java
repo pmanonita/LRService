@@ -61,8 +61,8 @@ public class LRResource {
 		@FormParam( "billingParty" ) String billingParty)		
     {
 		AppResponse response = null;
-		LrService lrService  = new LrService();
-		
+		LrService lrService  = new LrService();		
+
 		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);
 		
 		//get Consigner object
@@ -84,6 +84,7 @@ public class LRResource {
 		     }		      
 		}
               
+
     	//Send to model using service              
 		LR lr = lrService.newLR(serviceKey, vehileNo, vehicleOwner, consigner, consignee, billingParty);        
 		if (lr != null) {
@@ -91,11 +92,10 @@ public class LRResource {
 		} else {
 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
 			response = new ErrorResponse(errorMsg);
-		}	
-               		
+		}               		
 		return response;
-    }
-	
+    }	
+
 	@POST
     @Path("/lr-service/searchlr" )
     @Produces( MediaType.APPLICATION_JSON )
@@ -125,7 +125,73 @@ public class LRResource {
     	} else {
     		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LR data. Please try again", 500);
     		response = new ErrorResponse(errorMsg);
-    	}               		
+    	}
+  		
+  		return response;
+    }
+
+	//Update LR	
+	@POST
+    @Path("/lr-service/updatelr" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse updatelr(
+        @Context HttpHeaders httpHeaders, 
+        @FormParam( "lrNo" 			) 	String lrNo,
+        @FormParam( "vehileNo" 		) 	String vehileNo,
+        @FormParam( "vehicleOwner" 	) 	String vehicleOwner,
+        @FormParam( "consignerId" 	) 	String consignerId,
+        @FormParam( "consigneeId" 	) 	String consigneeId,        
+		@FormParam( "billingParty" 	) 	String billingParty)		
+    {
+		AppResponse response    = null;
+		LrService lrService = new LrService();
+		
+		lrService.validateAuthData(lrNo);		
+		
+		LR lr = null;
+		if (lrNo != null && !lrNo.equals("") ) {
+			lr  = lrService.getLr(lrNo);
+			
+			if (null == lr) {  
+				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
+				 response = new ErrorResponse(errorMsg);
+		     } else {
+		    	 
+		    	//get Consigner object
+		 		Consigner consigner = null;
+		 		Consignee consignee = null;
+		 		if (consignerId!=null && !consignerId.equals("")) {
+		 			consigner  = lrService.getConsigner(consignerId);
+		 			 if(null == consigner) {  
+		 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consigner table", 500);
+		 				 response = new ErrorResponse(errorMsg);
+		 		     }
+		 		}
+		         //get Consinee object
+		 		if (consigneeId!=null && !consigneeId.equals("")) {
+		 			consignee  = lrService.getConsignee(consigneeId);
+		 			 if(null == consignee) {  
+		 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consignee table", 500);
+		 				 response = new ErrorResponse(errorMsg);
+		 		     }		 		      
+		 		}
+		 		
+		 		lr = lrService.updateLR(vehileNo,
+		 								vehicleOwner,
+		 								consigner,
+		 								consignee,						
+		 								billingParty,
+		 								lr);
+		 		if (null == lr) {
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating the lr. Please try again", 500);
+	    			response = new ErrorResponse(errorMsg);
+	 			} else {
+	 				response = lrService.createLRResponse(lr);		
+	 			}
+		    	 
+		     }
+		}		
+
 		return response;
     }
 	
