@@ -32,9 +32,7 @@ import com.lr.service.UserService;
  * Version 1 Services for the Scraper
  */
 @Path("/v1")
-public class LROthersResource {
-	
-	
+public class LROthersResource {	
 	
 	//Create LROthers	
 	@POST
@@ -42,58 +40,43 @@ public class LROthersResource {
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse addlrothers(
         @Context HttpHeaders httpHeaders,       
-        @FormParam( "lrNo" ) String lrNo,
-        @FormParam( "amount" ) String amount,
-        @FormParam( "remarks" ) String remarks)		
+        @FormParam( "lrNo" 		) String lrNo,
+        @FormParam( "amount" 	) String amount,
+        @FormParam( "remarks" 	) String remarks)		
     {
-		AppResponse response    = null;
+		AppResponse response            = null;
 		LROthersService lrOthersService = new LROthersService();
-		LrService lrService = new LrService();
-		
-		
-		//Convert View To Model object if any 
+		LrService lrService             = new LrService();		
+
 		long llrNo = 0;
-		try {
-			llrNo = Long.parseLong(lrNo);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int iamount = 0;
-		try {
-			iamount = Integer.parseInt(amount);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
+		int iamount = 0;		
+		try {	llrNo = Long.parseLong(lrNo);		} 	catch (NumberFormatException ex) {	}			
+		try {	iamount = Integer.parseInt(amount);	} 	catch (NumberFormatException ex) {	}
 		
 		LR lr = null;
-		if(lrNo!=null && !lrNo.equals("") && llrNo>0){
+		if (lrNo !=null && !lrNo.equals("") && llrNo > 0) { 
 			lr  = lrService.getLr(lrNo);
-			 if(null == lr) 
-		     {  
+
+			if (null == lr) {  
 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
 				 response = new ErrorResponse(errorMsg);
-		     }else{
+		     } else {
 		    	//Send to model using service              
 		 		LROthers lrOthers = lrOthersService.newLROthers(llrNo,
-		 											iamount,
-		 											remarks);
+		 														iamount,
+		 														remarks);
 		 								      
 		 		if (lrOthers != null) {
-		 			//lr=lrService.updateOtherExpenditureToLR(lrOthers,lr);
 		 			response = lrOthersService.createLROthersResponse(lrOthers);			
 		 		} else {
 		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lrOthers. Please try again", 500);
 		 			response = new ErrorResponse(errorMsg);
 		 		}
 		     }
-		}
-		
-		
+		}	
 		
                		
 		return response;
     }
-	
 
 }

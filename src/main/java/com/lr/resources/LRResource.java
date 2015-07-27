@@ -1,8 +1,14 @@
 package com.lr.resources;
 
 
+import java.util.HashSet;
 import java.util.List;
 
+
+
+
+
+import java.util.Set;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -21,6 +27,9 @@ import com.lr.filters.LRHTTPHeaders;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
+import com.lr.model.LRExpenditure;
+import com.lr.model.LRIncome;
+import com.lr.model.LROthers;
 import com.lr.model.User;
 import com.lr.response.AppResponse;
 import com.lr.response.ErrorMessage;
@@ -37,8 +46,7 @@ import com.lr.service.UserService;
  * Version 1 Services for the Scraper
  */
 @Path("/v1")
-public class LRResource { 
-	
+public class LRResource {	
 		
 	//Create LR	
 	@POST
@@ -46,60 +54,78 @@ public class LRResource {
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse newlr(
         @Context HttpHeaders httpHeaders,       
-        @FormParam( "vehileNo" ) String vehileNo,
+        @FormParam( "vehileNo" )     String vehileNo,
         @FormParam( "vehicleOwner" ) String vehicleOwner,
-        @FormParam( "consignerId" ) String consignerId,
-        @FormParam( "consigneeId" ) String consigneeId,        
+        @FormParam( "consignerId" )  String consignerId,
+        @FormParam( "consigneeId" )  String consigneeId,        
 		@FormParam( "billingParty" ) String billingParty)		
     {
-		AppResponse response    = null;
-		LrService lrService = new LrService();
+		AppResponse response = null;
+		LrService lrService  = new LrService();
 		
 		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);
-		
-		//validate Input
-		//lrService.validateAuthData(vehileNo);	
 		
 		//get Consigner object
 		Consigner consigner = null;
 		Consignee consignee = null;
-		if(consignerId!=null && !consignerId.equals("")){
+		if (consignerId!=null && !consignerId.equals("")) {
 			consigner  = lrService.getConsigner(consignerId);
-			 if(null == consigner) 
-		     {  
-				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consigner table", 500);
-				 response = new ErrorResponse(errorMsg);
-		     }
+			if (null == consigner) {  
+				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consigner table", 500);
+				response = new ErrorResponse(errorMsg);
+			}
 		}
         //get Consinee object
 		if(consigneeId!=null && !consigneeId.equals("")){
 			consignee  = lrService.getConsignee(consigneeId);
-			 if(null == consignee) 
-		     {  
-				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consignee table", 500);
-				 response = new ErrorResponse(errorMsg);
-		     }
-		      
+			if(null == consignee) {  
+				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consignee table", 500);
+				response = new ErrorResponse(errorMsg);
+		     }		      
 		}
               
-        	//Send to model using service              
-    		LR lr = lrService.newLR(serviceKey,
-    								vehileNo,
-    								vehicleOwner,
-    								consigner,
-    								consignee,								
-    								billingParty
-    								);        
-    		if (lr != null) {
-    			response = lrService.createLRResponse(lr);			
-    		} else {
-    			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
-    			response = new ErrorResponse(errorMsg);
-    		}
-       
-		
-		
+    	//Send to model using service              
+		LR lr = lrService.newLR(serviceKey, vehileNo, vehicleOwner, consigner, consignee, billingParty);        
+		if (lr != null) {
+			response = lrService.createLRResponse(lr);			
+		} else {
+			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
+			response = new ErrorResponse(errorMsg);
+		}	
                		
+		return response;
+    }
+	
+	@POST
+    @Path("/lr-service/searchlr" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse searchlr(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrNo" ) String lrId)		
+    {
+		AppResponse response = null;
+		LrService lrService  = new LrService();
+		              
+       	//Send to model using service              
+  		LR lr = lrService.getLr(lrId);        
+    		
+  		if (lr != null) {
+  			//Get Exp
+  			LRExpenditure lrExp = lr.getLrexpenditureId();
+  			
+  			//Get other Exp 
+  			Set<LROthers> lrOtherExp = lr.getOtherExpenditures();
+  			
+  			//Get Income
+  			LRIncome lrIncome = lr.getLrincomeId();
+  			
+  			//To-do : Create response
+
+    					
+    	} else {
+    		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LR data. Please try again", 500);
+    		response = new ErrorResponse(errorMsg);
+    	}               		
 		return response;
     }
 	

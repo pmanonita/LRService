@@ -27,13 +27,10 @@ public class User implements Serializable {
 	private Date   _createDate;
 	
 	//For hibernate
-	public User() {
-		
-	}
+	public User() {	}
 	
 	public User (Controller ctrl) {
-		createFrom(ctrl);
-		
+		createFrom(ctrl);		
 	}
 	
 	private void validate(Controller ctrl) throws InsufficientDataException {
@@ -44,8 +41,7 @@ public class User implements Serializable {
 		{
 			errorMsg = "User name and password can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
-		}	
-		
+		}		
 	}
 	
 	private void createFrom(Controller ctrl) {

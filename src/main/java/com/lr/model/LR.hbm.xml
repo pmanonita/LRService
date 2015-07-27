@@ -58,7 +58,7 @@
  <query name="com.lr.model.LR.findLRById">
      select lr
        from com.lr.model.LR as lr
-     where lr.id = :lrNo     
+     where lr.id = :id     
  </query>
  
  

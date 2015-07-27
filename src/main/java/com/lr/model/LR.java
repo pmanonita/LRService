@@ -15,33 +15,26 @@ public class LR implements Serializable {
 
 	private static final long serialVersionUID = -6779738051490200702L;
 	
-	private long    _id;
-	private long _transid;	
-	private String _vehicleNo;
-	private String _vehicleOwner;
-	private String   _billingToParty;
-	private Date   _lrDate;	
-	private String   _multiLoad;
-	private String _userName;
-	private Date _updatetimestamp;
-	
+	private long          _id;
+	private long          _transid;	
+	private String        _vehicleNo;
+	private String         _vehicleOwner;
+	private String        _billingToParty;
+	private Date          _lrDate;	
+	private String        _multiLoad;
+	private String        _userName;
+	private Date          _updatetimestamp;	
 	private LRExpenditure _lrexpenditureId;
-	private LRIncome _lrincomeId;
-	private Consigner _consignerId;
-	private Consignee _consigneeId;
-	private Set _otherExpenditures;
-	
-	
-	
+	private LRIncome      _lrincomeId;
+	private Consigner     _consignerId;
+	private Consignee     _consigneeId;
+	private Set<LROthers> _otherExpenditures;
 	
 	//For hibernate
-	public LR() {
-		
-	}
+	public LR() {	}
 	
 	public LR (Controller ctrl) {
-		createFrom(ctrl);
-		
+		createFrom(ctrl);		
 	}
 	
 	private void validate(Controller ctrl) throws InsufficientDataException {
@@ -108,8 +101,7 @@ public class LR implements Serializable {
 		void mLrexpenditureId(LRExpenditure _lrexpenditureId);
 		
 		LRIncome mLrincomeId();
-		void mLreincomeId(LRIncome _lrincomeId);
-		
+		void mLreincomeId(LRIncome _lrincomeId);	
 
 		String mVehicleOwner();
 		void mVehicleOwner(String _vehicleOwner);
@@ -126,10 +118,8 @@ public class LR implements Serializable {
 		String mUserName();
 		void mUserName(String _userName);
 		
-		Set mOtherExpenditures();
-		void mOtherExpenditures(Set _otherExpenditures);
-
-		
+		Set<LROthers> mOtherExpenditures();
+		void mOtherExpenditures(Set<LROthers> _otherExpenditures);
 		
 	}
 	
@@ -149,7 +139,7 @@ public class LR implements Serializable {
 	}
 
 	
-	//gerrter and setter
+	//getter and setter
 	
 	public long getId() {
 		return _id;
@@ -229,9 +219,7 @@ public class LR implements Serializable {
 
 	public void setUserName(String userName) {
 		this._userName = userName;
-	}
-	
-	
+	}	
 
 	public Date getUpdatetimestamp() {
 		return _updatetimestamp;
@@ -241,6 +229,7 @@ public class LR implements Serializable {
 		this._updatetimestamp = updatetimestamp;
 	}
 
+	//To-do : Method name shouldn't have Id in it. Confusing. It should be "getLRExpenditure" 
 	public LRExpenditure getLrexpenditureId() {
 		return _lrexpenditureId;
 	}
@@ -257,38 +246,32 @@ public class LR implements Serializable {
 		this._lrincomeId = lrincomeId;
 	}
 	
-	public Set getOtherExpenditures() {
+	public Set<LROthers> getOtherExpenditures() {
 		return _otherExpenditures;
 	}
-	public void setOtherExpenditures(Set otherExpenditures){
+	public void setOtherExpenditures(Set<LROthers> otherExpenditures){
 		this._otherExpenditures = otherExpenditures;
-	}
-
-	
+	}	
 
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
 	
+	
 	private static final String QUERY_FOR_LR_BY_ID_SKEY =
-		LR.class.getName() + ".findLRById";
-	 public static LR findLRById(Session session, String lrNo)
+		LR.class.getName() + ".findLRById";	
+	public static LR findLRById(Session session, Long id)
 		throws HibernateException
-		{
-		 	if (lrNo == null || lrNo == null) {
-		 		return null;
-		 	}
-		 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_ID_SKEY);
-		 	qry.setString("lrNo",    lrNo);		 	
+	{
+	 	if (id == null || id == 0L) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_ID_SKEY);
+	 	qry.setLong("id", id);		 	
  
-		 	qry.setMaxResults(1);
+	 	qry.setMaxResults(1);
  
-		 	final LR lr = (LR)(qry.uniqueResult());
-		 	return lr;
-		}
-	
-	
-	
-	
-	
-	
+	 	final LR lr = (LR)(qry.uniqueResult());
+	 	return lr;
+	}
 	
 }

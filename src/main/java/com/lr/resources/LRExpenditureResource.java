@@ -28,8 +28,6 @@ import com.lr.service.LRExpenditureService;
 import com.lr.service.LrService;
 
 
-
-
 /*
  * Version 1 Services for the Scraper
  */
@@ -44,130 +42,73 @@ public class LRExpenditureResource {
     public AppResponse addlrexpenditure(
         @Context HttpHeaders httpHeaders,       
         @FormParam( "lrNo" ) String lrNo,
-        @FormParam( "freightToBroker" ) String freightToBroker,
-        @FormParam( "extraPayToBroker" ) String extraPayToBroker,
-        @FormParam( "advance" ) String advance,
-        @FormParam( "balanceFreight" ) String balanceFreight,
-        @FormParam( "loadingCharges" ) String loadingCharges,
-		@FormParam( "unloadingCharges" ) String unloadingCharges,
-		@FormParam( "loadingDetBroker" ) String loadingDetBroker,
-		@FormParam( "unloadingDetBroker" ) String unloadingDetBroker)		
+        @FormParam( "freightToBroker" 	 ) 	String freightToBroker,
+        @FormParam( "extraPayToBroker" 	 ) 	String extraPayToBroker,
+        @FormParam( "advance" 			 )	String advance,
+        @FormParam( "balanceFreight" 	 ) 	String balanceFreight,
+        @FormParam( "loadingCharges" 	 ) 	String loadingCharges,
+		@FormParam( "unloadingCharges" 	 ) 	String unloadingCharges,
+		@FormParam( "loadingDetBroker" 	 ) 	String loadingDetBroker,
+		@FormParam( "unloadingDetBroker" )  String unloadingDetBroker)		
     {
-		AppResponse response    = null;
+		AppResponse response                      = null;
 		LRExpenditureService lrExpenditureService = new LRExpenditureService();
-		LrService lrService = new LrService();
-		
-		
+		LrService lrService                       = new LrService();
 		
 		//validate Input
 		lrExpenditureService.validateAuthData(lrNo);	
 		
 		//Convert View To Model object if any 
 		long llrNo = 0;
-		try {
-			llrNo = Long.parseLong(lrNo);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
+		int iferightToBroker = 0, iextraPayToBroker = 0, iadvance = 0, ibalanceFreight = 0, iloadingCharges = 0;
+		int iloadingDetBroker = 0, iunloadingCharges = 0, iunloadingDetBroker = 0;
 		
-		int iferightToBroker = 0;
-		try {
-			iferightToBroker = Integer.parseInt(freightToBroker);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int iextraPayToBroker = 0;
-		try {
-			iextraPayToBroker = Integer.parseInt(extraPayToBroker);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		
-		
-		int iadvance = 0;
-		try {
-			iadvance = Integer.parseInt(advance);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int ibalanceFreight = 0;
-		try {
-			ibalanceFreight = Integer.parseInt(balanceFreight);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int iloadingCharges = 0;
-		try {
-			iloadingCharges = Integer.parseInt(loadingCharges);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int iunloadingCharges = 0;
-		try {
-			iunloadingCharges = Integer.parseInt(unloadingCharges);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int iloadingDetBroker = 0;
-		try {
-			iloadingDetBroker = Integer.parseInt(loadingDetBroker);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
-		
-		int iunloadingDetBroker = 0;
-		try {
-			iunloadingDetBroker = Integer.parseInt(unloadingDetBroker);
-		} catch (NumberFormatException ex) {					
-			//Suppress the warning
-		}
+		try {	llrNo 			  = Long.parseLong(lrNo);					} 	catch (NumberFormatException ex) {	}		
+		try {	iferightToBroker  = Integer.parseInt(freightToBroker);		} 	catch (NumberFormatException ex) {	}				
+		try {	iextraPayToBroker = Integer.parseInt(extraPayToBroker);		} 	catch (NumberFormatException ex) {	}
+		try {	iadvance 		  = Integer.parseInt(advance);				} 	catch (NumberFormatException ex) {	}		
+		try {	ibalanceFreight   = Integer.parseInt(balanceFreight);		} 	catch (NumberFormatException ex) {	}		
+		try {	iloadingCharges   = Integer.parseInt(loadingCharges);		} 	catch (NumberFormatException ex) {	}
+		try {	iunloadingCharges = Integer.parseInt(unloadingCharges);		} 	catch (NumberFormatException ex) {	}
+		try {	iloadingDetBroker = Integer.parseInt(loadingDetBroker);		} 	catch (NumberFormatException ex) {	}			
+		try {	iunloadingDetBroker = Integer.parseInt(unloadingDetBroker);	} 	catch (NumberFormatException ex) {	}
 		
 		LR lr = null;
-		if(lrNo!=null && !lrNo.equals("") && llrNo>0){
+		if (lrNo!=null && !lrNo.equals("") && llrNo > 0) {
 			lr  = lrService.getLr(lrNo);
-			 if(null == lr) 
-		     {  
+
+			if (null == lr) {  
 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
 				 response = new ErrorResponse(errorMsg);
 		     }else{
 		    	//Send to model using service              
 		 		LRExpenditure lrExpenditure = lrExpenditureService.newLRExpenditure(llrNo,
-		 								iferightToBroker,
-		 								iextraPayToBroker,
-		 								iadvance,
-		 								ibalanceFreight,
-		 								iloadingCharges,
-		 								iunloadingCharges,
-		 								iloadingDetBroker,
-		 								iunloadingDetBroker
-		 								);        
+		 																			iferightToBroker,
+		 																			iextraPayToBroker,
+		 																			iadvance,
+		 																			ibalanceFreight,
+		 																			iloadingCharges,
+		 																			iunloadingCharges,
+		 																			iloadingDetBroker,
+		 																			iunloadingDetBroker);        
 		 		if (lrExpenditure != null) {		 			
 		 			lr=lrService.updateExpenditureToLR(lrExpenditure,lr);
-		 			if(null == lr){
+		 			if (null == lr) {
 		 				ErrorMessage errorMsg = new ErrorMessage("Issue while updating LR with expediture. Please try again", 500);
 			 			response = new ErrorResponse(errorMsg);
-		 			}else{
+		 			} else {
 		 				response = lrExpenditureService.createLRExpenditureResponse(lrExpenditure);	
 		 			}
 		 		
 		 		} else {
 		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
 		 			response = new ErrorResponse(errorMsg);
-		 		}
-		             
+		 		}            
 		    	 
-		     }
-		}	
-		
+		    }
+		}
 		   		
 		return response;
-    }
-	
+    }	
 
 }

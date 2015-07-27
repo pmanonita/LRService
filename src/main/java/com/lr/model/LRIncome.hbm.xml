@@ -30,9 +30,5 @@
     <property name="unloadingDetBroker" type="int">
       <column name="unloadingDetBroker" />
     </property>
-
- </class>
- 
- 
- 
+ </class> 
 </hibernate-mapping>

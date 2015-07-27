@@ -360,7 +360,6 @@ public class UserService {
 	public User editUser(final String userId, final String password,
 						 final String firstName, final String lastName, final String email,
 						 final Long mobile, final String role )
-		throws AuthException
 	{	
 		if ( userId == null || userId.equals("") ) return null;
 		
