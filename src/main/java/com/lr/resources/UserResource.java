@@ -79,6 +79,41 @@ public class UserResource {
 		return response;
     }
 	
+	@POST
+    @Path("/user-service/edituser" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse editUser(
+        @Context HttpHeaders httpHeaders,
+        @FormParam( "userId" ) String userId,
+        @FormParam( "password" ) String password,
+        @FormParam( "firstName" ) String firstName,
+        @FormParam( "lastName" ) String lastName,
+        @FormParam( "email" ) String email,
+        @FormParam( "mobile" ) String mobile,
+        @FormParam( "role" ) String role)
+    {
+		AppResponse response    = null;
+		UserService uService = new UserService();		
+
+		Long lmobile = 0L;
+		try {
+		    lmobile = Long.parseLong(mobile);
+		} catch (NumberFormatException ex) {	}
+		
+		//Send to model using service              
+		User user = uService.editUser(userId, password,
+        							  firstName, lastName, email,
+        							  lmobile, role);        
+		if (user != null) {
+			response = uService.createUserResponse(user);			
+		} else {
+			ErrorMessage errorMsg = new ErrorMessage("Issue while editing user info. Please try again", 500);
+			response = new ErrorResponse(errorMsg);
+		}
+               		
+		return response;
+    }
+	
 	@GET
     @Path("/user-service/listuser" )
     @Produces( MediaType.APPLICATION_JSON )

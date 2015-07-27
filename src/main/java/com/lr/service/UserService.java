@@ -159,12 +159,9 @@ public class UserService {
     			tx.rollback();
     			session.close();    			
     			throw new AuthException("Authentication failure. User doesn't exist"); 
-    		}
-    		
+    		}    		
     		if ( null != user) {
-
-    			//Check password
-    			
+    			//Check password    			
     			//Wrong password
     			if (null == user.getPassword() 
     					|| (null != user.getPassword()
@@ -174,8 +171,7 @@ public class UserService {
         			session.close();
         			System.err.println("Authentication failure. Username and password doesn't match");
     				throw new AuthException("Authentication failure. Username and password doesn't match");
-    			}
-    			
+    			}    			
     			//Correct Password
     			if(null != user.getPassword() 
     					&& (user.getPassword().equals(password)))
@@ -204,15 +200,8 @@ public class UserService {
     					//Create Controller
     					User.Controller ctrl = CreateContoller(uName,sKey,role,pass,mobile,lName,fName,
     														   email,cDate,authKey);
-											
     					//Update Data
-						user.changeTo(ctrl);
-						
-						//User.Controller ctrl1 = createProxyController(User.class, User.Controller.class);
-						//user.populate(ctrl1);
-						//ctrl1.mAuthKey(authToken);
-						//user.changeTo(ctrl1);
-						
+						user.changeTo(ctrl);					
 						session.save(user);			
 						session.flush();
 						
@@ -256,7 +245,6 @@ public class UserService {
     			System.err.println("ERROR ERROR : User not found");
     			throw new GeneralSecurityException( "Invalid service key and authorization token match." );
     		} else {
-
     			//Get existing data    					
 				final String uName  = user.getUserName();
 				final String pass   = user.getPassword();
@@ -274,8 +262,7 @@ public class UserService {
 				//Create Controller
 				User.Controller ctrl = CreateContoller(uName,sKey,role,pass,mobile,lName,fName,
 													   email,cDate,authKey);
-				user.changeTo(ctrl);
-    			
+				user.changeTo(ctrl);    			
     			session.save(user);			
     			session.flush();
     			
@@ -368,5 +355,56 @@ public class UserService {
 		UserListResponse response = new UserListResponse(lUserView);
 		return response;
 	}
+	
+	//Edit user
+	public User editUser(final String userId, final String password,
+						 final String firstName, final String lastName, final String email,
+						 final Long mobile, final String role )
+		throws AuthException
+	{	
+		if ( userId == null || userId.equals("") ) return null;
+		
+		Integer uId = null;		
+		try {	uId = Integer.parseInt(userId);	}
+		catch (NumberFormatException ex) { return null;}
+		
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+    	Transaction tx   = null;
+    	User user        = null;
+    	
+    	try {
+    		tx = session.beginTransaction();        	
+    		user = User.findById(session, uId);    		
+    		if (null == user) {
+    			tx.rollback();
+    			session.close();    			
+    			return null; 
+    		}			
+			//Get existing data that can't be changed from edit screen
+			final String uName  = user.getUserName();			    					
+			final String sKey   = user.getServiceKey();			
+			final Date   cDate  = user.getCreateDate();			
+		
+			//Create Controller
+			User.Controller ctrl = CreateContoller(uName,sKey,role,password,mobile,lastName,firstName,
+												   email,cDate,null);
+			//Update Data
+			user.changeTo(ctrl);			
+			session.save(user);			
+			session.flush();    		
+    		tx.commit();    		
+    		
+    	} catch (HibernateException e) {
+    		user = null;
+            if (tx != null) tx.rollback();
+            e.printStackTrace();            
+        } finally {
+        	if (session.isOpen()) {
+        		session.close();
+        	}
+        }
+    	
+    	return user;        
+    }
 	
 }
