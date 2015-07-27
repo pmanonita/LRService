@@ -22,6 +22,7 @@ import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
 import com.lr.model.LRExpenditure;
+import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
 import com.lr.model.User;
 import com.lr.response.ConsigneeListResponse;
@@ -87,6 +88,9 @@ public class LrService {
 			
 			@Override
 			public LRExpenditure mLrexpenditureId()	{ return null; }
+			
+			@Override
+			public LRIncome mLrincomeId()	{ return null; }
 
 			@Override
 			public Set mOtherExpenditures() { return null; } 
@@ -104,6 +108,7 @@ public class LrService {
 					final Consignee consignee,			  											
 					final String billingParty,
 					final LRExpenditure lrExpenditure,
+					final LRIncome lrIncome,
 					final Set otherexpeditures) 
 	{
 		return new LR.DefaultController() {
@@ -137,6 +142,9 @@ public class LrService {
 			
 			@Override
 			public LRExpenditure mLrexpenditureId()	{ return lrExpenditure; }
+			
+			@Override
+			public LRIncome mLrincomeId()	{ return lrIncome; }
 
 			@Override
 			public Set mOtherExpenditures() { return null; }	
@@ -252,6 +260,48 @@ public class LrService {
 												lr.getConsigneeId(),
 												lr.getBillingToParty(),
 												lrExpenditure,
+												lr.getLrincomeId(),
+												lr.getOtherExpenditures());
+								
+			//Update Data
+			lr.changeTo(ctrl);
+			
+			
+			
+			session.saveOrUpdate(lr);			
+			session.flush();
+					
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lr = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();
+        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return lr; 
+	}
+	
+	public LR updateIncomeToLR(LRIncome lrIncome,LR lr) {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
+		
+	
+		try {
+			tx = session.beginTransaction();  
+			//Create Controller
+			LR.Controller ctrl = CreateContoller(lr.getVehicleNo(),
+												lr.getVehicleOwner(),
+												lr.getConsignerId(),
+												lr.getConsigneeId(),
+												lr.getBillingToParty(),
+												lr.getLrexpenditureId(),
+												lrIncome,
 												lr.getOtherExpenditures());
 								
 			//Update Data
@@ -299,6 +349,7 @@ public class LrService {
 												lr.getConsigneeId(),
 												lr.getBillingToParty(),
 												lr.getLrexpenditureId(),
+												lr.getLrincomeId(),
 												lrOtherExpeditures);
 								
 			//Update Data

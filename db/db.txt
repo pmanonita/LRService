@@ -26,6 +26,7 @@ CREATE TABLE  `lr_test`.`lr` (
   `consignerId` int(11) DEFAULT NULL,
   `consigneeId` int(11) DEFAULT NULL,
   `lrexpenditureId` bigint(20) DEFAULT NULL,
+  `lrincomeId` bigint(20) DEFAULT NULL,
   `vehicleOwner` varchar(255) DEFAULT NULL,
   `billingToParty` varchar(255) DEFAULT NULL,
   `lrDate` date DEFAULT NULL,
@@ -85,6 +86,20 @@ CREATE TABLE  `lr_test`.`consignee` (
   UNIQUE KEY `consigneeCode` (`consigneeCode`),
   UNIQUE KEY `consigneeName` (`consigneeName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`lrincome`;
+CREATE TABLE  `lr_test`.`lrincome` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrId` bigint(20) NOT NULL,
+  `freightToBroker` int(11) DEFAULT NULL,
+  `extraPayToBroker` int(11) DEFAULT NULL,  
+  `loadingCharges` int(11) DEFAULT NULL,
+  `unloadingCharges` int(11) DEFAULT NULL,
+  `loadingDetBroker` int(11) DEFAULT NULL,
+  `unloadingDetBroker` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `lrId` (`lrId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 SELECT * FROM `user` u;
 insert into user(username,password,servicekey,role,createdate,mobile) values ('praja','praja','824bb1e8-de0c-401c-9f83-8b1d18a0ca9d','admin','2015/07/23',6777788888);

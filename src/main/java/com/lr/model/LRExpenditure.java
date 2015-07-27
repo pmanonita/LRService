@@ -3,7 +3,7 @@ package com.lr.model;
 import java.util.Date;
 
 import com.lr.exceptions.InsufficientDataException;
-import com.lr.model.LR.Controller;
+
 
 public class LRExpenditure {
 	

@@ -26,6 +26,7 @@ public class LR implements Serializable {
 	private Date _updatetimestamp;
 	
 	private LRExpenditure _lrexpenditureId;
+	private LRIncome _lrincomeId;
 	private Consigner _consignerId;
 	private Consignee _consigneeId;
 	private Set _otherExpenditures;
@@ -67,6 +68,7 @@ public class LR implements Serializable {
 		_lrDate = ctrl.mLrDate();		
 		_userName = ctrl.mUserName();	
 		_lrexpenditureId = ctrl.mLrexpenditureId();
+		_lrincomeId = ctrl.mLrincomeId();
 		_otherExpenditures = ctrl.mOtherExpenditures();
 	}
 	
@@ -83,6 +85,7 @@ public class LR implements Serializable {
 		_lrDate = ctrl.mLrDate();		
 		_userName = ctrl.mUserName();
 		_lrexpenditureId = ctrl.mLrexpenditureId();
+		_lrincomeId = ctrl.mLrincomeId();
 		_otherExpenditures = ctrl.mOtherExpenditures();
 		
 	}
@@ -103,6 +106,9 @@ public class LR implements Serializable {
 		
 		LRExpenditure mLrexpenditureId();
 		void mLrexpenditureId(LRExpenditure _lrexpenditureId);
+		
+		LRIncome mLrincomeId();
+		void mLreincomeId(LRIncome _lrincomeId);
 		
 
 		String mVehicleOwner();
@@ -133,6 +139,7 @@ public class LR implements Serializable {
 		public void mConsignerId(Consigner consignerId)	{	}
 		public void mConsigneeId(Consignee consigneeId) 		{	}	
 		public void mLrexpenditureId(LRExpenditure lrexpenditureId) 		{	}	
+		public void mLreincomeId(LRIncome lrincomeId) {	}
 		public void mVehicleOwner(String vehicleOwner) 	{	}
 		public void mBillingToParty(String billingToParty) 		{	}
 		public void mLrDate(Date lrDate)	 			{	}
@@ -240,6 +247,14 @@ public class LR implements Serializable {
 
 	public void setLrexpenditureId(LRExpenditure lrexpenditureId) {
 		this._lrexpenditureId = lrexpenditureId;
+	}
+	
+	public LRIncome getLrincomeId() {
+		return _lrincomeId;
+	}
+
+	public void setLrincomeId(LRIncome lrincomeId) {
+		this._lrincomeId = lrincomeId;
 	}
 	
 	public Set getOtherExpenditures() {
