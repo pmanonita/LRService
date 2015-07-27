@@ -38,13 +38,13 @@ public class LrService {
 	//private final static int errorCode   = 0;
 	
 	//view level validation
-	public void validateAuthData(String vehicleNo)
+	public void validateAuthData(String lrNo)
 		throws InsufficientDataException
 	{
 		String errorMsg = "";
-		if (null != vehicleNo && vehicleNo.equals("")) 
+		if (null != lrNo && lrNo.equals("")) 
 		{
-			errorMsg = "Vehicle Number can't be null or empty";
+			errorMsg = "LR Number can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
 		}		
 	}
@@ -158,8 +158,7 @@ public class LrService {
 	
 	
 	
-	public LR newLR(final String serviceKey,						  
-						  final String vehileNo,
+	public LR newLR(final String vehileNo,
 						  final String vehicleOwner,
 						  final Consigner consigner,
 						  final Consignee consignee,						  
@@ -260,6 +259,52 @@ public class LrService {
 												lr.getConsigneeId(),
 												lr.getBillingToParty(),
 												lrExpenditure,
+												lr.getLrincomeId(),
+												lr.getOtherExpenditures());
+								
+			//Update Data
+			lr.changeTo(ctrl);
+			
+			
+			
+			session.saveOrUpdate(lr);			
+			session.flush();
+					
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lr = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();
+        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return lr; 
+	}
+	
+	public LR updateLR(final String vehileNo,
+			  final String vehicleOwner,
+			  final Consigner consigner,
+			  final Consignee consignee,						  
+			  final String billingParty,
+			  LR lr) {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
+		
+	
+		try {
+			tx = session.beginTransaction();  
+			//Create Controller
+			LR.Controller ctrl = CreateContoller(vehileNo,
+												 vehicleOwner,
+												 consigner,
+												 consignee,
+												 billingParty,
+												lr.getLrexpenditureId(),
 												lr.getLrincomeId(),
 												lr.getOtherExpenditures());
 								

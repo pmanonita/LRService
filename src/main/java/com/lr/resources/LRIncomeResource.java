@@ -46,12 +46,12 @@ public class LRIncomeResource {
     public AppResponse addlrexpenditure(
         @Context HttpHeaders httpHeaders,       
         @FormParam( "lrNo" ) String lrNo,
-        @FormParam( "freightToBroker" ) String freightToBroker,
-        @FormParam( "extraPayToBroker" ) String extraPayToBroker,       
-        @FormParam( "loadingCharges" ) String loadingCharges,
-		@FormParam( "unloadingCharges" ) String unloadingCharges,
-		@FormParam( "loadingDetBroker" ) String loadingDetBroker,
-		@FormParam( "unloadingDetBroker" ) String unloadingDetBroker)		
+        @FormParam( "freightToBrokerBilling" ) String freightToBroker,
+        @FormParam( "extraPayToBrokerBilling" ) String extraPayToBroker,       
+        @FormParam( "loadingChargesBilling" ) String loadingCharges,
+		@FormParam( "unloadingChargesBilling" ) String unloadingCharges,
+		@FormParam( "loadingDetBrokerBilling" ) String loadingDetBroker,
+		@FormParam( "unloadingDetBrokerBilling" ) String unloadingDetBroker)		
     {
 		AppResponse response    = null;
 		LRIncomeService lrIncomeService = new LRIncomeService();
