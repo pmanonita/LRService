@@ -40,76 +40,52 @@ public class LRIncomeService {
 	}
 	
 	private LRIncome.DefaultController createControllerFromView(final long lrId,						  
-			  											final int freightToBroker,
-			  											final int extraPayToBroker,			  											
-			  											final int loadingCharges,
-			  											final int unloadingCharges,
-			  											final int loadingDetBroker,
-			  											final int unloadingDetBroker) 
+			  													final int freightToBroker,
+			  													final int extraPayToBroker,			  											
+			  													final int loadingCharges,
+			  													final int unloadingCharges,
+			  													final int loadingDetBroker,
+			  													final int unloadingDetBroker) 
 	{
 		
-		return new LRIncome.DefaultController() {
+		return new LRIncome.DefaultController() {		
 			
-			
-			public long mLRId()	{return lrId;}
-			
-
-			public int mFreightToBroker()	{return freightToBroker; }
-			
-
-			public int mExtraPayToBroker()	{return extraPayToBroker; }	
-			
-			 
-			public int mLoadingCharges()	{return loadingCharges; }
-			
-
-			public int mUnloadingCharges(){ return unloadingCharges; }
-			
-			public int mLoadingDetBroker(){ return loadingDetBroker; }
-		
-
-			public int mUnloadingDetBroker(){ return unloadingDetBroker;}
-			
-			
-			
+			public long mLRId()					{	return lrId;				}
+			public int  mFreightToBroker()		{	return freightToBroker; 	}			
+			public int  mExtraPayToBroker()		{ 	return extraPayToBroker; 	}
+			public int  mLoadingCharges()		{ 	return loadingCharges; 		}
+			public int  mUnloadingCharges()		{ 	return unloadingCharges; 	}
+			public int  mLoadingDetBroker()		{ 	return loadingDetBroker; 	}
+			public int  mUnloadingDetBroker()	{ 	return unloadingDetBroker;	}			
 		};
 	}
 	
 	public LRIncome newLRIncome(final long lrId,						  
-					final int freightToBroker,
-					final int extraPayToBroker,					
-					final int loadingCharges,
-					final int unloadingCharges,
-					final int loadingDetBroker,
-					final int unloadingDetBroker)
+								final int freightToBroker,
+								final int extraPayToBroker,					
+								final int loadingCharges,
+								final int unloadingCharges,
+								final int loadingDetBroker,
+								final int unloadingDetBroker)
 	{
-		//validateAuthData(userName, password);
+
 		
 		//Get hibernate session manager
-		Session session = HibernateSessionManager.getSessionFactory().openSession();
-		Transaction tx  = null;
-		LRIncome lrIncome       = null;
+		Session session   = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx    = null;
+		LRIncome lrIncome = null;
 		
 		try {
 			
 			tx = session.beginTransaction();
 			
-			//check if user already exists
-			/*user = User.findByUserNameAndServiceKey(session, userName, serviceKey);
-			if (user != null && user.mUserName().equalsIgnoreCase(userName)) {
-				tx.rollback();
-    			session.close();    			
-    			throw new SignupException("Signup failure. User already exists");				
-			}*/
-			
-
 			LRIncome.Controller ctrl = createControllerFromView(lrId,						  
-															freightToBroker,
-															extraPayToBroker,															
-															loadingCharges,
-															unloadingCharges,
-															loadingDetBroker,
-															unloadingDetBroker);
+																freightToBroker,
+																extraPayToBroker,															
+																loadingCharges,
+																unloadingCharges,
+																loadingDetBroker,
+																unloadingDetBroker);
 						
 			//Create user object using controller
 			lrIncome = new LRIncome(ctrl);
@@ -124,7 +100,9 @@ public class LRIncomeService {
 			if (tx != null) 	{ tx.rollback(); }
 			ex.printStackTrace();			
 		} finally {
-			session.close();
+			if (session.isOpen()) {
+        		session.close();
+        	} 
 		}
 		
 		return lrIncome;

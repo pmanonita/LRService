@@ -1,14 +1,13 @@
 package com.lr.service;
 
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.InsufficientDataException;
-
 import com.lr.model.LROthers;
-
 import com.lr.response.LROthersView;
 import com.lr.response.LROthersResponse;
 
@@ -34,42 +33,24 @@ public class LROthersService {
 			  											final String remarks) 
 	{
 		
-		return new LROthers.DefaultController() {
-			
-			
-			public long mLRId()	{return lrId;}
-			
-
-			public int mAmount()	{return amount; }
-			
-
-			public String mRemarks()	{return remarks; }
-			
-			
-			
+		return new LROthers.DefaultController() {			
+			public long mLRId()			{	return lrId;	}
+			public int mAmount()		{	return amount; 	}
+			public String mRemarks()	{	return remarks; }		
 		};
 	}
 	
-	public LROthers newLROthers(final long lrId,						  
-					final int amount,
-					final String remarks)
-	{
-		//validateAuthData(userName, password);
-		
+	public LROthers newLROthers(final long lrId, final int amount, final String remarks) {		
 		//Get hibernate session manager
-		Session session = HibernateSessionManager.getSessionFactory().openSession();
-		Transaction tx  = null;
-		LROthers lrOthers       = null;
+		Session session   = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx    = null;
+		LROthers lrOthers = null;
 		
 		try {
 			
-			tx = session.beginTransaction();
-			
-			
+			tx = session.beginTransaction();			
 
-			LROthers.Controller ctrl = createControllerFromView(lrId,						  
-															amount,
-															remarks);
+			LROthers.Controller ctrl = createControllerFromView(lrId, amount, remarks);
 						
 			//Create user object using controller
 			lrOthers = new LROthers(ctrl);
@@ -79,27 +60,21 @@ public class LROthersService {
 			
 			tx.commit();		
 
-		} catch(RuntimeException  ex) {
+		} catch(HibernateException  ex) {
 			lrOthers = null;
 			if (tx != null) 	{ tx.rollback(); }
 			ex.printStackTrace();			
 		} finally {
-			session.close();
+			if (session.isOpen()) {
+        		session.close();
+        	} 
 		}
 		
 		return lrOthers;
-	}
-	
-	
-	
-	
+	}	
 
-	
-
-	public LROthersResponse createLROthersResponse(LROthers lrOthers) 
-	{
+	public LROthersResponse createLROthersResponse(LROthers lrOthers) {		
 		
-		/** User data visible to UI **/		
 		LROthersView lrOthersView = new LROthersView();
 		lrOthersView.setId(lrOthers.getId());
 		lrOthersView.setLrId(lrOthers.getLrId());

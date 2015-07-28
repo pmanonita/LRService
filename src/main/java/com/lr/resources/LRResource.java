@@ -75,7 +75,7 @@ public class LRResource {
 				response = new ErrorResponse(errorMsg);
 			}
 		}
-        //get Consinee object
+        //get Consignee object
 		if(consigneeId!=null && !consigneeId.equals("")){
 			consignee  = lrService.getConsignee(consigneeId);
 			if(null == consignee) {  
@@ -107,21 +107,11 @@ public class LRResource {
 		LrService lrService  = new LrService();
 		              
        	//Send to model using service              
-  		LR lr = lrService.getLr(lrId);        
+  		LR lr = lrService.getLr(lrId);
     		
-  		if (lr != null) {
-  			//Get Exp
-  			LRExpenditure lrExp = lr.getLrexpenditureId();
-  			
-  			//Get other Exp 
-  			Set<LROthers> lrOtherExp = lr.getOtherExpenditures();
-  			
-  			//Get Income
-  			LRIncome lrIncome = lr.getLrincomeId();
-  			
+  		if (lr != null) {  			
   			//To-do : Create response
-
-    					
+  			response = lrService.createLRSearchResponse(lr);    					
     	} else {
     		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LR data. Please try again", 500);
     		response = new ErrorResponse(errorMsg);

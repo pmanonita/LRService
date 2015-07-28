@@ -12,6 +12,11 @@ import java.util.UUID;
 
 
 
+
+
+
+
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -27,11 +32,16 @@ import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
 import com.lr.model.User;
+import com.lr.response.AppResponse;
 import com.lr.response.ConsigneeListResponse;
 import com.lr.response.ConsigneeView;
 import com.lr.response.ConsignerListResponse;
 import com.lr.response.ConsignerView;
+import com.lr.response.LRExpeditureView;
+import com.lr.response.LRIncomeView;
+import com.lr.response.LROthersView;
 import com.lr.response.LRResponse;
+import com.lr.response.LRSearchResponse;
 import com.lr.response.LRView;
 
 
@@ -477,7 +487,7 @@ public class LrService {
 		lrView.setConsignee(lr.getConsigneeId());		
 		lrView.setBillingParty(lr.getBillingToParty());		
 		
-		LRResponse response = new LRResponse(lrView);		
+		LRResponse response = new LRResponse(lrView);	
 		
 		return response;
 	}
@@ -513,6 +523,72 @@ public class LrService {
 			}			
 		}
 		ConsigneeListResponse response = new ConsigneeListResponse(lConsigneeView);
+		return response;
+	}
+
+	public AppResponse createLRSearchResponse(LR lr) {
+		
+		LRView lrView                      = null;
+		LRExpeditureView lrExpenditureView = null;
+		LROthersView lrOthersView          = null;
+		LRIncomeView lrIncomeView		   = null;
+
+		//LR		
+		if (lr != null) {
+			lrView = new LRView();
+			lrView.setId(lr.getId());
+			lrView.setVehicleNo(lr.getVehicleNo());
+			lrView.setVehicleOwner(lr.getVehicleOwner());
+			lrView.setConsigner(lr.getConsignerId());
+			lrView.setConsignee(lr.getConsigneeId());		
+			lrView.setBillingParty(lr.getBillingToParty());
+		}
+		
+		//Exp
+		LRExpenditure lrExpediture = lr.getLrexpenditureId();
+		if (null != lrExpediture) {
+			lrExpenditureView = new LRExpeditureView();
+			lrExpenditureView.setFreightToBroker(lrExpediture.getFreightToBroker());
+			lrExpenditureView.setExtraPayToBroker(lrExpediture.getExtraPayToBroker());
+			lrExpenditureView.setAdvance(lrExpediture.getAdvance());
+			lrExpenditureView.setBalanceFreight(lrExpediture.getBalanceFreight());
+			lrExpenditureView.setLoadingCharges(lrExpediture.getLoadingCharges());
+			lrExpenditureView.setUnloadingCharges(lrExpediture.getUnloadingCharges());	
+			lrExpenditureView.setLoadingDetBroker(lrExpediture.getLoadingDetBroker());	
+			lrExpenditureView.setUnloadingDetBroker(lrExpediture.getUnloadingDetBroker());
+		}
+
+		//Other Exp (to-do : rework, its not going to work in frontend)
+		// use a list of others exp view
+		Set<LROthers> lrOtherExps = lr.getOtherExpenditures();
+		if (null != lrOtherExps && lrOtherExps.size() > 0) {
+			for (LROthers lrOtherExp : lrOtherExps) {
+				if(lrOtherExp != null) {
+					lrOthersView = new LROthersView();			
+					lrOthersView.setAmount(lrOtherExp.getAmount());
+					lrOthersView.setRemarks(lrOtherExp.getRemarks());
+				}
+			}
+		}
+		
+		//Get Income
+		LRIncome lrIncome = lr.getLrincomeId();
+		if (lrIncome != null) {
+			lrIncomeView = new LRIncomeView();			
+			lrIncomeView.setFreightToBroker(lrIncome.getFreightToBroker());
+			lrIncomeView.setExtraPayToBroker(lrIncome.getExtraPayToBroker());		
+			lrIncomeView.setLoadingCharges(lrIncome.getLoadingCharges());
+			lrIncomeView.setUnloadingCharges(lrIncome.getUnloadingCharges());	
+			lrIncomeView.setLoadingDetBroker(lrIncome.getLoadingDetBroker());	
+			lrIncomeView.setUnloadingDetBroker(lrIncome.getUnloadingDetBroker());			
+		}
+		
+		//Create Response (to-do: need to add lr exp others)
+		LRSearchResponse response = new LRSearchResponse();
+		if (lrView            != null )		{	response.setLr(lrView);							}
+		if (lrExpenditureView != null )		{	response.setLrExpenditure(lrExpenditureView);	}
+		if (lrIncomeView      != null )		{	response.setLrIncome(lrIncomeView);				}
+		
 		return response;
 	}
 	
