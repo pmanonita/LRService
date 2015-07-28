@@ -170,7 +170,7 @@ public class Consignee {
 	} 
 	
 	private static final String QUERY_FOR_CONSIGNEE_BY_ID_SKEY =
-		Consignee.class.getName() + ".findConsigneeById";
+		Consigner.class.getName() + ".findConsigneeById";
 	 public static Consignee findConsigneeById(Session session, String consigneeId)
 		throws HibernateException
 		{
