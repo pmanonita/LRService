@@ -67,18 +67,18 @@ public class LrService {
 	{
 		
 		return new LR.DefaultController() {
-			public long mTransid() 					{	return 0;				}			
-			public String mVehicleNo() 				{	return vehileNo;		}
-			public Consigner mConsignerId() 		{	return consigner;		}
-			public Consignee mConsigneeId() 		{	return consignee;		}
-			public String mVehicleOwner() 			{	return vehicleOwner;	}
-			public String mBillingToParty()	 		{	return billingParty;	}
-			public Date mLrDate() 					{	return new Date();		}
-			public String mMultiLoad() 				{	return null;			}
-			public String mUserName() 				{ 	return "";				}
-			public LRExpenditure mLrexpenditureId()	{ 	return null; 			}
-			public LRIncome mLrincomeId()			{ 	return null; 			}
-			public Set mOtherExpenditures() 		{ 	return null; 			}			
+			public long mTransid() 						{	return 0;				}			
+			public String mVehicleNo() 					{	return vehileNo;		}
+			public Consigner mConsignerId() 			{	return consigner;		}
+			public Consignee mConsigneeId() 			{	return consignee;		}
+			public String mVehicleOwner() 				{	return vehicleOwner;	}
+			public String mBillingToParty()	 			{	return billingParty;	}
+			public Date mLrDate() 						{	return new Date();		}
+			public String mMultiLoad() 					{	return null;			}
+			public String mUserName() 					{ 	return "";				}
+			public LRExpenditure mLrexpenditureId()		{ 	return null; 			}
+			public LRIncome mLrincomeId()				{ 	return null; 			}
+			public Set<LROthers> mOtherExpenditures()	{ 	return null; 			}			
 		};
 	}
 
@@ -89,21 +89,21 @@ public class LrService {
 										  final String billingParty,
 										  final LRExpenditure lrExpenditure,
 										  final LRIncome lrIncome,
-										  final Set otherexpeditures) 
+										  final Set<LROthers> otherexpeditures) 
 	{
 		return new LR.DefaultController() {		
-			public long mTransid() 					{	return 0;				}
-			public String mVehicleNo() 				{	return vehileNo;		}		
-			public Consigner mConsignerId() 		{	return consigner;		}
-			public Consignee mConsigneeId() 		{	return consignee;		}
-			public String mVehicleOwner() 			{	return vehicleOwner;	}
-			public String mBillingToParty() 		{	return billingParty;	}
-			public Date mLrDate() 					{	return new Date();		}
-			public String mMultiLoad()				{	return null;			}
-			public String mUserName() 				{	return "";				}
-			public LRExpenditure mLrexpenditureId()	{ 	return lrExpenditure; 	}
-			public LRIncome mLrincomeId()			{ 	return lrIncome; 		}
-			public Set mOtherExpenditures() 		{ 	return null; 			}	
+			public long mTransid() 						{	return 0;				}
+			public String mVehicleNo() 					{	return vehileNo;		}		
+			public Consigner mConsignerId() 			{	return consigner;		}
+			public Consignee mConsigneeId() 			{	return consignee;		}
+			public String mVehicleOwner() 				{	return vehicleOwner;	}
+			public String mBillingToParty() 			{	return billingParty;	}
+			public Date mLrDate() 						{	return new Date();		}
+			public String mMultiLoad()					{	return null;			}
+			public String mUserName() 					{	return "";				}
+			public LRExpenditure mLrexpenditureId()		{ 	return lrExpenditure; 	}
+			public LRIncome mLrincomeId()				{ 	return lrIncome; 		}
+			public Set<LROthers> mOtherExpenditures()	{ 	return null; 			}	
 		};
 	}
 
@@ -149,7 +149,7 @@ public class LrService {
 	}
 	
 	//Get LR from Id
-	public LR getLr( String lrNo ) {
+	public LR findLR( String lrNo ) {
 
 		if ( lrNo == null || lrNo.equals("") ) return null;
 		
@@ -162,7 +162,7 @@ public class LrService {
 	
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
-		LR lr        = null;
+		LR lr            = null;
 	
 		try {
 			tx = session.beginTransaction();        	
@@ -226,11 +226,12 @@ public class LrService {
 	}
 	
 	public LR updateLR(final String vehileNo,
-			  final String vehicleOwner,
-			  final Consigner consigner,
-			  final Consignee consignee,						  
-			  final String billingParty,
-			  LR lr) {
+			  		   final String vehicleOwner,
+			  		   final Consigner consigner,
+			  		   final Consignee consignee,						  
+			  		   final String billingParty,
+			  		   LR lr)
+	{
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
 		
@@ -271,7 +272,7 @@ public class LrService {
 		return lr; 
 	}
 	
-	public LR updateIncomeToLR(LRIncome lrIncome,LR lr) {
+	public LR updateIncomeToLR(LRIncome lrIncome, LR lr) {
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
 		
@@ -310,7 +311,7 @@ public class LrService {
 		return lr; 
 	}
 	
-	public LR updateOtherExpenditureToLR(LROthers lrOthers,LR lr) {
+	public LR updateOtherExpenditureToLR(LROthers lrOthers, LR lr) {
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
 		
@@ -361,10 +362,17 @@ public class LrService {
 		Session session     = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx      = null;
 		Consigner consigner = null;
+		
+		Long lconsignerId = null;		
+		try {
+			lconsignerId = Long.parseLong(consignerId);
+		}	catch (NumberFormatException ex) { 
+			return null;
+		}
 	
 		try {
 			tx = session.beginTransaction();        	
-			consigner = Consigner.findConsignerById(session, consignerId);
+			consigner = Consigner.findConsignerById(session, lconsignerId);
 		
 		if (null == consigner) {
 			tx.rollback();
@@ -393,10 +401,17 @@ public class LrService {
 		Session session     = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx      = null;
 		Consignee consignee = null;
-	
+		
+		Long lconsigneeId = null;		
+		try {
+			lconsigneeId = Long.parseLong(consigneeId);
+		}	catch (NumberFormatException ex) { 
+			return null;
+		}
+		
 		try {
 			tx = session.beginTransaction();        	
-			consignee = Consignee.findConsigneeById(session, consigneeId);
+			consignee = Consignee.findConsigneeById(session, lconsigneeId);
 		
 		if (null == consignee) {
 			tx.rollback();
@@ -539,9 +554,14 @@ public class LrService {
 			lrView.setId(lr.getId());
 			lrView.setVehicleNo(lr.getVehicleNo());
 			lrView.setVehicleOwner(lr.getVehicleOwner());
-			lrView.setConsigner(lr.getConsignerId());
-			lrView.setConsignee(lr.getConsigneeId());		
 			lrView.setBillingParty(lr.getBillingToParty());
+			
+			Consigner consigner = lr.getConsignerId();
+			lrView.setConsigner(consigner);
+			
+			Consignee consignee = lr.getConsigneeId();
+			lrView.setConsignee(consignee);		
+			
 		}
 		
 		//Exp

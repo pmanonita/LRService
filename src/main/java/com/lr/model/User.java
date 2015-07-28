@@ -243,6 +243,10 @@ public class User implements Serializable {
 	public static User findById(Session session, Integer userId)
 		throws HibernateException
 	{
+		if (userId == null) {
+			return null;
+		}
+		
 		Query qry = session.getNamedQuery(QUERY_FOR_USER_BY_ID);
     	qry.setInteger("id", userId);
     	

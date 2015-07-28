@@ -21,15 +21,10 @@ public class Consigner {
 	private String _serviceTax;
 	private String _fromPlace;
 	
-	
-	//For hibernate
-	public Consigner() {
-		// TODO Auto-generated constructor stub
-	}
+	public Consigner() {	}
 	
 	public Consigner (Controller ctrl) {
-		createFrom(ctrl);
-		
+		createFrom(ctrl);		
 	}
 	
 	private void validate(Controller ctrl) throws InsufficientDataException {
@@ -44,31 +39,24 @@ public class Consigner {
 	}
 	
 	private void createFrom(Controller ctrl) {
-		
-
 		validate(ctrl);
 		
-		_consignerCode = ctrl.mConsignerCode();
-		_consignerName = ctrl.mConsignerName();
-		_address = ctrl.mAddress();
-		_serviceTax = ctrl.mServiceTax();
-		_fromPlace = ctrl.mFromPlace();
-		
-			
-			
+		_consignerCode 	= ctrl.mConsignerCode();
+		_consignerName 	= ctrl.mConsignerName();
+		_address 		= ctrl.mAddress();
+		_serviceTax 	= ctrl.mServiceTax();
+		_fromPlace 		= ctrl.mFromPlace();			
 	}
 	
 	public void changeTo(Controller ctrl) {
 		
 		validate(ctrl);
 		
-		_consignerCode = ctrl.mConsignerCode();
-		_consignerName = ctrl.mConsignerName();
-		_address = ctrl.mAddress();
-		_serviceTax = ctrl.mServiceTax();
-		_fromPlace = ctrl.mFromPlace();
-			
-		
+		_consignerCode 	= ctrl.mConsignerCode();
+		_consignerName 	= ctrl.mConsignerName();
+		_address 		= ctrl.mAddress();
+		_serviceTax 	= ctrl.mServiceTax();
+		_fromPlace 		= ctrl.mFromPlace();		
 	}
 
 	public interface Controller {
@@ -86,35 +74,18 @@ public class Consigner {
 		void mServiceTax(String serviceTax);
 		
 		String mFromPlace();
-		void mFromPlace(String fromPlace);
-
-				
+		void mFromPlace(String fromPlace);				
 	}
 	
 	public abstract static class DefaultController implements Controller {
-
-		
-		@Override
 		public void mConsignerCode(String consignerCode) { }
-		
-		@Override
 		public void mConsignerName(String consignerName) { }
-		
-		@Override
 		public void mAddress(String address) { }
-
-		@Override
 		public void mServiceTax(String serviceTax) { }
-		
-		@Override
 		public void mFromPlace(String fromPlace) { }
-		
-		
-				
 	}
 
-	//getter and setter
-	
+	//getter and setter	
 	public long getId() {
 		return _id;
 	}
@@ -152,10 +123,6 @@ public class Consigner {
 	void setFromPlace(String fromPlace){
 		this._fromPlace = fromPlace;
 	}
-
-	
-
-	
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
 	
 	private static final String QUERY_FOR_LIST_CONSIGNER =
@@ -171,18 +138,19 @@ public class Consigner {
 	
 	private static final String QUERY_FOR_CONSIGNER_BY_ID_SKEY =
 		Consigner.class.getName() + ".findConsignerById";
-	 public static Consigner findConsignerById(Session session, String consignerId)
+	 public static Consigner findConsignerById(Session session, Long id)
 		throws HibernateException
-		{
-		 	if (consignerId == null || consignerId == null) {
-			 return null;
-		 	}
-		 	Query qry = session.getNamedQuery(QUERY_FOR_CONSIGNER_BY_ID_SKEY);
-		 	qry.setString("consignerId",    consignerId);		 	
+	{
+	 	if (id == null) {
+		 return null;
+	 	}
+		 	
+		Query qry = session.getNamedQuery(QUERY_FOR_CONSIGNER_BY_ID_SKEY);
+		qry.setLong("id", id);		 	
  
-		 	qry.setMaxResults(1);
+		qry.setMaxResults(1);
  
-		 	final Consigner consigner = (Consigner)(qry.uniqueResult());
-		 	return consigner;
-		}
+		final Consigner consigner = (Consigner)(qry.uniqueResult());
+		return consigner;
+	}
 }
