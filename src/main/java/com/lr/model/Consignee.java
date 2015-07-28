@@ -143,7 +143,7 @@ public class Consignee implements Serializable {
 	
 	private static final String QUERY_FOR_CONSIGNEE_BY_ID_SKEY =
 		Consignee.class.getName() + ".findConsigneeById";
-	 public static Consignee findConsigneeById(Session session, Long id)
+	public static Consignee findConsigneeById(Session session, Long id)
 		throws HibernateException
 	{
 	 	if (id == null) {
@@ -157,9 +157,6 @@ public class Consignee implements Serializable {
 	 	
 	 	final Consignee consignee = (Consignee)(qry.uniqueResult());
 	 	return consignee;
-	}
-	
-	
-	
+	}	
 
 }
