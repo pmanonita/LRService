@@ -157,6 +157,6 @@ public class Consignee implements Serializable {
 	 	
 	 	final Consignee consignee = (Consignee)(qry.uniqueResult());
 	 	return consignee;
-	}	
+	}
 
 }
