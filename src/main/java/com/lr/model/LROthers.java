@@ -1,61 +1,49 @@
 package com.lr.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.LR.Controller;
 
-public class LROthers {
+public class LROthers implements Serializable {
 	
-	private static final long serialVersionUID = -6779738051490200702L;
+	private static final long serialVersionUID = -530903930212664583L;
 	
 	private long   _id;
-	private long _lrId;	
-	private int _amount;	
+	private long   _lrId;	
+	private int    _amount;	
 	private String _remarks;
-	
-	
-	//For hibernate
-	public LROthers() {
-		// TODO Auto-generated constructor stub
-	}
+		
+	public LROthers() {	}
 	
 	public LROthers (Controller ctrl) {
-		createFrom(ctrl);
-		
+		createFrom(ctrl);		
 	}
 	
 	private void validate(Controller ctrl) throws InsufficientDataException {
 		//Model level validation
 		String errorMsg = "";
-		if (ctrl.mLRId() == 0 ) 
-		{
+		if (ctrl.mLRId() == 0 ) {
 			errorMsg = "LR No can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
-		}	
-		
+		}		
 	}
 	
 	private void createFrom(Controller ctrl) {
-		
-
 		validate(ctrl);
 		
-		_lrId = ctrl.mLRId();	
-		_amount = ctrl.mAmount();
-		_remarks = ctrl.mRemarks();
-			
-			
+		_lrId    = ctrl.mLRId();
+		_amount  = ctrl.mAmount();
+		_remarks = ctrl.mRemarks();			
 	}
 	
-	public void changeTo(Controller ctrl) {
-		
+	public void changeTo(Controller ctrl) {		
 		validate(ctrl);
 		
-		_lrId = ctrl.mLRId();	
-		_amount = ctrl.mAmount();
-		_remarks = ctrl.mRemarks();
-		
+		_lrId    = ctrl.mLRId();	
+		_amount  = ctrl.mAmount();
+		_remarks = ctrl.mRemarks();		
 	}
 
 	public interface Controller {
@@ -67,29 +55,17 @@ public class LROthers {
 		void mAmount(int amount);
 
 		String mRemarks();
-		void mRemarks(String remarks);
-
-				
+		void mRemarks(String remarks);				
 	}
 	
 	public abstract static class DefaultController implements Controller {
-
-		
-		@Override
 		public void mLRId(long lrId) { }
-		
-		@Override
 		public void mAmount(int freightToBroker) { }
-
-		@Override
-		public void mRemarks(String remarks) { }
-		
-		
-				
+		public void mRemarks(String remarks) { }				
 	}
 
-	//getter and setter
 	
+	//getter and setter	
 	public long getId() {
 		return _id;
 	}
@@ -116,13 +92,7 @@ public class LROthers {
 	void setRemarks(String remarks){
 		this._remarks = remarks;
 	}
-
-	
-
 	
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
-	
-	
-	
 
 }

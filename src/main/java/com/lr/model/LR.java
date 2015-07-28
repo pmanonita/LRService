@@ -30,7 +30,6 @@ public class LR implements Serializable {
 	private Consignee     _consigneeId;
 	private Set<LROthers> _otherExpenditures;
 	
-	//For hibernate
 	public LR() {	}
 	
 	public LR (Controller ctrl) {
@@ -42,14 +41,13 @@ public class LR implements Serializable {
 		String errorMsg = "";
 		if ((null == ctrl.mVehicleNo() || (null != ctrl.mMultiLoad() && ctrl.mUserName().equals("")))) 
 		{
-			errorMsg = "User name and password can't be null or empty";
+			errorMsg = "vechile no can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
 		}	
 		
 	}
 	
 	private void createFrom(Controller ctrl) {
-
 		//validate(ctrl);
 		
 		_transid = ctrl.mTransid();		
@@ -65,8 +63,7 @@ public class LR implements Serializable {
 		_otherExpenditures = ctrl.mOtherExpenditures();
 	}
 	
-	public void changeTo(Controller ctrl) {
-		
+	public void changeTo(Controller ctrl) {		
 		//validate(ctrl);
 		
 		_transid = ctrl.mTransid();		
@@ -261,7 +258,7 @@ public class LR implements Serializable {
 	public static LR findLRById(Session session, Long id)
 		throws HibernateException
 	{
-	 	if (id == null || id == 0L) {
+	 	if (id == null) {
 	 		return null;
 	 	}
 	 	

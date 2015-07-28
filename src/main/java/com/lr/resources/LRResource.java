@@ -107,7 +107,7 @@ public class LRResource {
 		LrService lrService  = new LrService();
 		              
        	//Send to model using service              
-  		LR lr = lrService.getLr(lrId);
+  		LR lr = lrService.findLR(lrId);
     		
   		if (lr != null) {  			
   			//To-do : Create response
@@ -140,7 +140,7 @@ public class LRResource {
 		
 		LR lr = null;
 		if (lrNo != null && !lrNo.equals("") ) {
-			lr  = lrService.getLr(lrNo);
+			lr  = lrService.findLR(lrNo);
 			
 			if (null == lr) {  
 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);

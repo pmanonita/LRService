@@ -72,7 +72,7 @@ public class LRIncomeResource {
 		
 		LR lr = null;
 		if (lrNo != null && !lrNo.equals("") && llrNo > 0) {
-			lr  = lrService.getLr(lrNo);
+			lr  = lrService.findLR(lrNo);
 			if(null == lr) {  
 				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
 				response = new ErrorResponse(errorMsg);

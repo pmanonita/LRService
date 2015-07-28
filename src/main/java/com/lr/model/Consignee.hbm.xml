@@ -35,7 +35,7 @@
  <query name="com.lr.model.Consignee.findConsigneeById">
      select consignee
        from com.lr.model.Consignee as consignee
-     where consignee.id = :consigneeId     
+     where consignee.id = :id     
  </query>
  
 </hibernate-mapping>

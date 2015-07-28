@@ -2,30 +2,29 @@ package com.lr.model;
 
 
 
+import java.io.Serializable;
+
 import com.lr.exceptions.InsufficientDataException;
 
 
-public class LRIncome {
+public class LRIncome implements Serializable {
 	
-	private static final long serialVersionUID = -6779738051490200702L;
-	
-	private long   _id;
+	private static final long serialVersionUID = 5916423425873704297L;
+
+	private long _id;
 	private long _lrId;	
-	private int _freightToBroker;	
-	private int _extraPayToBroker;	
-	private int _loadingCharges;
-	private int _unloadingCharges;
-	private int   _loadingDetBroker;
-	private int   _unloadingDetBroker;
+	private int  _freightToBroker;	
+	private int  _extraPayToBroker;	
+	private int  _loadingCharges;
+	private int  _unloadingCharges;
+	private int  _loadingDetBroker;
+	private int  _unloadingDetBroker;
 	
-	//For hibernate
-	public LRIncome() {
-		// TODO Auto-generated constructor stub
-	}
+
+	public LRIncome() {	}
 	
 	public LRIncome (Controller ctrl) {
-		createFrom(ctrl);
-		
+		createFrom(ctrl);		
 	}
 	
 	private void validate(Controller ctrl) throws InsufficientDataException {
@@ -40,32 +39,27 @@ public class LRIncome {
 	}
 	
 	private void createFrom(Controller ctrl) {
-		
-
 		validate(ctrl);
 		
-		_lrId = ctrl.mLRId();	
-		_freightToBroker = ctrl.mFreightToBroker();
-		_extraPayToBroker = ctrl.mExtraPayToBroker();		
-		_loadingCharges = ctrl.mLoadingCharges();
-		_unloadingCharges = ctrl.mUnloadingCharges();
-		_loadingDetBroker = ctrl.mLoadingDetBroker();
-		_unloadingDetBroker = ctrl.mUnloadingDetBroker();		
-			
+		_lrId 				= ctrl.mLRId();	
+		_freightToBroker 	= ctrl.mFreightToBroker();
+		_extraPayToBroker 	= ctrl.mExtraPayToBroker();		
+		_loadingCharges 	= ctrl.mLoadingCharges();
+		_unloadingCharges 	= ctrl.mUnloadingCharges();
+		_loadingDetBroker 	= ctrl.mLoadingDetBroker();
+		_unloadingDetBroker = ctrl.mUnloadingDetBroker();			
 	}
 	
-	public void changeTo(Controller ctrl) {
-		
+	public void changeTo(Controller ctrl) {		
 		validate(ctrl);
 		
-		_lrId = ctrl.mLRId();	
-		_freightToBroker = ctrl.mFreightToBroker();
-		_extraPayToBroker = ctrl.mExtraPayToBroker();		
-		_loadingCharges = ctrl.mLoadingCharges();
-		_unloadingCharges = ctrl.mUnloadingCharges();
-		_loadingDetBroker = ctrl.mLoadingDetBroker();
-		_unloadingDetBroker = ctrl.mUnloadingDetBroker();
-		
+		_lrId 				= ctrl.mLRId();	
+		_freightToBroker 	= ctrl.mFreightToBroker();
+		_extraPayToBroker 	= ctrl.mExtraPayToBroker();		
+		_loadingCharges 	= ctrl.mLoadingCharges();
+		_unloadingCharges 	= ctrl.mUnloadingCharges();
+		_loadingDetBroker 	= ctrl.mLoadingDetBroker();
+		_unloadingDetBroker = ctrl.mUnloadingDetBroker();		
 	}
 
 	public interface Controller {
@@ -90,43 +84,19 @@ public class LRIncome {
 
 		int mUnloadingDetBroker();
 		void mUnloadingDetBroker(int unloadingDetBroker);		
-
-		
-
-		
-		
 	}
 	
-	public abstract static class DefaultController implements Controller {
-
-		
-		@Override
-		public void mLRId(long lrId) { }
-		
-		@Override
+	public abstract static class DefaultController implements Controller {		
+		public void mLRId(long lrId) { }		
 		public void mFreightToBroker(int freightToBroker) { }
-
-		@Override
-		public void mExtraPayToBrokersignor(int extraPayToBroker) { }			
-		
-
-		@Override
+		public void mExtraPayToBrokersignor(int extraPayToBroker) { }
 		public void mLoadingCharges(int loadingCharges) { }
-		
-		@Override
 		public void mUnloadingCharges(int unloadingCharges) { }
-		
-		@Override
 		public void mLoadingDetBroker(int loadingDetBroker) { }
-		
-		@Override
-		public void mUnloadingDetBroker(int unloadingDetBroker) { }
-				
+		public void mUnloadingDetBroker(int unloadingDetBroker) { }				
 	}
 
-	//getter and setter
-	
-	
+	//getter and setter	
 	public long getId() {
 		return _id;
 	}
@@ -189,13 +159,8 @@ public class LRIncome {
 
 	void setUnloadingDetBroker(int unloadingDetBroker) {
 		this._unloadingDetBroker = unloadingDetBroker;
-	}
-
-	
+	}	
 	
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
-	
-	
-	
 
 }
