@@ -1,5 +1,6 @@
 package com.lr.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +11,9 @@ import org.hibernate.Session;
 import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.LR.Controller;
 
-public class Consignee {
+public class Consignee implements Serializable {
 	
-	private static final long serialVersionUID = -6779738051490200702L;
+	private static final long serialVersionUID = -8505903842484617344L;
 	
 	private long   _id;
 	private String _consigneeCode;	
@@ -21,15 +22,10 @@ public class Consignee {
 	private String _serviceTax;
 	private String _toPlace;
 	
-	
-	//For hibernate
-	public Consignee() {
-		// TODO Auto-generated constructor stub
-	}
+	public Consignee() {	}
 	
 	public Consignee (Controller ctrl) {
-		createFrom(ctrl);
-		
+		createFrom(ctrl);		
 	}
 	
 	private void validate(Controller ctrl) throws InsufficientDataException {
@@ -44,30 +40,25 @@ public class Consignee {
 	}
 	
 	private void createFrom(Controller ctrl) {
-		
 
 		validate(ctrl);
 		
-		_consigneeCode = ctrl.mConsigneeCode();
-		_consigneeName = ctrl.mConsigneeName();
-		_address = ctrl.mAddress();
-		_serviceTax = ctrl.mServiceTax();
-		_toPlace = ctrl.mToPlace();
-			
-			
+		_consigneeCode 	= ctrl.mConsigneeCode();
+		_consigneeName 	= ctrl.mConsigneeName();
+		_address 		= ctrl.mAddress();
+		_serviceTax 	= ctrl.mServiceTax();
+		_toPlace 		= ctrl.mToPlace();			
 	}
 	
 	public void changeTo(Controller ctrl) {
 		
 		validate(ctrl);
 		
-		_consigneeCode = ctrl.mConsigneeCode();
-		_consigneeName = ctrl.mConsigneeName();
-		_address = ctrl.mAddress();
-		_serviceTax = ctrl.mServiceTax();
-		_toPlace = ctrl.mToPlace();
-			
-		
+		_consigneeCode 	= ctrl.mConsigneeCode();
+		_consigneeName 	= ctrl.mConsigneeName();
+		_address 		= ctrl.mAddress();
+		_serviceTax 	= ctrl.mServiceTax();
+		_toPlace 		= ctrl.mToPlace();		
 	}
 
 	public interface Controller {
@@ -85,31 +76,15 @@ public class Consignee {
 		void mServiceTax(String serviceTax);
 		
 		String mToPlace();
-		void mToPlace(String toPlace);
-
-				
+		void mToPlace(String toPlace);				
 	}
 	
 	public abstract static class DefaultController implements Controller {
-
-		
-		@Override
 		public void mConsigneeCode(String consigneeCode) { }
-		
-		@Override
 		public void mConsigneeName(String consigneeName) { }
-		
-		@Override
 		public void mAddress(String address) { }
-
-		@Override
 		public void mServiceTax(String serviceTax) { }
-		
-		@Override
-		public void mToPlace(String toPlace) { }
-		
-		
-				
+		public void mToPlace(String toPlace) { }				
 	}
 
 	//getter and setter
@@ -151,12 +126,9 @@ public class Consignee {
 	void setToPlace(String toPlace){
 		this._toPlace = toPlace;
 	}
-
-
-	
-
 	
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
+	
 	
 	private static final String QUERY_FOR_LIST_CONSIGNER =
 		Consignee.class.getName() + ".findAllConsignees";
@@ -170,23 +142,21 @@ public class Consignee {
 	} 
 	
 	private static final String QUERY_FOR_CONSIGNEE_BY_ID_SKEY =
-		Consigner.class.getName() + ".findConsigneeById";
-	 public static Consignee findConsigneeById(Session session, String consigneeId)
+		Consignee.class.getName() + ".findConsigneeById";
+	public static Consignee findConsigneeById(Session session, Long id)
 		throws HibernateException
-		{
-		 	if (consigneeId == null || consigneeId == null) {
-			 return null;
-		 	}
-		 	Query qry = session.getNamedQuery(QUERY_FOR_CONSIGNEE_BY_ID_SKEY);
-		 	qry.setString("consigneeId",    consigneeId);		 	
+	{
+	 	if (id == null) {
+		 return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_CONSIGNEE_BY_ID_SKEY);
+	 	qry.setLong("id", id);		 	
  
-		 	qry.setMaxResults(1);
- 
-		 	final Consignee consignee = (Consignee)(qry.uniqueResult());
-		 	return consignee;
-		}
-	
-	
-	
+	 	qry.setMaxResults(1);
+	 	
+	 	final Consignee consignee = (Consignee)(qry.uniqueResult());
+	 	return consignee;
+	}	
 
 }
