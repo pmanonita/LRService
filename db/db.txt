@@ -34,8 +34,12 @@ CREATE TABLE  `lr_test`.`lr` (
   `multiLoad` varchar(20) DEFAULT NULL,
   `userName` varchar(20) NOT NULL,
   `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `poNo` varchar(255) DEFAULT NULL,
+  `doNo` varchar(255) DEFAULT NULL,
+  `billingnameId` int(11) DEFAULT NULL,
+  `status` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`lrexpenditure`;
 CREATE TABLE  `lr_test`.`lrexpenditure` (
