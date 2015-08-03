@@ -60,6 +60,27 @@ public class LRIncomeService {
 		};
 	}
 	
+	private LRIncome.Controller createController(final long lrId,						  
+				final int freightToBroker,
+				final int extraPayToBroker,			  											
+				final int loadingCharges,
+				final int unloadingCharges,
+				final int loadingDetBroker,
+				final int unloadingDetBroker) 
+	{
+	
+		return new LRIncome.DefaultController() {		
+		
+		public long mLRId()					{	return lrId;				}
+		public int  mFreightToBroker()		{	return freightToBroker; 	}			
+		public int  mExtraPayToBroker()		{ 	return extraPayToBroker; 	}
+		public int  mLoadingCharges()		{ 	return loadingCharges; 		}
+		public int  mUnloadingCharges()		{ 	return unloadingCharges; 	}
+		public int  mLoadingDetBroker()		{ 	return loadingDetBroker; 	}
+		public int  mUnloadingDetBroker()	{ 	return unloadingDetBroker;	}			
+		};
+	}
+	
 	public LRIncome newLRIncome(final long lrId,						  
 								final int freightToBroker,
 								final int extraPayToBroker,					
@@ -103,6 +124,54 @@ public class LRIncomeService {
 			if (session.isOpen()) {
         		session.close();
         	} 
+		}
+		
+		return lrIncome;
+	}
+	
+	public LRIncome updateLRIncome(final long lrId,						  
+			final int freightToBroker,
+			final int extraPayToBroker,					
+			final int loadingCharges,
+			final int unloadingCharges,
+			final int loadingDetBroker,
+			final int unloadingDetBroker,
+			LRIncome lrIncome)
+	{
+	
+	
+		//Get hibernate session manager
+		Session session   = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx    = null;
+		
+		try {
+		
+		tx = session.beginTransaction();
+		
+		LRIncome.Controller ctrl = createController(lrId,						  
+													freightToBroker,
+													extraPayToBroker,															
+													loadingCharges,
+													unloadingCharges,
+													loadingDetBroker,
+													unloadingDetBroker);
+			
+		//Create user object using controller
+		lrIncome.changeTo(ctrl);
+		
+		session.saveOrUpdate(lrIncome);			
+		session.flush();
+		
+		tx.commit();		
+		
+		} catch(RuntimeException  ex) {
+		lrIncome = null;
+		if (tx != null) 	{ tx.rollback(); }
+		ex.printStackTrace();			
+		} finally {
+		if (session.isOpen()) {
+		session.close();
+		} 
 		}
 		
 		return lrIncome;

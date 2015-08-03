@@ -1,5 +1,6 @@
 package com.lr.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import org.hibernate.Session;
 import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.LR.Controller;
 
-public class Consigner {
+public class Consigner implements Serializable {
 	
 	private static final long serialVersionUID = -6779738051490200702L;
 	
@@ -138,7 +139,7 @@ public class Consigner {
 	
 	private static final String QUERY_FOR_CONSIGNER_BY_ID_SKEY =
 		Consigner.class.getName() + ".findConsignerById";
-	 public static Consigner findConsignerById(Session session, Long id)
+	 public static Consigner findConsignerById(Session session, Integer id)
 		throws HibernateException
 	{
 	 	if (id == null) {
@@ -146,7 +147,7 @@ public class Consigner {
 	 	}
 		 	
 		Query qry = session.getNamedQuery(QUERY_FOR_CONSIGNER_BY_ID_SKEY);
-		qry.setLong("id", id);		 	
+		qry.setInteger("id", id);		 	
  
 		qry.setMaxResults(1);
  

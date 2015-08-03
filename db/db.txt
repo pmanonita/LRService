@@ -35,10 +35,14 @@ CREATE TABLE  `lr_test`.`lr` (
   `lrDate` date DEFAULT NULL,
   `multiLoad` varchar(20) DEFAULT NULL,
   `userName` varchar(20) NOT NULL,
+  `poNo` varchar(255) DEFAULT NULL,
+  `doNo` varchar(255) DEFAULT NULL,
+  `billingnameId` int(11) DEFAULT NULL,
+  `status` varchar(255) NOT NULL,
   `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transid` (`transid`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`lrexpenditure`;
 CREATE TABLE  `lr_test`.`lrexpenditure` (
@@ -132,6 +136,22 @@ CREATE TABLE  `lr_test`.`account` (
   UNIQUE KEY `accountName` (`accountName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `lr_test`.`billingname`;
+CREATE TABLE  `lr_test`.`billingname` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`lrchalan`;
+CREATE TABLE  `lr_test`.`lrchalan` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrIds` varchar(255) NOT NULL,
+  `chalanDetails` text,
+  UNIQUE KEY `lrId` (`lrIds`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 SELECT * FROM `user` u;
 insert into user(username,password,servicekey,role,createdate,mobile) values ('praja','praja123@','824bb1e8-de0c-401c-9f83-8b1d18a0ca9d','Admin','2015/07/23',6777788888);
@@ -144,3 +164,7 @@ insert into consigner(consignerCode,consignerName,address,serviceTax,fromplace) 
 SELECT * FROM account;
 insert into account(accountName,createdate) values ('account1','2015/07/29');
 insert into account(accountName,createdate) values ('account2','2015/07/30');
+
+SELECT * FROM billingname b;
+insert into billingname(name,address) values ('prajantana singh','at/po-bodapalasha,dist keojhar,state-orissa,pin -750886,dk road,hyderabad');
+insert into billingname(name,address) values ('p1name singh','at/po-bodapalasha,dist keojhar,state-orissa,pin -750886,dk road,hyderabad');

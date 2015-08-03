@@ -25,20 +25,26 @@ import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
 import com.lr.exceptions.DataNotFoundException;
 import com.lr.exceptions.InsufficientDataException;
+import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
+import com.lr.model.LRChalan;
 import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
 import com.lr.model.User;
 import com.lr.response.AppResponse;
+import com.lr.response.BillingnameListResponse;
+import com.lr.response.BillingnameView;
 import com.lr.response.ConsigneeListResponse;
 import com.lr.response.ConsigneeView;
 import com.lr.response.ConsignerListResponse;
 import com.lr.response.ConsignerView;
 import com.lr.response.LRExpeditureView;
 import com.lr.response.LRIncomeView;
+import com.lr.response.LRListResponse;
+import com.lr.response.LRListView;
 import com.lr.response.LROthersView;
 import com.lr.response.LRResponse;
 import com.lr.response.LRSearchResponse;
@@ -63,7 +69,11 @@ public class LrService {
 			  											  final String vehicleOwner,
 			  											  final Consigner consigner,
 			  											  final Consignee consignee,			  											
-			  											  final String billingParty)
+			  											  final String billingParty,
+			  											  final String poNo,
+			  											  final String doNo,
+			  											  final Billingname billingname,
+			  											  final String status)
 	{
 		
 		return new LR.DefaultController() {
@@ -78,7 +88,11 @@ public class LrService {
 			public String mUserName() 					{ 	return "";				}
 			public LRExpenditure mLrexpenditureId()		{ 	return null; 			}
 			public LRIncome mLrincomeId()				{ 	return null; 			}
-			public Set<LROthers> mOtherExpenditures()	{ 	return null; 			}			
+			public Set<LROthers> mOtherExpenditures()	{ 	return null; 			}	
+			public String        mPONo() 	            {	return poNo;	        }
+			public String        mDONo() 	            {	return doNo;            }
+			public Billingname   mBillingname()         {	return billingname;     }
+			public String        mStatus() 	            {	return status;            }
 		};
 	}
 
@@ -87,6 +101,10 @@ public class LrService {
 										  final Consigner consigner,
 										  final Consignee consignee,			  											
 										  final String billingParty,
+										  final String poNo,
+										  final String doNo,										  
+										  final Billingname billingname,
+										  final String status,
 										  final LRExpenditure lrExpenditure,
 										  final LRIncome lrIncome,
 										  final Set<LROthers> otherexpeditures) 
@@ -104,7 +122,12 @@ public class LrService {
 			public LRExpenditure mLrexpenditureId()		{ 	return lrExpenditure; 	}
 			public LRIncome mLrincomeId()				{ 	return lrIncome; 		}
 			public Set<LROthers> mOtherExpenditures()	{ 	return null; 			}	
+			public String        mPONo() 	            {	return poNo;	        }
+			public String        mDONo() 	            {	return doNo;            }
+			public Billingname   mBillingname()         {	return billingname;     }
+			public String        mStatus() 	            {	return status;            }
 		};
+		
 	}
 
 	//Create new LR
@@ -113,7 +136,11 @@ public class LrService {
 					final String vehicleOwner,
 					final Consigner consigner,
 					final Consignee consignee,						  
-					final String billingParty)
+					final String billingParty,
+					final String poNo,
+					final String doNo,
+					final Billingname billingname,
+					final String status)
 	{		
 		//Get hibernate session manager
 		Session session = HibernateSessionManager.getSessionFactory().openSession();
@@ -128,7 +155,11 @@ public class LrService {
 														  vehicleOwner,
 														  consigner,
 														  consignee,															
-														  billingParty);
+														  billingParty,
+														  poNo,
+														  doNo,
+														  billingname,
+														  status);
 
 			lr = new LR(ctrl);
 			
@@ -148,6 +179,8 @@ public class LrService {
 		return lr;
 	}
 	
+	
+	
 	//Get LR from Id
 	public LR findLR( String lrNo ) {
 
@@ -159,7 +192,7 @@ public class LrService {
 		}	catch (NumberFormatException ex) { 
 			return null;
 		}
-	
+		System.out.println("long is "+lrId);
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
 		LR lr            = null;
@@ -188,6 +221,39 @@ public class LrService {
 		return lr;        
 	}
 	
+	public List<LR> findLRByDate( String lrDate ) {
+
+		if ( lrDate == null || lrDate.equals("") ) return null;
+		
+		
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
+		List<LR> lrList            = null;
+	
+		try {
+			tx = session.beginTransaction();        	
+			lrList = LR.findLRByDate(session, lrDate);
+		
+			if (null == lrList) {
+				tx.rollback();
+				session.close();    			
+				throw new AuthException("LR for the date is not found"); 
+			}		
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lrList = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();
+        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}	
+		return lrList;        
+	}
+	
 	public LR updateExpenditureToLR(LRExpenditure lrExpenditure, LR lr) {
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
@@ -200,6 +266,10 @@ public class LrService {
 												 lr.getConsignerId(),
 												 lr.getConsigneeId(),
 												 lr.getBillingToParty(),
+												 lr.getPoNo(),
+												 lr.getDoNo(),
+												 lr.getBillingnameId(),
+												 lr.getStatus(),												 
 												 lrExpenditure,
 												 lr.getLrincomeId(),
 												 lr.getOtherExpenditures());
@@ -230,6 +300,9 @@ public class LrService {
 			  		   final Consigner consigner,
 			  		   final Consignee consignee,						  
 			  		   final String billingParty,
+			  		   final String poNo,
+			  		   final String doNo,
+			  		   final Billingname billingname,
 			  		   LR lr)
 	{
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
@@ -244,6 +317,10 @@ public class LrService {
 												 consigner,
 												 consignee,
 												 billingParty,
+												 poNo,
+												 doNo,
+												 billingname,
+												 lr.getStatus(),
 												lr.getLrexpenditureId(),
 												lr.getLrincomeId(),
 												lr.getOtherExpenditures());
@@ -285,6 +362,10 @@ public class LrService {
 												 lr.getConsignerId(),
 												 lr.getConsigneeId(),
 												 lr.getBillingToParty(),
+												 lr.getPoNo(),
+												 lr.getDoNo(),												 
+												 lr.getBillingnameId(),
+												 lr.getStatus(),
 												 lr.getLrexpenditureId(),
 												 lrIncome,
 												 lr.getOtherExpenditures());
@@ -331,6 +412,10 @@ public class LrService {
 												 lr.getConsignerId(),
 												 lr.getConsigneeId(),
 												 lr.getBillingToParty(),
+												 lr.getPoNo(),
+												 lr.getDoNo(),
+												 lr.getBillingnameId(),
+												 lr.getStatus(),
 												 lr.getLrexpenditureId(),
 												 lr.getLrincomeId(),
 												 lrOtherExpeditures);
@@ -363,16 +448,16 @@ public class LrService {
 		Transaction tx      = null;
 		Consigner consigner = null;
 		
-		Long lconsignerId = null;		
+		Integer iconsignerId = null;		
 		try {
-			lconsignerId = Long.parseLong(consignerId);
+			iconsignerId = Integer.parseInt(consignerId);
 		}	catch (NumberFormatException ex) { 
 			return null;
 		}
 	
 		try {
 			tx = session.beginTransaction();        	
-			consigner = Consigner.findConsignerById(session, lconsignerId);
+			consigner = Consigner.findConsignerById(session, iconsignerId);
 		
 		if (null == consigner) {
 			tx.rollback();
@@ -402,16 +487,16 @@ public class LrService {
 		Transaction tx      = null;
 		Consignee consignee = null;
 		
-		Long lconsigneeId = null;		
+		Integer iconsigneeId = null;		
 		try {
-			lconsigneeId = Long.parseLong(consigneeId);
+			iconsigneeId = Integer.parseInt(consigneeId);
 		}	catch (NumberFormatException ex) { 
 			return null;
 		}
 		
 		try {
 			tx = session.beginTransaction();        	
-			consignee = Consignee.findConsigneeById(session, lconsigneeId);
+			consignee = Consignee.findConsigneeById(session, iconsigneeId);
 		
 		if (null == consignee) {
 			tx.rollback();
@@ -432,6 +517,44 @@ public class LrService {
 		}
 	
 		return consignee;        
+	}
+	
+	public Billingname getBillingname( String billingnameId ) {	
+		
+		Session session     = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx      = null;
+		Billingname billingname = null;
+		
+		Integer ibillingnameId = null;		
+		try {
+			ibillingnameId = Integer.parseInt(billingnameId);
+		}	catch (NumberFormatException ex) { 
+			return null;
+		}
+		
+		try {
+			tx = session.beginTransaction();        	
+			billingname = Billingname.findBillingnameById(session, ibillingnameId);
+		
+		if (null == billingname) {
+			tx.rollback();
+			session.close();    			
+			throw new DataNotFoundException("Billingname Not found");
+		}
+		
+		tx.commit();    		
+		
+		} catch (HibernateException e) {
+			billingname = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return billingname;        
 	}
 	
 	//list all consigners
@@ -491,6 +614,35 @@ public class LrService {
 		
 		return consigneeList;
 	}
+	
+	//list all billingnames
+	public List<Billingname> listBillingname() {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+    	Transaction tx   = null;
+    	List<Billingname> billingnameList = null;
+    	try {
+    		tx = session.beginTransaction();        	
+    		billingnameList = Billingname.findAllBillingname(session);    		
+    		
+    		if (null == billingnameList) {
+    			System.err.println("ERROR ERROR : Not able to list billingnames");
+    			throw new DataNotFoundException("Not able to list billingnames" );
+    		} 			
+    		tx.commit();
+    		
+    	} catch (HibernateException e) {
+    		billingnameList = null;
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+            
+        } finally {
+        	if (session.isOpen()) {
+        		session.close();
+        	} 
+        }
+		
+		return billingnameList;
+	}
 
 	public LRResponse createLRResponse(LR lr) 
 	{			
@@ -501,6 +653,11 @@ public class LrService {
 		lrView.setConsigner(lr.getConsignerId());
 		lrView.setConsignee(lr.getConsigneeId());		
 		lrView.setBillingParty(lr.getBillingToParty());		
+		lrView.setPoNo(lr.getPoNo());
+		lrView.setDoNo(lr.getDoNo());
+		lrView.setBillingname(lr.getBillingnameId());	
+		lrView.setStatus(lr.getStatus());
+		lrView.setLrDate(lr.getLrDate().toString());
 		
 		LRResponse response = new LRResponse(lrView);	
 		
@@ -540,6 +697,21 @@ public class LrService {
 		ConsigneeListResponse response = new ConsigneeListResponse(lConsigneeView);
 		return response;
 	}
+	
+	public BillingnameListResponse createListBillingnameResponse(List<Billingname> billingnameList) {				
+		List<BillingnameView> lBillingnameiew  = new ArrayList<BillingnameView>();
+		for (Billingname billingame : billingnameList) {
+			if (null != billingame) {
+				BillingnameView billingnameView = new BillingnameView();				
+				billingnameView.setId(billingame.getId());
+				billingnameView.setName(billingame.getName());
+				billingnameView.setAddress(billingame.getAddress());				
+				lBillingnameiew.add(billingnameView);			
+			}			
+		}
+		BillingnameListResponse response = new BillingnameListResponse(lBillingnameiew);
+		return response;
+	}
 
 	public AppResponse createLRSearchResponse(LR lr) {
 		
@@ -555,6 +727,11 @@ public class LrService {
 			lrView.setVehicleNo(lr.getVehicleNo());
 			lrView.setVehicleOwner(lr.getVehicleOwner());
 			lrView.setBillingParty(lr.getBillingToParty());
+			lrView.setLrDate(lr.getLrDate().toString());
+			lrView.setPoNo(lr.getPoNo());
+			lrView.setDoNo(lr.getDoNo());
+			lrView.setBillingname(lr.getBillingnameId());
+			lrView.setStatus(lr.getStatus());
 			
 			Consigner consigner = lr.getConsignerId();
 			lrView.setConsigner(consigner);
@@ -581,12 +758,16 @@ public class LrService {
 		//Other Exp (to-do : rework, its not going to work in frontend)
 		// use a list of others exp view
 		Set<LROthers> lrOtherExps = lr.getOtherExpenditures();
+		List<LROthersView> lrOthers = new ArrayList<LROthersView>();
 		if (null != lrOtherExps && lrOtherExps.size() > 0) {
 			for (LROthers lrOtherExp : lrOtherExps) {
 				if(lrOtherExp != null) {
-					lrOthersView = new LROthersView();			
+					lrOthersView = new LROthersView();
+					lrOthersView.setId(lrOtherExp.getId());
+					lrOthersView.setLrId(lrOtherExp.getLrId());
 					lrOthersView.setAmount(lrOtherExp.getAmount());
 					lrOthersView.setRemarks(lrOtherExp.getRemarks());
+					lrOthers.add(lrOthersView);
 				}
 			}
 		}
@@ -608,7 +789,89 @@ public class LrService {
 		if (lrView            != null )		{	response.setLr(lrView);							}
 		if (lrExpenditureView != null )		{	response.setLrExpenditure(lrExpenditureView);	}
 		if (lrIncomeView      != null )		{	response.setLrIncome(lrIncomeView);				}
+		if (lrOthers      != null )			{	response.setLrOthers(lrOthers);				}
 		
+		return response;
+	}
+	
+	public AppResponse createLRListResponse(List<LR> lrList) {
+		
+		LRListView lrListView     = null;
+		LROthersView lrOthersView = null;
+		List<LRListView> lrViews  = new ArrayList<LRListView>();
+		
+
+		//LR	
+		if(lrList != null) {
+			for (LR lr : lrList) {
+				if(lr != null) {
+					lrListView = new LRListView();
+					lrListView.setId(lr.getId());
+					lrListView.setVehicleNo(lr.getVehicleNo());
+					lrListView.setVehicleOwner(lr.getVehicleOwner());
+					lrListView.setBillingParty(lr.getBillingToParty());		
+					lrListView.setPoNo(lr.getPoNo());
+					lrListView.setDoNo(lr.getDoNo());
+					lrListView.setBillingname(lr.getBillingnameId());
+					lrListView.setStatus(lr.getStatus());
+					
+					
+					Consigner consigner = lr.getConsignerId();
+					lrListView.setConsigner(consigner);					
+					Consignee consignee = lr.getConsigneeId();
+					lrListView.setConsignee(consignee);
+					
+					//Exp
+					LRExpenditure lrExpediture = lr.getLrexpenditureId();
+					if (null != lrExpediture) {						
+						lrListView.setFreightToBroker(lrExpediture.getFreightToBroker());
+						lrListView.setExtraPayToBroker(lrExpediture.getExtraPayToBroker());
+						lrListView.setAdvance(lrExpediture.getAdvance());
+						lrListView.setBalanceFreight(lrExpediture.getBalanceFreight());
+						lrListView.setLoadingCharges(lrExpediture.getLoadingCharges());
+						lrListView.setUnloadingCharges(lrExpediture.getUnloadingCharges());	
+						lrListView.setLoadingDetBroker(lrExpediture.getLoadingDetBroker());	
+						lrListView.setUnloadingDetBroker(lrExpediture.getUnloadingDetBroker());
+					}
+					
+					// use a list of others exp view
+					Set<LROthers> lrOtherExps = lr.getOtherExpenditures();
+					List<LROthersView> lrOthers = new ArrayList<LROthersView>();
+					if (null != lrOtherExps && lrOtherExps.size() > 0) {
+						for (LROthers lrOtherExp : lrOtherExps) {
+							if(lrOtherExp != null) {
+								lrOthersView = new LROthersView();
+								lrOthersView.setId(lrOtherExp.getId());
+								lrOthersView.setLrId(lrOtherExp.getLrId());
+								lrOthersView.setAmount(lrOtherExp.getAmount());
+								lrOthersView.setRemarks(lrOtherExp.getRemarks());
+								lrOthers.add(lrOthersView);
+							}
+						}
+						lrListView.setLrOthers(lrOthers);
+					}
+					
+					//Get Income
+					LRIncome lrIncome = lr.getLrincomeId();
+					if (lrIncome != null) {								
+						lrListView.setFreightToBrokerBilling(lrIncome.getFreightToBroker());
+						lrListView.setExtraPayToBrokerBilling(lrIncome.getExtraPayToBroker());		
+						lrListView.setLoadingChargesBilling(lrIncome.getLoadingCharges());
+						lrListView.setUnloadingChargesBilling(lrIncome.getUnloadingCharges());	
+						lrListView.setLoadingDetBrokerBilling(lrIncome.getLoadingDetBroker());	
+						lrListView.setUnloadingDetBrokerBilling(lrIncome.getUnloadingDetBroker());			
+					}
+					
+					
+				}
+				
+				lrViews.add(lrListView);
+			}
+		}		
+		
+		//Create Response (to-do: need to add lr exp others)
+		LRListResponse response = new LRListResponse();
+		if (lrViews            != null )		{	response.setLrs(lrViews);						}		
 		return response;
 	}
 	

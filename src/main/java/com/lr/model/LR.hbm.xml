@@ -18,16 +18,19 @@
     </property>     
     
    	<many-to-one name="consignerId" column="consignerId"  
-       class="com.lr.model.Consigner" />
+       class="com.lr.model.Consigner" lazy="false" />
        
     <many-to-one name="consigneeId" column="consigneeId" 
-       class="com.lr.model.Consignee" />  
+       class="com.lr.model.Consignee" lazy="false"/>  
        
     <many-to-one name="lrexpenditureId" column="lrexpenditureId" unique="true"     
-       class="com.lr.model.LRExpenditure" />
+       class="com.lr.model.LRExpenditure" lazy="false"/>
        
     <many-to-one name="lrincomeId" column="lrincomeId" unique="true"     
-       class="com.lr.model.LRIncome" />
+       class="com.lr.model.LRIncome" lazy="false"/>
+       
+    <many-to-one name="billingnameId" column="billingnameId" unique="true"     
+       class="com.lr.model.Billingname" lazy="false"/>
        
     <set name="otherExpenditures" cascade="all" lazy="false">
          <key column="lrId"/>
@@ -53,12 +56,27 @@
     <property name="updatetimestamp" type="date">
       <column name="updatetimestamp"/>
     </property>
+     <property name="poNo" type="string">
+      <column name="poNo" />
+    </property>
+     <property name="doNo" type="string">
+      <column name="doNo" />
+    </property>
+    <property name="status" type="string" not-null="true">
+      <column name="status" />
+    </property> 
  </class>
  
  <query name="com.lr.model.LR.findLRById">
      select lr
        from com.lr.model.LR as lr
      where lr.id = :id     
+ </query>
+ 
+ <query name="com.lr.model.LR.findLRByDate">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate     
  </query>
  
  

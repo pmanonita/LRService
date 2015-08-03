@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.Billingname" table="billingname">
+    <id name="id" type="int" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="name" unique="true" not-null="true">
+      <column name="name" />
+    </property>
+    <property name="address" not-null="true">
+      <column name="address" />
+    </property>
+   
+    
+ </class>
+ 
+ 
+ <query name="com.lr.model.Billingname.findAllBillingname">
+ 	select billingname from com.lr.model.Billingname as billingname
+ </query> 
+ 
+  <query name="com.lr.model.Billingname.findBillingnameById">
+     select billingname
+       from com.lr.model.Billingname as billingname
+     where billingname.id = :id     
+ </query>
+ 
+</hibernate-mapping>

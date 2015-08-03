@@ -50,6 +50,7 @@ public class LRExpenditure implements Serializable {
 		_unloadingCharges   = ctrl.mUnloadingCharges();
 		_loadingDetBroker   = ctrl.mLoadingDetBroker();
 		_unloadingDetBroker = ctrl.mUnloadingDetBroker();		
+		
 			
 	}
 	
@@ -66,6 +67,7 @@ public class LRExpenditure implements Serializable {
 		_unloadingCharges   = ctrl.mUnloadingCharges();
 		_loadingDetBroker   = ctrl.mLoadingDetBroker();
 		_unloadingDetBroker = ctrl.mUnloadingDetBroker();
+		
 		
 	}
 
@@ -93,10 +95,12 @@ public class LRExpenditure implements Serializable {
 		void mUnloadingCharges(int unloadingCharges);
 
 		int mLoadingDetBroker();
-		void mLoadingDetBroker(int loadingDetBroker);
-
+		void mLoadingDetBroker(int loadingDetBroker);			
+		
 		int mUnloadingDetBroker();
 		void mUnloadingDetBroker(int unloadingDetBroker);		
+		
+		
 	}
 	
 	public abstract static class DefaultController implements Controller {
@@ -108,7 +112,8 @@ public class LRExpenditure implements Serializable {
 		public void mLoadingCharges(int loadingCharges) { }
 		public void mUnloadingCharges(int unloadingCharges) { }
 		public void mLoadingDetBroker(int loadingDetBroker) { }
-		public void mUnloadingDetBroker(int unloadingDetBroker) { }				
+		public void mUnloadingDetBroker(int unloadingDetBroker) { }
+		
 	}
 
 	//getter and setter
@@ -192,8 +197,9 @@ public class LRExpenditure implements Serializable {
 
 	void setUnloadingDetBroker(int unloadingDetBroker) {
 		this._unloadingDetBroker = unloadingDetBroker;
-	}	
+	}
 	
+		
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}	
 
 }
