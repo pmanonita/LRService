@@ -81,16 +81,35 @@ public class LRExpenditureResource {
 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
 				 response = new ErrorResponse(errorMsg);
 		     }else{
-		    	//Send to model using service              
-		 		LRExpenditure lrExpenditure = lrExpenditureService.newLRExpenditure(llrNo,
-		 																			iferightToBroker,
-		 																			iextraPayToBroker,
-		 																			iadvance,
-		 																			ibalanceFreight,
-		 																			iloadingCharges,
-		 																			iunloadingCharges,
-		 																			iloadingDetBroker,
-		 																			iunloadingDetBroker);        
+		    	 
+		    	 LRExpenditure lrExpenditure = lr.getLrexpenditureId();
+		    	 if(lrExpenditure != null) {
+		    		 //Expenditure should be updated
+		    		 lrExpenditure = lrExpenditureService.updateLRExpenditure(llrNo,
+								iferightToBroker,
+								iextraPayToBroker,
+								iadvance,
+								ibalanceFreight,
+								iloadingCharges,
+								iunloadingCharges,
+								iloadingDetBroker,
+								iunloadingDetBroker,								
+								lrExpenditure); 
+		    		
+		    	 }else{
+		    		 //Expenditure should be newly added
+		    		 lrExpenditure = lrExpenditureService.newLRExpenditure(llrNo,
+								iferightToBroker,
+								iextraPayToBroker,
+								iadvance,
+								ibalanceFreight,
+								iloadingCharges,
+								iunloadingCharges,
+								iloadingDetBroker,								
+								iunloadingDetBroker); 
+		    		
+		    	 }
+		 		      
 		 		if (lrExpenditure != null) {		 			
 		 			lr=lrService.updateExpenditureToLR(lrExpenditure,lr);
 		 			if (null == lr) {

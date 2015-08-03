@@ -1,12 +1,19 @@
 package com.lr.response;
 
+import java.util.List;
+
 public class LRSearchResponse implements AppResponse {
 	private static final int code = 1; //Success
 	private LRView lr;
 	private LRExpeditureView lrExpenditure;
-	private LRIncomeView lrIncome;	
+	private LRIncomeView lrIncome;
+	private List<LROthersView> lrOthers;
 	
 	public  LRSearchResponse() {}
+	
+	public int getCode() {
+		return code;
+	}
 
 	public LRView getLr() {
 		return lr;
@@ -32,8 +39,16 @@ public class LRSearchResponse implements AppResponse {
 		this.lrIncome = lrIncome;
 	}
 
-	public static int getCode() {
-		return code;
+	public List<LROthersView> getLrOthers() {
+		return lrOthers;
 	}
+
+	public void setLrOthers(List<LROthersView> lrOthers) {
+		this.lrOthers = lrOthers;
+	}
+	
+	
+
+	
 	
 }

@@ -24,9 +24,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.lr.filters.LRHTTPHeaders;
+import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
+import com.lr.model.LRChalan;
 import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
@@ -37,6 +39,7 @@ import com.lr.response.ErrorResponse;
 import com.lr.response.UserResponse;
 import com.lr.response.Result;
 import com.lr.service.AutheticationService;
+import com.lr.service.LRChalanService;
 import com.lr.service.LrService;
 import com.lr.service.UserService;
 
@@ -58,7 +61,10 @@ public class LRResource {
         @FormParam( "vehicleOwner" ) String vehicleOwner,
         @FormParam( "consignerId" )  String consignerId,
         @FormParam( "consigneeId" )  String consigneeId,        
-		@FormParam( "billingParty" ) String billingParty)		
+		@FormParam( "billingParty" ) String billingParty,
+		@FormParam( "poNo" )         String poNo,
+		@FormParam( "doNo" )         String doNo,
+		@FormParam( "billingnameId") String billingnameId)		
     {
 		AppResponse response = null;
 		LrService lrService  = new LrService();		
@@ -68,6 +74,8 @@ public class LRResource {
 		//get Consigner object
 		Consigner consigner = null;
 		Consignee consignee = null;
+		Billingname billingname = null;
+		
 		if (consignerId!=null && !consignerId.equals("")) {
 			consigner  = lrService.getConsigner(consignerId);
 			if (null == consigner) {  
@@ -83,10 +91,20 @@ public class LRResource {
 				response = new ErrorResponse(errorMsg);
 		     }		      
 		}
-              
+		
+		//get partyname object
+		if(billingnameId!=null && !billingnameId.equals("")){
+			billingname  = lrService.getBillingname(billingnameId);
+			if(null == billingnameId) {  
+				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from billingname table", 500);
+				response = new ErrorResponse(errorMsg);
+		     }		      
+		}
+          
+		String status = "OPENED";
 
     	//Send to model using service              
-		LR lr = lrService.newLR(serviceKey, vehileNo, vehicleOwner, consigner, consignee, billingParty);        
+		LR lr = lrService.newLR(serviceKey, vehileNo, vehicleOwner, consigner, consignee, billingParty,poNo,doNo,billingname,status);        
 		if (lr != null) {
 			response = lrService.createLRResponse(lr);			
 		} else {
@@ -94,7 +112,37 @@ public class LRResource {
 			response = new ErrorResponse(errorMsg);
 		}               		
 		return response;
-    }	
+    }
+	
+	//Create CHALAN
+	@POST
+    @Path("/lr-service/createChalan" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse createChalan(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrNos" )     String lrNos,
+        @FormParam( "chalanDetails" )     String chalanDetails)		
+    {
+		AppResponse response = null;
+		LRChalanService lrChalanService  = new LRChalanService();
+		System.out.println("lrno "+lrNos);
+		System.out.println("chalanDetails "+chalanDetails);
+		//validate Input
+		lrChalanService.validateAuthData(lrNos);
+		
+		LRChalan lrChalan = null;
+		lrChalan = lrChalanService.newLRChalan(lrNos,chalanDetails);
+		
+		if (null != lrChalan ) {
+			response = lrChalanService.createLRChalanResponse(lrChalan);	
+		} else {
+			ErrorMessage errorMsg = new ErrorMessage("Issue In saving chalan details", 500);
+			response = new ErrorResponse(errorMsg);
+		}
+		
+		           		
+		return response;
+    }
 
 	@POST
     @Path("/lr-service/searchlr" )
@@ -119,6 +167,30 @@ public class LRResource {
   		
   		return response;
     }
+	
+	@POST
+    @Path("/lr-service/getLRByDate" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse getLRByDate(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrDate" ) String lrDate)		
+    {
+		AppResponse response = null;
+		LrService lrService  = new LrService();
+		              
+       	//Send to model using service              
+  		List<LR> lrList = lrService.findLRByDate(lrDate);
+    		
+  		if (lrList != null) {  			
+  			//To-do : Create response
+  			response = lrService.createLRListResponse(lrList);    					
+    	} else {
+    		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LR List data. Please try again", 500);
+    		response = new ErrorResponse(errorMsg);
+    	}
+  		
+  		return response;
+    }
 
 	//Update LR	
 	@POST
@@ -131,7 +203,10 @@ public class LRResource {
         @FormParam( "vehicleOwner" 	) 	String vehicleOwner,
         @FormParam( "consignerId" 	) 	String consignerId,
         @FormParam( "consigneeId" 	) 	String consigneeId,        
-		@FormParam( "billingParty" 	) 	String billingParty)		
+		@FormParam( "billingParty" 	) 	String billingParty,
+		@FormParam( "poNo" 	        ) 	String poNo,
+		@FormParam( "doNo" 	        ) 	String doNo,
+		@FormParam( "billingnameId" ) 	String billingnameId)		
     {
 		AppResponse response    = null;
 		LrService lrService = new LrService();
@@ -141,7 +216,7 @@ public class LRResource {
 		LR lr = null;
 		if (lrNo != null && !lrNo.equals("") ) {
 			lr  = lrService.findLR(lrNo);
-			
+			System.out.println("getting LR for LR No "+lrNo+ " value "+lr);
 			if (null == lr) {  
 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
 				 response = new ErrorResponse(errorMsg);
@@ -150,6 +225,7 @@ public class LRResource {
 		    	//get Consigner object
 		 		Consigner consigner = null;
 		 		Consignee consignee = null;
+		 		Billingname billingname = null;
 		 		if (consignerId!=null && !consignerId.equals("")) {
 		 			consigner  = lrService.getConsigner(consignerId);
 		 			 if(null == consigner) {  
@@ -166,11 +242,25 @@ public class LRResource {
 		 		     }		 		      
 		 		}
 		 		
+		 		 //get billingname object
+		 		if (billingnameId !=null && !billingnameId.equals("")) {
+		 			billingname  = lrService.getBillingname(billingnameId);
+		 			 if(null == billingname) {  
+		 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from billingname table", 500);
+		 				 response = new ErrorResponse(errorMsg);
+		 		     }		 		      
+		 		}
+		 		
+		 		
+		 		
 		 		lr = lrService.updateLR(vehileNo,
 		 								vehicleOwner,
 		 								consigner,
 		 								consignee,						
 		 								billingParty,
+		 								poNo,
+		 								doNo,
+		 								billingname,
 		 								lr);
 		 		if (null == lr) {
 		 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating the lr. Please try again", 500);
@@ -219,6 +309,26 @@ public class LRResource {
         	response = lrService.createListConsigneeResponse(consigneeList);
         } else {
         	ErrorMessage errorMsg = new ErrorMessage("Not able to list consignees", 500);
+			response = new ErrorResponse(errorMsg);
+        }
+              		
+		return response;
+    }
+	
+	@GET
+    @Path("/listbillingnames" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse listBillingnames()
+    {		
+		AppResponse response;
+		LrService lrService = new LrService();		
+
+        List<Billingname> billingnameList  = lrService.listBillingname();
+      
+        if (null != billingnameList) {           
+        	response = lrService.createListBillingnameResponse(billingnameList);
+        } else {
+        	ErrorMessage errorMsg = new ErrorMessage("Not able to list billingnames", 500);
 			response = new ErrorResponse(errorMsg);
         }
               		

@@ -2,6 +2,7 @@ package com.lr.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.HibernateException;
@@ -29,6 +30,10 @@ public class LR implements Serializable {
 	private Consigner     _consignerId;
 	private Consignee     _consigneeId;
 	private Set<LROthers> _otherExpenditures;
+	private Billingname  _billingnameId;
+	private String         _poNo;
+	private String         _doNo;
+	private String         _status;
 	
 	public LR() {	}
 	
@@ -61,6 +66,10 @@ public class LR implements Serializable {
 		_lrexpenditureId = ctrl.mLrexpenditureId();
 		_lrincomeId = ctrl.mLrincomeId();
 		_otherExpenditures = ctrl.mOtherExpenditures();
+		_poNo = ctrl.mPONo();
+		_doNo = ctrl.mDONo();
+		_billingnameId = ctrl.mBillingname();
+		_status = ctrl.mStatus();
 	}
 	
 	public void changeTo(Controller ctrl) {		
@@ -77,6 +86,10 @@ public class LR implements Serializable {
 		_lrexpenditureId = ctrl.mLrexpenditureId();
 		_lrincomeId = ctrl.mLrincomeId();
 		_otherExpenditures = ctrl.mOtherExpenditures();
+		_poNo = ctrl.mPONo();
+		_doNo = ctrl.mDONo();
+		_billingnameId = ctrl.mBillingname();
+		_status = ctrl.mStatus();
 		
 	}
 
@@ -118,6 +131,18 @@ public class LR implements Serializable {
 		Set<LROthers> mOtherExpenditures();
 		void mOtherExpenditures(Set<LROthers> _otherExpenditures);
 		
+		String mPONo();
+		void mPONo(String _poNo);
+		
+		String mDONo();
+		void mDONo(String _doNo);
+		
+		Billingname mBillingname();
+		void mBillingname(Billingname _billingnameId);
+		
+		String mStatus();
+		void mStatus(String _status);
+		
 	}
 	
 	public abstract static class DefaultController implements Controller {
@@ -133,6 +158,10 @@ public class LR implements Serializable {
 		public void mMultiLoad(String multiLoad) 	{	}
 		public void mUserName(String userName) 	{	}		
 		public void mOtherExpenditures(Set otherExpenditures)	{	}
+		public void mPONo(String poNo) 	{	}
+		public void mDONo(String doNo) 	{	}
+		public void mBillingname(Billingname _billingnameId) {	}
+		public void mStatus(String status) 	{	}
 	}
 
 	
@@ -248,7 +277,37 @@ public class LR implements Serializable {
 	}
 	public void setOtherExpenditures(Set<LROthers> otherExpenditures){
 		this._otherExpenditures = otherExpenditures;
-	}	
+	}
+	public String getPoNo() {
+		return _poNo;
+	}
+
+	public void setPoNo(String poNo) {
+		this._poNo = poNo;
+	}
+	public String getDoNo() {
+		return _doNo;
+	}
+
+	public void setDoNo(String doNo) {
+		this._doNo = doNo;
+	}
+	
+	public Billingname getBillingnameId() {
+		return _billingnameId;
+	}
+
+	public void setBillingnameId(Billingname billingnameId) {
+		this._billingnameId = billingnameId;
+	}
+	
+	public String getStatus() {
+		return _status;
+	}
+
+	public void setStatus(String status) {
+		this._status = status;
+	}
 
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
 	
@@ -269,6 +328,24 @@ public class LR implements Serializable {
  
 	 	final LR lr = (LR)(qry.uniqueResult());
 	 	return lr;
+	}
+	
+	private static final String QUERY_FOR_LR_BY_DATE_SKEY =
+		LR.class.getName() + ".findLRByDate";	
+	public static List<LR> findLRByDate(Session session, String lrDate)
+		throws HibernateException
+	{
+	 	if (lrDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_SKEY);
+	 	qry.setString("lrDate", lrDate);		 	
+ 
+	 	//qry.setMaxResults(1);
+ 
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
 	}
 	
 }

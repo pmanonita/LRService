@@ -109,3 +109,24 @@ SELECT * FROM consignee c;
 insert into consignee(consigneeCode,consigneeName,address,serviceTax,toplace) values('CC04','CC Name2','ameerpet','45556','orissa');
 insert into consigner(consignerCode,consignerName,address,serviceTax,fromplace) values('CC06','CC Name5','ameerpet','45556','pune');
 
+DROP TABLE IF EXISTS `lr_test`.`billingname`;
+CREATE TABLE  `lr_test`.`billingname` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+SELECT * FROM billingname b;
+insert into billingname(name,address) values ('prajantana singh','at/po-bodapalasha,dist keojhar,state-orissa,pin -750886,dk road,hyderabad');
+insert into billingname(name,address) values ('p1name singh','at/po-bodapalasha,dist keojhar,state-orissa,pin -750886,dk road,hyderabad');
+
+DROP TABLE IF EXISTS `lr_test`.`lrchalan`;
+CREATE TABLE  `lr_test`.`lrchalan` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrIds` varchar(255) NOT NULL,
+  `chalanDetails` text,
+  UNIQUE KEY `lrId` (`lrIds`),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+

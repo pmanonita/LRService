@@ -3,6 +3,10 @@ package com.lr.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
 import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.LR.Controller;
 
@@ -14,6 +18,7 @@ public class LROthers implements Serializable {
 	private long   _lrId;	
 	private int    _amount;	
 	private String _remarks;
+	
 		
 	public LROthers() {	}
 	
@@ -35,7 +40,8 @@ public class LROthers implements Serializable {
 		
 		_lrId    = ctrl.mLRId();
 		_amount  = ctrl.mAmount();
-		_remarks = ctrl.mRemarks();			
+		_remarks = ctrl.mRemarks();	
+		
 	}
 	
 	public void changeTo(Controller ctrl) {		
@@ -44,6 +50,7 @@ public class LROthers implements Serializable {
 		_lrId    = ctrl.mLRId();	
 		_amount  = ctrl.mAmount();
 		_remarks = ctrl.mRemarks();		
+		
 	}
 
 	public interface Controller {
@@ -55,13 +62,16 @@ public class LROthers implements Serializable {
 		void mAmount(int amount);
 
 		String mRemarks();
-		void mRemarks(String remarks);				
+		void mRemarks(String remarks);
+		
+		
 	}
 	
 	public abstract static class DefaultController implements Controller {
 		public void mLRId(long lrId) { }
 		public void mAmount(int freightToBroker) { }
-		public void mRemarks(String remarks) { }				
+		public void mRemarks(String remarks) { }
+		
 	}
 
 	
@@ -93,6 +103,25 @@ public class LROthers implements Serializable {
 		this._remarks = remarks;
 	}
 	
+		
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
+	
+	private static final String QUERY_FOR_LROTHEREXPENDITURE_BY_ID_SKEY =
+		LROthers.class.getName() + ".findLROtherExpenditureById";	
+	public static LROthers findLROtherExpenditureById(Session session, Long id)
+		throws HibernateException
+	{
+	 	if (id == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LROTHEREXPENDITURE_BY_ID_SKEY);
+	 	qry.setLong("id", id);		 	
+ 
+	 	qry.setMaxResults(1);
+ 
+	 	final LROthers lrOther = (LROthers)(qry.uniqueResult());
+	 	return lrOther;
+	}
 
 }

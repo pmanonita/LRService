@@ -17,8 +17,15 @@
     </property>
     <property name="remarks" type="string" not-null="true">
       <column name="remarks" />
-    </property>    
+    </property> 
+    
      </class>
+     
+     <query name="com.lr.model.LROthers.findLROtherExpenditureById">
+     select lrOthers
+       from com.lr.model.LROthers as lrOthers
+     where lrOthers.id = :id     
+ 	</query>
  
  
  

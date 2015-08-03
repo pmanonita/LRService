@@ -2,6 +2,7 @@ package com.lr.service;
 
 
 import java.util.Date;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -11,9 +12,12 @@ import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
 import com.lr.exceptions.InsufficientDataException;
 
+import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
 import com.lr.model.LRExpenditure;
+import com.lr.model.LRIncome;
+import com.lr.model.LROthers;
 import com.lr.model.User;
 
 import com.lr.response.LRExpeditureView;
@@ -44,41 +48,73 @@ public class LRExpenditureService {
 			  											final int loadingCharges,
 			  											final int unloadingCharges,
 			  											final int loadingDetBroker,
-			  											final int unloadingDetBroker) 
+			  											final int unloadingDetBroker)
 	{
 		
 		return new LRExpenditure.DefaultController() {
 			
 			
-			public long mLRId()	{return lrId;}
-			
-
-			public int mFreightToBroker()	{return freightToBroker; }
-			
-
-			public int mExtraPayToBroker()	{return extraPayToBroker; }
-			
-
-			public int mAdvance()	{ return advance; }
-			
-			public int mBalanceFreight()	{return balanceFreight; }
-			
-			 
-			public int mLoadingCharges()	{return loadingCharges; }
-			
-
-			public int mUnloadingCharges(){ return unloadingCharges; }
-			
-			public int mLoadingDetBroker(){ return loadingDetBroker; }
-		
-
-			public int mUnloadingDetBroker(){ return unloadingDetBroker;}
+			public long mLRId()				{	return lrId;	}		
+			public int mFreightToBroker()	{	return freightToBroker;	}			
+			public int mExtraPayToBroker()	{	return extraPayToBroker; }			
+			public int mAdvance()			{ return advance; }			
+			public int mBalanceFreight()	{	return balanceFreight; }		
+			public int mLoadingCharges()	{	return loadingCharges; }			
+			public int mUnloadingCharges()	{ 	return unloadingCharges; }			
+			public int mLoadingDetBroker()	{ return loadingDetBroker;	}
+			public int mUnloadingDetBroker(){ return unloadingDetBroker;	}
 			
 			
 			
 		};
 	}
 	
+	private LRExpenditure.Controller createController(final long lrId,						  
+				final int freightToBroker,
+				final int extraPayToBroker,
+				final int advance,
+				final int balanceFreight,
+				final int loadingCharges,
+				final int unloadingCharges,
+				final int loadingDetBroker,
+				final int unloadingDetBroker) 
+	{
+	
+	return new LRExpenditure.DefaultController() {
+	
+	
+		public long mLRId()	{return lrId;}
+		
+		
+		public int mFreightToBroker()	{return freightToBroker; }
+		
+		
+		public int mExtraPayToBroker()	{return extraPayToBroker; }
+		
+		
+		public int mAdvance()	{ return advance; }
+		
+		public int mBalanceFreight()	{return balanceFreight; }
+		
+		
+		public int mLoadingCharges()	{return loadingCharges; }
+		
+		
+		public int mUnloadingCharges(){ return unloadingCharges; }
+		
+		public int mLoadingDetBroker(){ return loadingDetBroker; }
+		
+		
+		public int mUnloadingDetBroker(){ return unloadingDetBroker;}
+		
+		
+		
+	
+	
+	};
+	}
+	
+
 	public LRExpenditure newLRExpenditure(final long lrId,						  
 					final int freightToBroker,
 					final int extraPayToBroker,
@@ -100,15 +136,6 @@ public class LRExpenditureService {
 			
 			tx = session.beginTransaction();
 			
-			//check if user already exists
-			/*user = User.findByUserNameAndServiceKey(session, userName, serviceKey);
-			if (user != null && user.mUserName().equalsIgnoreCase(userName)) {
-				tx.rollback();
-    			session.close();    			
-    			throw new SignupException("Signup failure. User already exists");				
-			}*/
-			
-
 			LRExpenditure.Controller ctrl = createControllerFromView(lrId,						  
 															freightToBroker,
 															extraPayToBroker,
@@ -122,7 +149,7 @@ public class LRExpenditureService {
 			//Create user object using controller
 			lrExpenditure = new LRExpenditure(ctrl);
 			
-			session.save(lrExpenditure);			
+			session.saveOrUpdate(lrExpenditure);			
 			session.flush();
 			
 			tx.commit();		
@@ -135,6 +162,56 @@ public class LRExpenditureService {
 			session.close();
 		}
 		
+		return lrExpenditure;
+	}
+	
+	public LRExpenditure updateLRExpenditure(final long lrId,						  
+			final int freightToBroker,
+			final int extraPayToBroker,
+			final int advance,
+			final int balanceFreight,
+			final int loadingCharges,
+			final int unloadingCharges,
+			final int loadingDetBroker,
+			final int unloadingDetBroker,			
+			LRExpenditure lrExpenditure)
+	{
+		
+		//Get hibernate session manager
+		Session session = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx  = null;
+		
+	
+		try {
+		
+			tx = session.beginTransaction();
+		
+			LRExpenditure.Controller ctrl = createController(lrId,						  
+														freightToBroker,
+														extraPayToBroker,
+														advance,
+														balanceFreight,
+														loadingCharges,
+														unloadingCharges,
+														loadingDetBroker,
+														unloadingDetBroker);
+					
+			//Create user object using controller
+			lrExpenditure.changeTo(ctrl);			
+		
+			session.saveOrUpdate(lrExpenditure);			
+			session.flush();
+		
+			tx.commit();		
+	
+		} catch(RuntimeException  ex) {
+			lrExpenditure = null;
+			if (tx != null) 	{ tx.rollback(); }
+			ex.printStackTrace();			
+		} finally {
+			session.close();
+		}
+	
 		return lrExpenditure;
 	}
 	

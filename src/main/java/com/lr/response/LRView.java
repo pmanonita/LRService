@@ -1,5 +1,6 @@
 package com.lr.response;
 
+import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 
@@ -9,10 +10,13 @@ public class LRView {
 	private String vehicleNo;
 	private String vehicleOwner;
 	private Consigner consigner;
-	private Consignee consignee;
-	private String   servTaxConsigner;
-	private String servTaxConsignee;
+	private Consignee consignee;	
 	private String billingParty;
+	private String lrDate;
+	private String poNo;
+	private String doNo;
+	private Billingname billingname;
+	private String status;
     
     
     public LRView() {}
@@ -46,26 +50,6 @@ public class LRView {
 		this.vehicleOwner = vehicleOwner;
 	}	
 
-	public String getServTaxConsigner() {
-		return servTaxConsigner;
-	}
-
-
-	public void setServTaxConsigner(String servTaxConsigner) {
-		this.servTaxConsigner = servTaxConsigner;
-	}
-
-
-	public String getServTaxConsignee() {
-		return servTaxConsignee;
-	}
-
-
-	public void setServTaxConsignee(String servTaxConsignee) {
-		this.servTaxConsignee = servTaxConsignee;
-	}
-
-
 	public String getBillingParty() {
 		return billingParty;
 	}
@@ -94,6 +78,63 @@ public class LRView {
 	public void setConsignee(Consignee consignee) {
 		this.consignee = consignee;
 	}
+
+
+	public String getLrDate() {
+		return lrDate;
+	}
+
+
+	public void setLrDate(String lrDate) {
+		this.lrDate = lrDate;
+	}
+
+
+	public String getPoNo() {
+		return poNo;
+	}
+
+
+	public void setPoNo(String poNo) {
+		this.poNo = poNo;
+	}
+
+
+	public String getDoNo() {
+		return doNo;
+	}
+
+
+	public void setDoNo(String doNo) {
+		this.doNo = doNo;
+	}
+
+
+	public Billingname getBillingname() {
+		return billingname;
+	}
+
+
+	public void setBillingname(Billingname billingname) {
+		this.billingname = billingname;
+	}
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
+
+
+	
+	
+	
 
    
 

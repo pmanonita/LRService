@@ -1,7 +1,9 @@
 package com.lr.resources;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -67,7 +69,13 @@ public class LROthersResource {
 		 														remarks);
 		 								      
 		 		if (lrOthers != null) {
-		 			response = lrOthersService.createLROthersResponse(lrOthers);			
+		 			Set<LROthers> lrOtherExps = lr.getOtherExpenditures();
+		 			
+		 			if(null == lrOtherExps) {
+		 				lrOtherExps = new HashSet();		 				
+		 			}
+		 			lrOtherExps.add(lrOthers);
+		 			response = lrOthersService.createLROthersResponse(lrOtherExps);			
 		 		} else {
 		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lrOthers. Please try again", 500);
 		 			response = new ErrorResponse(errorMsg);
@@ -78,5 +86,57 @@ public class LROthersResource {
                		
 		return response;
     }
+	
+	@POST
+    @Path("/lr-service/removelrothers" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse removelrothers(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrOtherExpenditureId" 		) String lrOtherExpenditureId,
+        @FormParam( "lrNo" 		                ) String lrNo)       		
+    {
+		AppResponse response            = null;
+		LROthersService lrOthersService = new LROthersService();
+		LrService lrService             = new LrService();		
+
+		long llrOtherExpenditureId = 0;
+		long llrNo                 = 0;
+		try {	llrOtherExpenditureId = Long.parseLong(lrOtherExpenditureId);		} 	catch (NumberFormatException ex) {	}
+		try {	llrNo                 = Long.parseLong(lrNo);		                } 	catch (NumberFormatException ex) {	}	
+				
+		LR lr = null;
+		if ( llrOtherExpenditureId > 0 && llrNo > 0 ) {		
+				//Send to model using service              
+				LROthers lrOthers = lrOthersService.findLROtherExpenditure(llrOtherExpenditureId);
+			 								      
+				if ( lrOthers != null ) {
+					if ( lrOthersService.removeLROtherExpenditure(lrOthers) ) {
+						lr  = lrService.findLR(lrNo);
+						if ( null == lr ) {  
+							ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
+							response = new ErrorResponse(errorMsg);
+						} else {
+							Set<LROthers> lrOtherExps = lr.getOtherExpenditures();		 						 				
+				 			response = lrOthersService.createLROthersResponse(lrOtherExps);	
+						}
+			 				
+			 		} else {
+			 			ErrorMessage errorMsg = new ErrorMessage("Issue while Removing LROtherExpenditure. Please try again", 500);
+			 			response = new ErrorResponse(errorMsg);
+			 		}		
+			 			
+			 	} else {
+			 		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LROtherExpenditure. Please try again", 500);
+			 		response = new ErrorResponse(errorMsg);
+			 	}	
+			
+		} else {
+	 		ErrorMessage errorMsg = new ErrorMessage("LrExpenditureID is wrong.", 500);
+	 		response = new ErrorResponse(errorMsg);
+	 	}	
+		
+		return response;
+    }
+		
 
 }

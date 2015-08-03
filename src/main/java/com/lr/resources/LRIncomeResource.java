@@ -43,12 +43,12 @@ public class LRIncomeResource {
     public AppResponse addlrexpenditure(
         @Context HttpHeaders httpHeaders,
         @FormParam( "lrNo"               ) String lrNo,
-        @FormParam( "freightToBroker"    ) String freightToBroker,
-        @FormParam( "extraPayToBroker"   ) String extraPayToBroker,       
-        @FormParam( "loadingCharges"     ) String loadingCharges,
-		@FormParam( "unloadingCharges"   ) String unloadingCharges,
-		@FormParam( "loadingDetBroker"   ) String loadingDetBroker,
-		@FormParam( "unloadingDetBroker" ) String unloadingDetBroker)		
+        @FormParam( "freightToBrokerBilling"    ) String freightToBroker,
+        @FormParam( "extraPayToBrokerBilling"   ) String extraPayToBroker,       
+        @FormParam( "loadingChargesBilling"     ) String loadingCharges,
+		@FormParam( "unloadingChargesBilling"   ) String unloadingCharges,
+		@FormParam( "loadingDetBrokerBilling"   ) String loadingDetBroker,
+		@FormParam( "unloadingDetBrokerBilling" ) String unloadingDetBroker)		
     {
 		AppResponse response    = null;
 		LRIncomeService lrIncomeService = new LRIncomeService();
@@ -77,14 +77,27 @@ public class LRIncomeResource {
 				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
 				response = new ErrorResponse(errorMsg);
 		    } else {
-		    	//Send to model using service              
-		    	LRIncome lrIncome = lrIncomeService.newLRIncome(llrNo,
-		 														iferightToBroker,
-		 														iextraPayToBroker,
-		 														iloadingCharges,
-		 														iunloadingCharges,
-		 														iloadingDetBroker,
-		 														iunloadingDetBroker);        
+		    	LRIncome lrIncome = lr.getLrincomeId();  
+		    	if(lrIncome != null) {
+		    		lrIncome = lrIncomeService.updateLRIncome(llrNo,
+								iferightToBroker,
+								iextraPayToBroker,
+								iloadingCharges,
+								iunloadingCharges,
+								iloadingDetBroker,
+								iunloadingDetBroker,
+								lrIncome); 
+		    	}else {
+		    		lrIncome = lrIncomeService.newLRIncome(llrNo,
+							iferightToBroker,
+							iextraPayToBroker,
+							iloadingCharges,
+							iunloadingCharges,
+							iloadingDetBroker,
+							iunloadingDetBroker); 
+		    		
+		    	}
+		    	      
 		 		if (lrIncome != null) {		 			
 		 			lr=lrService.updateIncomeToLR(lrIncome,lr);
 		 			if (null == lr) {
