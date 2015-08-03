@@ -8,6 +8,10 @@ public class UserListResponse implements AppResponse {
 	
 	public UserListResponse()	{}
 	
+	public static int getCode() {
+		return code;
+	}
+	
 	public UserListResponse(List<UserView> users) {
 		this.users = users;
 	}
@@ -17,9 +21,6 @@ public class UserListResponse implements AppResponse {
 	}
 	public void setUsers(List<UserView> users) {
 		this.users = users;
-	}
-	public static int getCode() {
-		return code;
-	}	 
+	}		 
 
 }

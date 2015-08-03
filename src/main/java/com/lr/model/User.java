@@ -254,7 +254,5 @@ public class User implements Serializable {
         
         final User user = (User)(qry.uniqueResult());
     	return user;	
-	}
-	
-	
+	}		
 }

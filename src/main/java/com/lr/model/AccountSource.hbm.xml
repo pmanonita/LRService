@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.AccountSource" table="Account">
+    <id name="id" type="int" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="accountName" not-null="true">
+      <column name="accountName" />
+    </property>
+    
+    <property name="createDate" type="date">
+      <column name="createDate"/>
+    </property>
+ </class>
+ 
+ <query name="com.lr.model.AccountSource.findById">
+     select account
+       from com.lr.model.AccountSource as account
+     where account.id = :id
+ </query>  
+
+ <query name="com.lr.model.AccountSource.findAccountByName">
+     select account
+       from com.lr.model.AccountSource as account
+     where account.accountName = :accountName 
+ </query>
+ 
+ <query name="com.lr.model.AccountSource.findAllAccounts">
+ 	select account from com.lr.model.AccountSource as account
+ </query> 
+ 
+</hibernate-mapping>

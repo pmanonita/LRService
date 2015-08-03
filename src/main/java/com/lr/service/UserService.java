@@ -63,13 +63,13 @@ public class UserService {
 	
 	//Signup
 	public User signUp(final String serviceKey,
-						  final String userName,
-						  final String password,
-						  final String firstName,
-						  final String lastName,
-						  final String email,
-						  final Long   mobile,
-						  final String role)
+					   final String userName,
+					   final String password,
+					   final String firstName,
+					   final String lastName,
+					   final String email,
+					   final Long   mobile,
+					   final String role)
 	{
 		validateAuthData(userName, password);
 		
@@ -377,7 +377,8 @@ public class UserService {
     		if (null == user) {
     			tx.rollback();
     			session.close();    			
-    			return null; 
+    			System.err.println("ERROR ERROR : User not found");
+    			throw new DataNotFoundException("User not found"); 
     		}			
 			//Get existing data that can't be changed from edit screen
 			final String uName  = user.getUserName();			    					

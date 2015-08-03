@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.Expense" table="Expense">
+    <id name="id" type="long" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="amount" type="int" not-null="true">
+      <column name="amount" />
+    </property>
+    
+    <many-to-one name="accountSource" lazy="false" not-null="true" column="accountSourceId"  
+       class="com.lr.model.AccountSource" />
+    
+    <property name="date" type="date" not-null="true">
+      <column name="date"/>
+    </property>
+    
+    <property name="status" not-null="true">
+      <column name="status" />
+    </property>
+    
+    <property name="remark">
+      <column name="remark" />
+    </property>        
+    
+ </class>
+ 
+ <query name="com.lr.model.Expense.findById">
+     select expense
+       from com.lr.model.Expense as expense
+     where expense.id = :id      
+ </query>  
+ 
+ <query name="com.lr.model.Expense.findByAcctDateStatus">
+     select expense
+       from com.lr.model.Expense as expense
+     where expense.accountSource = :accountSourceId
+       and expense.status = :status
+       and expense.date 
+       between :fromDate and :toDate
+       order by date desc 
+ </query>
+ 
+ <query name="com.lr.model.Expense.findByAcctNDate">
+     select expense
+       from com.lr.model.Expense as expense
+     where expense.accountSource = :accountSourceId
+       and expense.date 
+       between :fromDate and :toDate
+       order by date desc  
+ </query>
+ 
+ <query name="com.lr.model.Expense.findByStatusNDate">
+     select expense
+       from com.lr.model.Expense as expense
+     where expense.status = :status
+       and expense.date 
+       between :fromDate and :toDate
+       order by date desc  
+ </query>
+ 
+ <query name="com.lr.model.Expense.findByDate">
+     select expense
+       from com.lr.model.Expense as expense
+     where expense.date 
+       between :fromDate and :toDate
+       order by date desc  
+ </query>
+ <query name="com.lr.model.Expense.findFirstFifty">
+     select expense
+       from com.lr.model.Expense as expense
+     order by date desc     
+ </query>
+ 
+ 
+</hibernate-mapping>
