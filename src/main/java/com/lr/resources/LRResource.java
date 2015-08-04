@@ -169,17 +169,19 @@ public class LRResource {
     }
 	
 	@POST
-    @Path("/lr-service/getLRByDate" )
+    @Path("/lr-service/list" )
     @Produces( MediaType.APPLICATION_JSON )
     public AppResponse getLRByDate(
         @Context HttpHeaders httpHeaders,       
-        @FormParam( "lrDate" ) String lrDate)		
+        @FormParam( "lrDate" ) String lrDate,
+        @FormParam( "multiLoad" ) String multiLoad,
+        @FormParam( "status" ) String status)
     {
 		AppResponse response = null;
 		LrService lrService  = new LrService();
 		              
        	//Send to model using service              
-  		List<LR> lrList = lrService.findLRByDate(lrDate);
+  		List<LR> lrList = lrService.listlr(lrDate, multiLoad, status);
     		
   		if (lrList != null) {  			
   			//To-do : Create response

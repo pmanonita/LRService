@@ -332,7 +332,8 @@ public class LR implements Serializable {
 	
 	private static final String QUERY_FOR_LR_BY_DATE_SKEY =
 		LR.class.getName() + ".findLRByDate";	
-	public static List<LR> findLRByDate(Session session, String lrDate)
+	@SuppressWarnings("unchecked")
+	public static List<LR> findLRByDate(Session session, Date lrDate)
 		throws HibernateException
 	{
 	 	if (lrDate == null) {
@@ -340,12 +341,32 @@ public class LR implements Serializable {
 	 	}
 	 	
 	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_SKEY);
-	 	qry.setString("lrDate", lrDate);		 	
- 
-	 	//qry.setMaxResults(1);
- 
+	 	qry.setDate("lrDate", lrDate); 
 	 	final List<LR> lrList = qry.list();
 	 	return lrList;
+	}
+
+	public static List<LR> findByDateMultiLoadStatus(Session session,
+			Date lrDate, String multiLoad, String status) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static List<LR> findByDateMultiLoad(Session session, Date lrDate,
+			String multiLoad) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static List<LR> findByDateStatus(Session session, Date lrDate,
+			String status) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static List<LR> findFirstFifty(Session session) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
