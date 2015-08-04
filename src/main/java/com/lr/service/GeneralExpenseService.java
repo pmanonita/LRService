@@ -267,14 +267,16 @@ public class GeneralExpenseService {
     			expenseList = Expense.findByDate(session, dFromDate, dToDate);
     		} else {
     			expenseList = Expense.findFirstFifty(session);
-    		}   		
-    		
-    		tx.commit();
+    		}    		
     		
     		if (null == expenseList) {
+    			tx.rollback();
+				session.close();
     			System.err.println("ERROR ERROR : Not able to list expenses");
     			throw new DataNotFoundException("No expenses found with given input filters" );
     		}
+    		
+    		tx.commit();
     		
     	} catch (HibernateException e) {
             if (tx!=null) tx.rollback();
