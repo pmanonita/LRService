@@ -110,6 +110,44 @@
      order by lrDate desc
  </query>
  
+ <query name="com.lr.model.LR.findByDateMultiLoadStatusNoAttach">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate
+       and lr.multiLoad = :multiLoad
+       and lr.status = :status
+       and lr.transid = 0
+       order by lrDate desc 
+ </query>
+ 
+ <query name="com.lr.model.LR.findByDateMultiLoadStatusAttach">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate
+       and lr.multiLoad = :multiLoad
+       and lr.status = :status
+       and lr.transid > 0
+       order by lrDate desc 
+ </query>
+ 
+ <query name="com.lr.model.LR.findByDateMultiLoadNoAttach">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate
+       and lr.multiLoad = :multiLoad
+       and lr.transid = 0
+       order by lrDate desc 
+ </query>
+ 
+ <query name="com.lr.model.LR.findByDateMultiLoadAttach">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate
+       and lr.multiLoad = :multiLoad
+       and lr.transid > 0
+       order by lrDate desc 
+ </query>
+ 
  
  
 </hibernate-mapping>

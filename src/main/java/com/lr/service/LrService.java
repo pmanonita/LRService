@@ -22,6 +22,7 @@ import java.util.UUID;
 
 
 
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -227,7 +228,7 @@ public class LrService {
 		return lr;        
 	}
 	
-	public List<LR> listlr( String strlrDate,  String strMultiLoad, String strStatus ) {
+	public List<LR> listlr( String strlrDate,  String strMultiLoad, String strStatus, String strIsLRAttached ) {
 		
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
@@ -261,10 +262,34 @@ public class LrService {
     			useStatusFilter = true;
     		}
     		
+    		String lrAttached = null;    		
+    		boolean useLRAttachedFilter = false;    		
+    		if (null != strIsLRAttached && !strIsLRAttached.equals("") ) {
+    			if (strIsLRAttached.equalsIgnoreCase("true")) {
+    				lrAttached = "true";
+    				useLRAttachedFilter = true;    				
+    			} else if(strIsLRAttached.equalsIgnoreCase("false")) {
+    				lrAttached = "false";
+    				useLRAttachedFilter = true;
+    			}			
+    		}
+    		
     		//Create Query
-    		if (usedateFilter && useMultiLoadFilter && useStatusFilter) {
+    		if (usedateFilter && useMultiLoadFilter && useStatusFilter && useLRAttachedFilter) {
+    			if(lrAttached.equalsIgnoreCase("true")) {
+    				lrList = LR.findByDateMultiLoadStatusAttach(session, lrDate, multiLoad, status);
+    			} else if(lrAttached.equalsIgnoreCase("false")) {
+    				lrList = LR.findByDateMultiLoadStatusNoAttach(session, lrDate, multiLoad, status);
+    			}    			
+    		} else if (usedateFilter && useMultiLoadFilter && useStatusFilter) {//To do : Rare (Could be removed)
     			lrList = LR.findByDateMultiLoadStatus(session, lrDate, multiLoad, status);
-    		} else if(usedateFilter && useMultiLoadFilter) {
+    		} else if (usedateFilter && useMultiLoadFilter && useLRAttachedFilter) {
+    			if(lrAttached.equalsIgnoreCase("true")) {
+    				lrList = LR.findByDateMultiLoadAttach(session, lrDate, multiLoad);
+    			} else if(lrAttached.equalsIgnoreCase("false")) {
+    				lrList = LR.findByDateMultiLoadNoAttach(session, lrDate, multiLoad);
+    			}    			
+    		} else if(usedateFilter && useMultiLoadFilter) { //To do : Rare (Could be removed)
     			lrList = LR.findByDateMultiLoad(session, lrDate, multiLoad);
     		} else if(usedateFilter && useStatusFilter) {
     			lrList = LR.findByDateStatus(session, lrDate, status);

@@ -175,16 +175,15 @@ public class LRResource {
         @Context HttpHeaders httpHeaders,       
         @FormParam( "lrDate" ) String lrDate,
         @FormParam( "multiLoad" ) String multiLoad,
-        @FormParam( "status" ) String status)
+        @FormParam( "status" ) String status,
+        @FormParam( "isLRAttached" ) String isLRAttached)
     {
 		AppResponse response = null;
-		LrService lrService  = new LrService();
-		              
-       	//Send to model using service              
-  		List<LR> lrList = lrService.listlr(lrDate, multiLoad, status);
+		LrService lrService  = new LrService();              
+              
+  		List<LR> lrList = lrService.listlr(lrDate, multiLoad, status, isLRAttached);
     		
-  		if (lrList != null) {  			
-  			//To-do : Create response
+  		if (lrList != null) {
   			response = lrService.createLRListResponse(lrList);    					
     	} else {
     		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LR List data. Please try again", 500);

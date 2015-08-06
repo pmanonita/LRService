@@ -406,5 +406,83 @@ public class LR implements Serializable {
 	 	final List<LR> lrList = qry.list();
 	 	return lrList;
 	}
+
+	private static final String QUERY_FOR_LR_BY_DATE_MULTILOAD_STATUS_NOATTACHED =
+			LR.class.getName() + ".findByDateMultiLoadStatusNoAttach";	
+	@SuppressWarnings("unchecked")
+	public static List<LR> findByDateMultiLoadStatusNoAttach(Session session,
+			Date lrDate, String multiLoad, String status)
+	{
+		if (lrDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_MULTILOAD_STATUS_NOATTACHED);
+	 	qry.setDate("lrDate", lrDate);
+	 	qry.setString("multiLoad", multiLoad);
+	 	qry.setString("status", status);
+	 	
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+		
+	}
+	
+	private static final String QUERY_FOR_LR_BY_DATE_MULTILOAD_STATUS_ATTACHED =
+			LR.class.getName() + ".findByDateMultiLoadStatusAttach";	
+	@SuppressWarnings("unchecked")
+	public static List<LR> findByDateMultiLoadStatusAttach(Session session,
+			Date lrDate, String multiLoad, String status) 
+	{
+		if (lrDate == null) {
+	 		return null;
+	 	}
+		
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_MULTILOAD_STATUS_ATTACHED);
+	 	qry.setDate("lrDate", lrDate);
+	 	qry.setString("multiLoad", multiLoad);
+	 	qry.setString("status", status);
+
+	 	
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+	}
+
+	private static final String QUERY_FOR_LR_BY_DATE_MULTILOAD_ATTACHED =
+			LR.class.getName() + ".findByDateMultiLoadAttach";	
+	@SuppressWarnings("unchecked")
+	public static List<LR> findByDateMultiLoadAttach(Session session,
+			Date lrDate, String multiLoad)
+	{
+		if (lrDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_MULTILOAD_ATTACHED);
+	 	qry.setDate("lrDate", lrDate);
+	 	qry.setString("multiLoad", multiLoad);
+	 	
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+	}
+
+	private static final String QUERY_FOR_LR_BY_DATE_MULTILOAD_NOATTACHED =
+			LR.class.getName() + ".findByDateMultiLoadNoAttach";	
+	@SuppressWarnings("unchecked")
+	public static List<LR> findByDateMultiLoadNoAttach(Session session,
+			Date lrDate, String multiLoad)
+	{
+	
+		if (lrDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_MULTILOAD_NOATTACHED);
+	 	qry.setDate("lrDate", lrDate);
+	 	qry.setString("multiLoad", multiLoad);
+	 	qry.setLong("transid", 0);
+	 	
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+	}
 	
 }
