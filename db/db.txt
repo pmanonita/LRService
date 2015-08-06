@@ -21,6 +21,7 @@ CREATE TABLE  `lr_test`.`User` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
+
 DROP TABLE IF EXISTS `lr_test`.`lr`;
 CREATE TABLE  `lr_test`.`lr` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -35,14 +36,17 @@ CREATE TABLE  `lr_test`.`lr` (
   `lrDate` date DEFAULT NULL,
   `multiLoad` varchar(20) DEFAULT NULL,
   `userName` varchar(20) NOT NULL,
+  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `poNo` varchar(255) DEFAULT NULL,
   `doNo` varchar(255) DEFAULT NULL,
   `billingnameId` int(11) DEFAULT NULL,
   `status` varchar(255) NOT NULL,
-  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lrchalanId` bigint(20) DEFAULT NULL,
+  `lrbillId` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transid` (`transid`, `id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+
 
 DROP TABLE IF EXISTS `lr_test`.`lrexpenditure`;
 CREATE TABLE  `lr_test`.`lrexpenditure` (
@@ -56,10 +60,9 @@ CREATE TABLE  `lr_test`.`lrexpenditure` (
   `unloadingCharges` int(11) DEFAULT NULL,
   `loadingDetBroker` int(11) DEFAULT NULL,
   `unloadingDetBroker` int(11) unsigned DEFAULT NULL,
-  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `lrId` (`lrId`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`lrothers`;
 CREATE TABLE  `lr_test`.`lrothers` (
@@ -67,9 +70,8 @@ CREATE TABLE  `lr_test`.`lrothers` (
   `lrId` bigint(20) NOT NULL,
   `amount` int(11) NOT NULL,
   `remarks` varchar(255) NOT NULL,
-  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`consigner`;
 CREATE TABLE  `lr_test`.`consigner` (
@@ -79,7 +81,6 @@ CREATE TABLE  `lr_test`.`consigner` (
   `address` varchar(255) DEFAULT NULL,
   `serviceTax` varchar(20) DEFAULT NULL,
   `fromPlace` varchar(20) NOT NULL,
-  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `consignerCode` (`consignerCode`),
   UNIQUE KEY `consignerName` (`consignerName`)
@@ -93,7 +94,6 @@ CREATE TABLE  `lr_test`.`consignee` (
   `address` varchar(255) DEFAULT NULL,
   `serviceTax` varchar(20) DEFAULT NULL,
   `toPlace` varchar(20) NOT NULL,
-  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `consigneeCode` (`consigneeCode`),
   UNIQUE KEY `consigneeName` (`consigneeName`)
@@ -104,15 +104,14 @@ CREATE TABLE  `lr_test`.`lrincome` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `lrId` bigint(20) NOT NULL,
   `freightToBroker` int(11) DEFAULT NULL,
-  `extraPayToBroker` int(11) DEFAULT NULL,  
+  `extraPayToBroker` int(11) DEFAULT NULL,
   `loadingCharges` int(11) DEFAULT NULL,
   `unloadingCharges` int(11) DEFAULT NULL,
   `loadingDetBroker` int(11) DEFAULT NULL,
   `unloadingDetBroker` int(11) unsigned DEFAULT NULL,
-  `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `lrId` (`lrId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`expense`;
 CREATE TABLE  `lr_test`.`expense` (
@@ -138,18 +137,41 @@ CREATE TABLE  `lr_test`.`account` (
 
 DROP TABLE IF EXISTS `lr_test`.`billingname`;
 CREATE TABLE  `lr_test`.`billingname` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`lrchalan`;
 CREATE TABLE  `lr_test`.`lrchalan` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `lrIds` varchar(255) NOT NULL,
   `chalanDetails` text,
-  UNIQUE KEY `lrIds` (`lrIds`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `lrId` (`lrIds`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`lrbill`;
+CREATE TABLE  `lr_test`.`lrbill` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrIds` varchar(255) NOT NULL,
+  `billDetails` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `lrId` (`lrIds`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`transaction`;
+CREATE TABLE  `lr_test`.`transaction` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrIds` varchar(255) NOT NULL,
+  `freightToBroker` int(11) DEFAULT NULL,
+  `extraPayToBroker` int(11) DEFAULT NULL,
+  `advance` int(11) DEFAULT NULL,
+  `balanceFreight` int(11) DEFAULT NULL,
+  `multiLoadCharge` int(11) DEFAULT NULL,
+  `multiLoadBilling` int(11) DEFAULT NULL,
+  `freightToBrokerBilling` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
