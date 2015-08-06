@@ -358,7 +358,7 @@ public class LR implements Serializable {
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}
 	
 	
-	private static final String QUERY_FOR_LR_BY_ID_SKEY =
+	private static final String QUERY_FOR_LR_BY_ID =
 		LR.class.getName() + ".findLRById";	
 	public static LR findLRById(Session session, Long id)
 		throws HibernateException
@@ -367,7 +367,7 @@ public class LR implements Serializable {
 	 		return null;
 	 	}
 	 	
-	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_ID_SKEY);
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_ID);
 	 	qry.setLong("id", id);		 	
  
 	 	qry.setMaxResults(1);
@@ -376,20 +376,79 @@ public class LR implements Serializable {
 	 	return lr;
 	}
 	
-	private static final String QUERY_FOR_LR_BY_DATE_SKEY =
+	private static final String QUERY_FOR_LR_BY_DATE =
 		LR.class.getName() + ".findLRByDate";	
-	public static List<LR> findLRByDate(Session session, String lrDate)
+	@SuppressWarnings("unchecked")
+	public static List<LR> findLRByDate(Session session, Date lrDate)
 		throws HibernateException
 	{
 	 	if (lrDate == null) {
 	 		return null;
 	 	}
 	 	
-	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_SKEY);
-	 	qry.setString("lrDate", lrDate);		 	
- 
-	 	//qry.setMaxResults(1);
- 
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE);
+	 	qry.setDate("lrDate", lrDate); 
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+	}
+
+	private static final String QUERY_FOR_LR_BY_DATE_MULTILOAD_STATUS =
+			LR.class.getName() + ".findLRByDateMultiLoadStatus";	
+	@SuppressWarnings("unchecked")
+	public static List<LR> findByDateMultiLoadStatus(Session session, Date lrDate, 
+			String multiLoad, String status)
+	{
+		if (lrDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_MULTILOAD_STATUS);
+	 	qry.setDate("lrDate", lrDate);
+	 	qry.setString("multiLoad", multiLoad);
+	 	qry.setString("status", status);
+
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+	}
+
+	private static final String QUERY_FOR_LR_BY_DATE_MULTILOAD =
+			LR.class.getName() + ".findLRByDateMultiLoad";	
+	@SuppressWarnings("unchecked")
+	public static List<LR> findByDateMultiLoad(Session session, Date lrDate, String multiLoad) {
+		if (lrDate == null) {
+	 		return null;
+	 	}	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_MULTILOAD);
+	 	qry.setDate("lrDate", lrDate);
+	 	qry.setString("multiLoad", multiLoad);
+
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+	}
+
+	private static final String QUERY_FOR_LR_BY_DATE_STATUS =
+			LR.class.getName() + ".findLRByDateStatus";	
+	@SuppressWarnings("unchecked")
+	public static List<LR> findByDateStatus(Session session, Date lrDate, String status) {
+		if (lrDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_STATUS);
+	 	qry.setDate("lrDate", lrDate);
+	 	qry.setString("status", status);
+	 	
+	 	final List<LR> lrList = qry.list();
+	 	return lrList;
+	}
+	
+	private static final String QUERY_FOR_LR_LIMIT_50 =
+    		Expense.class.getName() + ".findFirstFifty";
+	@SuppressWarnings("unchecked")
+	public static List<LR> findFirstFifty(Session session) {		
+		Query qry = session.getNamedQuery(QUERY_FOR_LR_LIMIT_50);	
+		qry.setMaxResults(50);
+		
 	 	final List<LR> lrList = qry.list();
 	 	return lrList;
 	}

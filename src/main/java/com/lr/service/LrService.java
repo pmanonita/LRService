@@ -1,6 +1,8 @@
 package com.lr.service;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -8,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+
+
 
 
 
@@ -28,6 +33,7 @@ import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
+import com.lr.model.Expense;
 import com.lr.model.LR;
 import com.lr.model.LRBill;
 import com.lr.model.LRChalan;
@@ -245,24 +251,61 @@ public class LrService {
 		return lr;        
 	}
 	
-	public List<LR> findLRByDate( String lrDate ) {
-
-		if ( lrDate == null || lrDate.equals("") ) return null;
-		
+	public List<LR> listlr( String strlrDate,  String strMultiLoad, String strStatus ) {
 		
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
 		List<LR> lrList            = null;
 	
 		try {
-			tx = session.beginTransaction();        	
-			lrList = LR.findLRByDate(session, lrDate);
-		
+			tx = session.beginTransaction();
+			
+			Date lrDate           = null;
+    		boolean usedateFilter = false;
+    		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");		
+    		if (null != strlrDate && !strlrDate.equals("") ) {
+    			try {
+    				lrDate = formatter.parse(strlrDate);
+    				usedateFilter = true;
+    			}
+    			catch (ParseException e) {}
+    		}
+    		
+    		boolean useMultiLoadFilter = false;
+    		String multiLoad = "";
+    		if (null != strMultiLoad && !strMultiLoad.equals("") ) {
+    			multiLoad = strMultiLoad;
+    			useMultiLoadFilter = true;
+    		}
+    		
+    		boolean useStatusFilter = false;
+    		String status = "";
+    		if (null != strStatus && !strStatus.equals("") ) {
+    			status = strStatus;
+    			useStatusFilter = true;
+    		}
+    		
+    		//Create Query
+    		if (usedateFilter && useMultiLoadFilter && useStatusFilter) {
+    			lrList = LR.findByDateMultiLoadStatus(session, lrDate, multiLoad, status);
+    		} else if(usedateFilter && useMultiLoadFilter) {
+    			lrList = LR.findByDateMultiLoad(session, lrDate, multiLoad);
+    		} else if(usedateFilter && useStatusFilter) {
+    			lrList = LR.findByDateStatus(session, lrDate, status);
+    		} else if(usedateFilter) {
+    			lrList = LR.findLRByDate(session, lrDate);
+    		} else {
+    			lrList = LR.findFirstFifty(session);
+    		}			
+			
+    		
 			if (null == lrList) {
 				tx.rollback();
-				session.close();    			
-				throw new AuthException("LR for the date is not found"); 
-			}		
+				session.close();
+				System.err.println("ERROR ERROR : Not able to list lrs");
+    			throw new DataNotFoundException("No lr found with given input filters" ); 
+			}
+			
 			tx.commit();    		
 		
 		} catch (HibernateException e) {

@@ -88,7 +88,38 @@
  <query name="com.lr.model.LR.findLRByDate">
      select lr
        from com.lr.model.LR as lr
-     where lr.lrDate = :lrDate     
+     where lr.lrDate = :lrDate
+ </query>
+ 
+ <query name="com.lr.model.LR.findLRByDateMultiLoadStatus">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate
+       and lr.multiLoad = :multiLoad
+       and lr.status = :status
+       order by lrDate desc 
+ </query>
+ 
+ <query name="com.lr.model.LR.findLRByDateMultiLoad">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate
+       and lr.multiLoad = :multiLoad
+       order by lrDate desc 
+ </query>
+ 
+ <query name="com.lr.model.LR.findLRByDateStatus">
+     select lr
+       from com.lr.model.LR as lr
+     where lr.lrDate = :lrDate
+       and lr.status = :status
+       order by lrDate desc
+ </query>
+ 
+  <query name="com.lr.model.LR.findFirstFifty">
+     select lr
+       from com.lr.model.LR as lr
+     order by lrDate desc
  </query>
  
  
