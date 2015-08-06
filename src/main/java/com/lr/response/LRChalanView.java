@@ -46,8 +46,32 @@ public class LRChalanView {
 	}
 
 
-	public void setTotalCost(int totalCost) {
-		this.totalCost = totalCost;
+	public void setTotalCost() {
+		//calculation of totalcost
+		int totalExpenditure = 0;
+		if (chalanDetails != null) {
+			String[] expenditureArr = chalanDetails.split(",");
+			for (int i=0;i<expenditureArr.length;i++){
+				expenditureArr[i] = expenditureArr[i].replaceAll("\"","");
+				String[] expeditureColumnArr = expenditureArr[i].split("-");
+				if( expeditureColumnArr.length>1 ){
+					int amount = 0;
+					if (expeditureColumnArr[0].contains("EXTRA PAY TO BROKER") || expeditureColumnArr[0].contains("ADVANCE") || expeditureColumnArr[0].contains("BALANCE FREIGHT") ) {
+						continue;
+					} else {
+						try{
+							amount = Integer.parseInt(expeditureColumnArr[1]);
+							totalExpenditure = totalExpenditure+amount;
+							
+						}catch(Exception e){	}
+						
+					}
+					
+				}
+				
+			}
+		}
+		this.totalCost = totalExpenditure;
 	}
 	
 	

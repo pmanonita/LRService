@@ -29,9 +29,11 @@ import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
+import com.lr.model.LRBill;
 import com.lr.model.LRChalan;
 import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
+import com.lr.model.LROtherIncome;
 import com.lr.model.LROthers;
 import com.lr.model.User;
 import com.lr.response.AppResponse;
@@ -45,6 +47,7 @@ import com.lr.response.LRExpeditureView;
 import com.lr.response.LRIncomeView;
 import com.lr.response.LRListResponse;
 import com.lr.response.LRListView;
+import com.lr.response.LROtherIncomeView;
 import com.lr.response.LROthersView;
 import com.lr.response.LRResponse;
 import com.lr.response.LRSearchResponse;
@@ -73,7 +76,9 @@ public class LrService {
 			  											  final String poNo,
 			  											  final String doNo,
 			  											  final Billingname billingname,
-			  											  final String status)
+			  											  final String status,
+			  											  final String multiLoad,
+			  											  final String userName)
 	{
 		
 		return new LR.DefaultController() {
@@ -84,15 +89,19 @@ public class LrService {
 			public String mVehicleOwner() 				{	return vehicleOwner;	}
 			public String mBillingToParty()	 			{	return billingParty;	}
 			public Date mLrDate() 						{	return new Date();		}
-			public String mMultiLoad() 					{	return null;			}
-			public String mUserName() 					{ 	return "";				}
+			public String mMultiLoad() 					{	return multiLoad;		}
+			public String mUserName() 					{ 	return userName;		}
 			public LRExpenditure mLrexpenditureId()		{ 	return null; 			}
+			public LRChalan mLrchalanId()				{ 	return null; 			}
+			public LRBill mLrbillId()					{ 	return null; 			}
 			public LRIncome mLrincomeId()				{ 	return null; 			}
 			public Set<LROthers> mOtherExpenditures()	{ 	return null; 			}	
+			public Set<LROtherIncome> mOtherIncomes()	{ 	return null; 			}	
 			public String        mPONo() 	            {	return poNo;	        }
 			public String        mDONo() 	            {	return doNo;            }
 			public Billingname   mBillingname()         {	return billingname;     }
 			public String        mStatus() 	            {	return status;            }
+			
 		};
 	}
 
@@ -104,10 +113,16 @@ public class LrService {
 										  final String poNo,
 										  final String doNo,										  
 										  final Billingname billingname,
+										  final String multiLoad,
+										  final String userName,
 										  final String status,
+										  final Date lrDate,
 										  final LRExpenditure lrExpenditure,
+										  final LRChalan lrChalan,
+										  final LRBill lrBill,
 										  final LRIncome lrIncome,
-										  final Set<LROthers> otherexpeditures) 
+										  final Set<LROthers> otherexpeditures,
+										  final Set<LROtherIncome> otherincomes) 
 	{
 		return new LR.DefaultController() {		
 			public long mTransid() 						{	return 0;				}
@@ -116,22 +131,26 @@ public class LrService {
 			public Consignee mConsigneeId() 			{	return consignee;		}
 			public String mVehicleOwner() 				{	return vehicleOwner;	}
 			public String mBillingToParty() 			{	return billingParty;	}
-			public Date mLrDate() 						{	return new Date();		}
-			public String mMultiLoad()					{	return null;			}
-			public String mUserName() 					{	return "";				}
+			public Date mLrDate() 						{	return lrDate;	}
+			public String mMultiLoad()					{	return multiLoad;		}
+			public String mUserName() 					{	return userName;		}
 			public LRExpenditure mLrexpenditureId()		{ 	return lrExpenditure; 	}
+			public LRChalan mLrchalanId()				{ 	return lrChalan; 		}
+			public LRBill mLrbillId()					{ 	return lrBill; 			}
 			public LRIncome mLrincomeId()				{ 	return lrIncome; 		}
-			public Set<LROthers> mOtherExpenditures()	{ 	return null; 			}	
+			public Set<LROthers> mOtherExpenditures()	{ 	return otherexpeditures;}
+			public Set<LROtherIncome> mOtherIncomes()	{ 	return otherincomes; 			}
 			public String        mPONo() 	            {	return poNo;	        }
 			public String        mDONo() 	            {	return doNo;            }
 			public Billingname   mBillingname()         {	return billingname;     }
-			public String        mStatus() 	            {	return status;            }
+			public String        mStatus() 	            {	return status;          }	
+			
 		};
 		
 	}
 
 	//Create new LR
-	public LR newLR(final String serviceKey,						  
+	public LR newLR(
 					final String vehileNo,
 					final String vehicleOwner,
 					final Consigner consigner,
@@ -140,7 +159,9 @@ public class LrService {
 					final String poNo,
 					final String doNo,
 					final Billingname billingname,
-					final String status)
+					final String status,
+					final String multiLoad,
+					final String username)
 	{		
 		//Get hibernate session manager
 		Session session = HibernateSessionManager.getSessionFactory().openSession();
@@ -150,6 +171,7 @@ public class LrService {
 		try {
 			
 			tx = session.beginTransaction();			
+		
 
 			LR.Controller ctrl = createControllerFromView(vehileNo,
 														  vehicleOwner,
@@ -159,7 +181,9 @@ public class LrService {
 														  poNo,
 														  doNo,
 														  billingname,
-														  status);
+														  status,
+														  multiLoad,
+														  username);
 
 			lr = new LR(ctrl);
 			
@@ -268,11 +292,111 @@ public class LrService {
 												 lr.getBillingToParty(),
 												 lr.getPoNo(),
 												 lr.getDoNo(),
-												 lr.getBillingnameId(),
-												 lr.getStatus(),												 
+												 lr.getBillingnameId(),												 
+												 lr.getMultiLoad(),
+												 lr.getUserName(),
+												 lr.getStatus(),
+												 lr.getLrDate(),
 												 lrExpenditure,
+												 lr.getLrchalanId(),
+												 lr.getLrbillId(),
 												 lr.getLrincomeId(),
-												 lr.getOtherExpenditures());
+												 lr.getOtherExpenditures(),
+												 lr.getOtherIncomes());
+								
+			//Update Data
+			lr.changeTo(ctrl);			
+			
+			session.saveOrUpdate(lr);			
+			session.flush();
+					
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lr = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return lr; 
+	}
+	
+	public LR updateChalanToLR(LRChalan lrChalan, LR lr) {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
+	
+		try {
+			tx = session.beginTransaction();  
+			//Create Controller
+			LR.Controller ctrl = CreateContoller(lr.getVehicleNo(),
+												 lr.getVehicleOwner(),
+												 lr.getConsignerId(),
+												 lr.getConsigneeId(),
+												 lr.getBillingToParty(),
+												 lr.getPoNo(),
+												 lr.getDoNo(),
+												 lr.getBillingnameId(),												 
+												 lr.getMultiLoad(),
+												 lr.getUserName(),
+												 lr.getStatus(),
+												 lr.getLrDate(),
+												 lr.getLrexpenditureId(),
+												 lrChalan,
+												 lr.getLrbillId(),
+												 lr.getLrincomeId(),
+												 lr.getOtherExpenditures(),
+												 lr.getOtherIncomes());
+								
+			//Update Data
+			lr.changeTo(ctrl);			
+			
+			session.saveOrUpdate(lr);			
+			session.flush();
+					
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lr = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}
+	
+		return lr; 
+	}
+	
+	public LR updateBillToLR(LRBill lrBill, LR lr) {
+		Session session  = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   = null;
+	
+		try {
+			tx = session.beginTransaction();  
+			//Create Controller
+			LR.Controller ctrl = CreateContoller(lr.getVehicleNo(),
+												 lr.getVehicleOwner(),
+												 lr.getConsignerId(),
+												 lr.getConsigneeId(),
+												 lr.getBillingToParty(),
+												 lr.getPoNo(),
+												 lr.getDoNo(),
+												 lr.getBillingnameId(),												 
+												 lr.getMultiLoad(),
+												 lr.getUserName(),
+												 lr.getStatus(),
+												 lr.getLrDate(),
+												 lr.getLrexpenditureId(),
+												 lr.getLrchalanId(),
+												 lrBill,
+												 lr.getLrincomeId(),
+												 lr.getOtherExpenditures(),
+												 lr.getOtherIncomes());
 								
 			//Update Data
 			lr.changeTo(ctrl);			
@@ -303,6 +427,8 @@ public class LrService {
 			  		   final String poNo,
 			  		   final String doNo,
 			  		   final Billingname billingname,
+			  		   final String multiLoad,
+			  		   final String userName,			  		   
 			  		   LR lr)
 	{
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
@@ -310,7 +436,7 @@ public class LrService {
 		
 	
 		try {
-			tx = session.beginTransaction();  
+			tx = session.beginTransaction();  			
 			//Create Controller
 			LR.Controller ctrl = CreateContoller(vehileNo,
 												 vehicleOwner,
@@ -320,10 +446,16 @@ public class LrService {
 												 poNo,
 												 doNo,
 												 billingname,
+												 multiLoad,
+												 userName,
 												 lr.getStatus(),
+												 lr.getLrDate(),
 												lr.getLrexpenditureId(),
+												lr.getLrchalanId(),
+												lr.getLrbillId(),
 												lr.getLrincomeId(),
-												lr.getOtherExpenditures());
+												lr.getOtherExpenditures(),
+												lr.getOtherIncomes());
 								
 			//Update Data
 			lr.changeTo(ctrl);
@@ -365,10 +497,16 @@ public class LrService {
 												 lr.getPoNo(),
 												 lr.getDoNo(),												 
 												 lr.getBillingnameId(),
+												 lr.getMultiLoad(),
+												 lr.getUserName(),
 												 lr.getStatus(),
+												 lr.getLrDate(),
 												 lr.getLrexpenditureId(),
+												 lr.getLrchalanId(),
+												 lr.getLrbillId(),
 												 lrIncome,
-												 lr.getOtherExpenditures());
+												 lr.getOtherExpenditures(),
+												 lr.getOtherIncomes());
 								
 			//Update Data
 			lr.changeTo(ctrl);		
@@ -415,10 +553,16 @@ public class LrService {
 												 lr.getPoNo(),
 												 lr.getDoNo(),
 												 lr.getBillingnameId(),
+												 lr.getMultiLoad(),
+												 lr.getUserName(),
 												 lr.getStatus(),
+												 lr.getLrDate(),
 												 lr.getLrexpenditureId(),
+												 lr.getLrchalanId(),
+												 lr.getLrbillId(),
 												 lr.getLrincomeId(),
-												 lrOtherExpeditures);
+												 lrOtherExpeditures,
+												 lr.getOtherIncomes());
 								
 			//Update Data
 			lr.changeTo(ctrl);			
@@ -648,6 +792,7 @@ public class LrService {
 	{			
 		LRView lrView = new LRView();
 		lrView.setId(lr.getId());
+		lrView.setTransid(lr.getTransid());
 		lrView.setVehicleNo(lr.getVehicleNo());
 		lrView.setVehicleOwner(lr.getVehicleOwner());
 		lrView.setConsigner(lr.getConsignerId());
@@ -658,6 +803,9 @@ public class LrService {
 		lrView.setBillingname(lr.getBillingnameId());	
 		lrView.setStatus(lr.getStatus());
 		lrView.setLrDate(lr.getLrDate().toString());
+		lrView.setMultiLoad(lr.getMultiLoad());
+		lrView.setUserName(lr.getUserName());
+		
 		
 		LRResponse response = new LRResponse(lrView);	
 		
@@ -719,11 +867,13 @@ public class LrService {
 		LRExpeditureView lrExpenditureView = null;
 		LROthersView lrOthersView          = null;
 		LRIncomeView lrIncomeView		   = null;
+		LROtherIncomeView lrOtherIncomeView =null ;
 
 		//LR		
 		if (lr != null) {
 			lrView = new LRView();
 			lrView.setId(lr.getId());
+			lrView.setTransid(lr.getTransid());
 			lrView.setVehicleNo(lr.getVehicleNo());
 			lrView.setVehicleOwner(lr.getVehicleOwner());
 			lrView.setBillingParty(lr.getBillingToParty());
@@ -784,12 +934,33 @@ public class LrService {
 			lrIncomeView.setUnloadingDetBroker(lrIncome.getUnloadingDetBroker());			
 		}
 		
+		//Other Income (to-do : rework, its not going to work in frontend)
+		// use a list of others income view
+		Set<LROtherIncome> lrOtherIncomes = lr.getOtherIncomes();
+		List<LROtherIncomeView> lrOtherIncomeViews = new ArrayList<LROtherIncomeView>();
+		if (null != lrOtherIncomes && lrOtherIncomes.size() > 0) {
+			for (LROtherIncome lrOtherIncome : lrOtherIncomes) {
+				if(lrOtherIncome != null) {
+					lrOtherIncomeView = new LROtherIncomeView();
+					lrOtherIncomeView.setId(lrOtherIncome.getId());
+					lrOtherIncomeView.setLrId(lrOtherIncome.getLrId());
+					lrOtherIncomeView.setAmount(lrOtherIncome.getAmount());
+					lrOtherIncomeView.setRemarks(lrOtherIncome.getRemarks());
+					lrOtherIncomeViews.add(lrOtherIncomeView);
+				}
+			}
+		}
+		
 		//Create Response (to-do: need to add lr exp others)
 		LRSearchResponse response = new LRSearchResponse();
 		if (lrView            != null )		{	response.setLr(lrView);							}
 		if (lrExpenditureView != null )		{	response.setLrExpenditure(lrExpenditureView);	}
 		if (lrIncomeView      != null )		{	response.setLrIncome(lrIncomeView);				}
-		if (lrOthers      != null )			{	response.setLrOthers(lrOthers);				}
+		if (lrOthers      != null )			{	response.setLrOthers(lrOthers);				    }
+		if (lrOtherIncomes      != null )	{	response.setLrOtherIncome(lrOtherIncomeViews);	}
+		if (lrExpenditureView != null )		{	response.setLrExpenditure(lrExpenditureView);	}
+		if (lr.getLrchalanId() != null )	{	response.setLrChalan(lr.getLrchalanId());		}
+		if (lr.getLrbillId() != null )	    {	response.setLrBill(lr.getLrbillId());	        }
 		
 		return response;
 	}

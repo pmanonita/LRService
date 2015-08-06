@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.LROtherIncome" table="lrotherincome">
+    <id name="id" type="long" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="lrId" type="long" not-null="true">
+      <column name="lrId" />
+    </property> 
+    <property name="amount" type="int" not-null="true">
+      <column name="amount" />
+    </property>
+    <property name="remarks" type="string" not-null="true">
+      <column name="remarks" />
+    </property> 
+    
+     </class>
+     
+     <query name="com.lr.model.LROtherIncome.findLROtherIncomeById">
+     select lrOtherIncome
+       from com.lr.model.LROtherIncome as lrOtherIncome
+     where lrOtherIncome.id = :id     
+ 	</query>
+ 
+ 
+ 
+</hibernate-mapping>

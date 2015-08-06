@@ -12,14 +12,12 @@ import org.hibernate.Transaction;
 import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
 import com.lr.exceptions.InsufficientDataException;
-import com.lr.model.LR;
 import com.lr.model.LROtherIncome;
-import com.lr.model.LROthers;
-import com.lr.response.LROthersView;
-import com.lr.response.LROthersResponse;
+import com.lr.response.LROtherIncomeView;
+import com.lr.response.LROtherIncomeResponse;
 
 
-public class LROthersService {
+public class LROtherIncomeService {
 	private final static int successCode = 1;
 	//private final static int errorCode   = 0;
 	
@@ -35,12 +33,12 @@ public class LROthersService {
 		}		
 	}
 	
-	private LROthers.DefaultController createControllerFromView(final long lrId,						  
+	private LROtherIncome.DefaultController createControllerFromView(final long lrId,						  
 			  											final int amount,
 			  											final String remarks) 
 	{
 		
-		return new LROthers.DefaultController() {			
+		return new LROtherIncome.DefaultController() {			
 			public long mLRId()			{	return lrId;	}
 			public int mAmount()		{	return amount; 	}
 			public String mRemarks()	{	return remarks; }
@@ -48,28 +46,28 @@ public class LROthersService {
 		};
 	}
 	
-	public LROthers newLROthers(final long lrId, final int amount, final String remarks) {		
+	public LROtherIncome newLROtherIncome(final long lrId, final int amount, final String remarks) {		
 		//Get hibernate session manager
 		Session session   = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx    = null;
-		LROthers lrOthers = null;
+		LROtherIncome lrOtherIncomes = null;
 		
 		try {
 			
 			tx = session.beginTransaction();			
 
-			LROthers.Controller ctrl = createControllerFromView(lrId, amount, remarks);
+			LROtherIncome.Controller ctrl = createControllerFromView(lrId, amount, remarks);
 						
 			//Create user object using controller
-			lrOthers = new LROthers(ctrl);
+			lrOtherIncomes = new LROtherIncome(ctrl);
 			
-			session.save(lrOthers);			
+			session.save(lrOtherIncomes);			
 			session.flush();
 			
 			tx.commit();		
 
 		} catch(HibernateException  ex) {
-			lrOthers = null;
+			lrOtherIncomes = null;
 			if (tx != null) 	{ tx.rollback(); }
 			ex.printStackTrace();			
 		} finally {
@@ -78,31 +76,31 @@ public class LROthersService {
         	} 
 		}
 		
-		return lrOthers;
+		return lrOtherIncomes;
 	}
 	
 	
 	
-	//Get LROtherExpenditure from Id
-	public LROthers findLROtherExpenditure( long lrOtherExpenditureId ) {
+	//Get LROtherIncome from Id
+	public LROtherIncome findLROtherIncome( long lrOtherIncomeId ) {
 		
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
-		LROthers lrOther            = null;
+		LROtherIncome lrOtherIncome            = null;
 	
 		try {
 			tx      = session.beginTransaction();        	
-			lrOther = LROthers.findLROtherExpenditureById(session, lrOtherExpenditureId);
+			lrOtherIncome = LROtherIncome.findLROtherIncomeById(session, lrOtherIncomeId);
 		
-			if (null == lrOther) {
+			if (null == lrOtherIncome) {
 				tx.rollback();
 				session.close();    			
-				throw new AuthException("LROtherExpenditure Not found"); 
+				throw new AuthException("LROtherIncome Not found"); 
 			}		
 			tx.commit();    		
 		
 		} catch (HibernateException e) {
-			lrOther = null;
+			lrOtherIncome = null;
 	        if (tx != null) tx.rollback();
 	        e.printStackTrace();
         
@@ -111,11 +109,11 @@ public class LROthersService {
 	    		session.close();
 	    	}
 		}	
-		return lrOther;        
+		return lrOtherIncome;        
 	}
 	
-	//Remove LROtherExpenditure
-	public boolean removeLROtherExpenditure( LROthers lrOthers ) {
+	//Remove LROtherIncome
+	public boolean removeLROtherIncome( LROtherIncome lrOtherIncomes ) {
 		
 		boolean isRemoved = true;
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
@@ -124,7 +122,7 @@ public class LROthersService {
 		try {
 			tx      = session.beginTransaction(); 
 			
-			session.delete(lrOthers);			
+			session.delete(lrOtherIncomes);			
 			session.flush();
 			
 			tx.commit();	  		
@@ -142,24 +140,24 @@ public class LROthersService {
 		return isRemoved;       
 	}
 
-	public LROthersResponse createLROthersResponse(Set<LROthers> lrOtherExps) {
-		LROthersView lrOthersView          = null;
+	public LROtherIncomeResponse createLROtherIncomeResponse(Set<LROtherIncome> lrOtherIncomeExps) {
+		LROtherIncomeView lrOtherIncomesView          = null;
 		
-		List<LROthersView> lrOthers = new ArrayList<LROthersView>();
-		if (null != lrOtherExps && lrOtherExps.size() > 0) {
-			for (LROthers lrOtherExp : lrOtherExps) {
-				if(lrOtherExp != null) {
-					lrOthersView = new LROthersView();
-					lrOthersView.setId(lrOtherExp.getId());
-					lrOthersView.setLrId(lrOtherExp.getLrId());
-					lrOthersView.setAmount(lrOtherExp.getAmount());
-					lrOthersView.setRemarks(lrOtherExp.getRemarks());
-					lrOthers.add(lrOthersView);
+		List<LROtherIncomeView> lrOtherIncomes = new ArrayList<LROtherIncomeView>();
+		if (null != lrOtherIncomeExps && lrOtherIncomeExps.size() > 0) {
+			for (LROtherIncome lrOtherIncomeExp : lrOtherIncomeExps) {
+				if(lrOtherIncomeExp != null) {
+					lrOtherIncomesView = new LROtherIncomeView();
+					lrOtherIncomesView.setId(lrOtherIncomeExp.getId());
+					lrOtherIncomesView.setLrId(lrOtherIncomeExp.getLrId());
+					lrOtherIncomesView.setAmount(lrOtherIncomeExp.getAmount());
+					lrOtherIncomesView.setRemarks(lrOtherIncomeExp.getRemarks());
+					lrOtherIncomes.add(lrOtherIncomesView);
 				}
 			}
 		}
 				
-		LROthersResponse response = new LROthersResponse(lrOthers);		
+		LROtherIncomeResponse response = new LROtherIncomeResponse(lrOtherIncomes);		
 		
 		return response;
 	}

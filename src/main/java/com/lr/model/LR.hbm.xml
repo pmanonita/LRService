@@ -29,12 +29,24 @@
     <many-to-one name="lrincomeId" column="lrincomeId" unique="true"     
        class="com.lr.model.LRIncome" lazy="false"/>
        
+    <many-to-one name="lrchalanId" column="lrchalanId" unique="true"     
+       class="com.lr.model.LRChalan" lazy="false"/>
+       
+    <many-to-one name="lrbillId" column="lrbillId" unique="true"     
+       class="com.lr.model.LRBill" lazy="false"/>   
+       
+       
     <many-to-one name="billingnameId" column="billingnameId" unique="true"     
        class="com.lr.model.Billingname" lazy="false"/>
        
     <set name="otherExpenditures" cascade="all" lazy="false">
          <key column="lrId"/>
          <one-to-many class="com.lr.model.LROthers"/>
+    </set>
+    
+    <set name="otherIncomes" cascade="all" lazy="false">
+         <key column="lrId"/>
+         <one-to-many class="com.lr.model.LROtherIncome"/>
     </set>
          
         

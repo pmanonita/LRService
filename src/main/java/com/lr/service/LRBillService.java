@@ -15,56 +15,56 @@ import com.lr.exceptions.InsufficientDataException;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
+import com.lr.model.LRBill;
 import com.lr.model.LRChalan;
-import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
 import com.lr.model.User;
 
-import com.lr.response.LRChalanView;
+import com.lr.response.LRBillView;
 import com.lr.response.LRExpeditureView;
-import com.lr.response.LRChalanResponse;
+import com.lr.response.LRBillResponse;
 
 
-public class LRChalanService {
+public class LRBillService {
 	private final static int successCode = 1;
 	//private final static int errorCode   = 0;
 	
 	//view level validation
-	public void validateAuthData(String lrIds)
+	public void validateAuthData(String lrId)
 		throws InsufficientDataException
 	{
 		String errorMsg = "";
-		if (null != lrIds && lrIds.equals("")) 
+		if (null != lrId && lrId.equals("")) 
 		{
-			errorMsg = "LRNos can't be null or empty";
+			errorMsg = "LRNo can't be null or empty";
 			throw new InsufficientDataException(errorMsg);
 		}		
 	}
 	
-	private LRChalan.DefaultController createControllerFromView(final String lrIds,	final String chalanDetails)					  
+	private LRBill.DefaultController createControllerFromView(final String lrIds,	final String billDetails)					  
 			  											
 	{
 		
-		return new LRChalan.DefaultController() {
+		return new LRBill.DefaultController() {
 			
 			
 			public String mLRIds()				    {	return lrIds;	}		
-			public String mChalanDetails()	        {	return chalanDetails;	}			
+			public String mBillDetails()	        {	return billDetails;	}			
 			
 		};
 	}
 	
-	private LRChalan.Controller createController(final String lrIds,	final String chalanDetails)
+	private LRBill.Controller createController(final String lrIds,	final String billDetails)
 	{
 	
-	return new LRChalan.DefaultController() {
+	return new LRBill.DefaultController() {
 	
 	
 		public String mLRIds()	{return lrIds;}
 		
 		
-		public String mChalanDetails()	{return chalanDetails; }
+		public String mBillDetails()	{return billDetails; }
 		
 		
 	
@@ -72,38 +72,38 @@ public class LRChalanService {
 	}
 	
 
-	public LRChalan newLRChalan(final String lrNos,final String chalanDetails)
+	public LRBill newLRBill(final String lrNos,final String billDetails)
 	{		
 		//Get hibernate session manager
 		Session session = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx  = null;
-		LRChalan lrChalan       = null;
+		LRBill lrBill       = null;
 		
 		try {
 			
 			tx = session.beginTransaction();			
 		
-			LRChalan.Controller ctrl = createControllerFromView(lrNos,chalanDetails);
+			LRBill.Controller ctrl = createControllerFromView(lrNos,billDetails);
 		
-			lrChalan = new LRChalan(ctrl);
+			lrBill = new LRBill(ctrl);
 			
-			session.save(lrChalan);			
+			session.save(lrBill);			
 			session.flush();
 			
 			tx.commit();		
 		
 		} catch(RuntimeException  ex) {
-			lrChalan = null;
+			lrBill = null;
 			if (tx != null) 	{ tx.rollback(); }
 			ex.printStackTrace();			
 		} finally {
 			session.close();
 		}
 		
-		return lrChalan;
+		return lrBill;
 	}
 	
-	public LRChalan updateLRChalan(final String lrNo,final String chalanDetails,LRChalan lrChalan)
+	public LRBill updateLRBill(final String lrNo,final String billDetails,LRBill lrBill)
 	{
 		
 		//Get hibernate session manager
@@ -115,42 +115,43 @@ public class LRChalanService {
 		
 			tx = session.beginTransaction();
 		
-			LRChalan.Controller ctrl = createController(lrNo,chalanDetails);
+			LRBill.Controller ctrl = createController(lrNo,billDetails);
 					
 			//Create user object using controller
-			lrChalan.changeTo(ctrl);			
+			lrBill.changeTo(ctrl);			
 		
-			session.saveOrUpdate(lrChalan);			
+			session.saveOrUpdate(lrBill);			
 			session.flush();
 		
 			tx.commit();		
 	
 		} catch(RuntimeException  ex) {
-			lrChalan = null;
+			lrBill = null;
 			if (tx != null) 	{ tx.rollback(); }
 			ex.printStackTrace();			
 		} finally {
 			session.close();
 		}
 	
-		return lrChalan;
+		return lrBill;
 	}
 	
 	
 	
 		
 
-	public LRChalanResponse createLRChalanResponse(LRChalan lrChalan) 
+	public LRBillResponse createLRBillResponse(LRBill lrBill) 
 	{
 		
 		/** User data visible to UI **/		
-		LRChalanView lrChalanView = new LRChalanView();
-		lrChalanView.setId(lrChalan.getId());
-		lrChalanView.setLrIds(lrChalan.getLrIds());
-		lrChalanView.setChalanDetails(lrChalan.getChalanDetails());			
-		lrChalanView.setTotalCost();
-		
-		LRChalanResponse response = new LRChalanResponse(lrChalanView);		
+		LRBillView lrBillView = new LRBillView();
+		lrBillView.setId(lrBill.getId());
+		lrBillView.setLrIds(lrBill.getLrIds());
+		lrBillView.setBillDetails(lrBill.getBillDetails());
+		String billDetails = lrBill.getBillDetails();		
+		lrBillView.setTotalCost();	
+				
+		LRBillResponse response = new LRBillResponse(lrBillView);		
 		
 		return response;
 	}

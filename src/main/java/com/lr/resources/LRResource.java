@@ -28,6 +28,7 @@ import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
+import com.lr.model.LRBill;
 import com.lr.model.LRChalan;
 import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
@@ -39,6 +40,7 @@ import com.lr.response.ErrorResponse;
 import com.lr.response.UserResponse;
 import com.lr.response.Result;
 import com.lr.service.AutheticationService;
+import com.lr.service.LRBillService;
 import com.lr.service.LRChalanService;
 import com.lr.service.LrService;
 import com.lr.service.UserService;
@@ -64,13 +66,13 @@ public class LRResource {
 		@FormParam( "billingParty" ) String billingParty,
 		@FormParam( "poNo" )         String poNo,
 		@FormParam( "doNo" )         String doNo,
-		@FormParam( "billingnameId") String billingnameId)		
+		@FormParam( "billingnameId") String billingnameId,
+		@FormParam( "multiLoad")     String multiLoad,
+		@FormParam( "userName")     String userName)		
     {
 		AppResponse response = null;
 		LrService lrService  = new LrService();		
-
-		String serviceKey = httpHeaders.getHeaderString(LRHTTPHeaders.SERVICE_KEY);
-		
+				
 		//get Consigner object
 		Consigner consigner = null;
 		Consignee consignee = null;
@@ -81,6 +83,7 @@ public class LRResource {
 			if (null == consigner) {  
 				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consigner table", 500);
 				response = new ErrorResponse(errorMsg);
+				return response;
 			}
 		}
         //get Consignee object
@@ -89,6 +92,7 @@ public class LRResource {
 			if(null == consignee) {  
 				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from consignee table", 500);
 				response = new ErrorResponse(errorMsg);
+				return response;
 		     }		      
 		}
 		
@@ -98,13 +102,17 @@ public class LRResource {
 			if(null == billingnameId) {  
 				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from billingname table", 500);
 				response = new ErrorResponse(errorMsg);
+				return response;
 		     }		      
 		}
           
 		String status = "OPENED";
+		if(multiLoad != null && !multiLoad.equals("true")) {
+			multiLoad = "false";
+		}
 
     	//Send to model using service              
-		LR lr = lrService.newLR(serviceKey, vehileNo, vehicleOwner, consigner, consignee, billingParty,poNo,doNo,billingname,status);        
+		LR lr = lrService.newLR(vehileNo, vehicleOwner, consigner, consignee, billingParty,poNo,doNo,billingname,status,multiLoad,userName);        
 		if (lr != null) {
 			response = lrService.createLRResponse(lr);			
 		} else {
@@ -125,24 +133,121 @@ public class LRResource {
     {
 		AppResponse response = null;
 		LRChalanService lrChalanService  = new LRChalanService();
-		System.out.println("lrno "+lrNos);
-		System.out.println("chalanDetails "+chalanDetails);
+		LrService lrService                       = new LrService();
+		
 		//validate Input
 		lrChalanService.validateAuthData(lrNos);
 		
-		LRChalan lrChalan = null;
-		lrChalan = lrChalanService.newLRChalan(lrNos,chalanDetails);
+		String[] lrIds = lrNos.split(",");
 		
-		if (null != lrChalan ) {
-			response = lrChalanService.createLRChalanResponse(lrChalan);	
-		} else {
-			ErrorMessage errorMsg = new ErrorMessage("Issue In saving chalan details", 500);
-			response = new ErrorResponse(errorMsg);
-		}
+		for (int i=0;i<lrIds.length;i++) {
+			long llrNo = 0;
+			try {	llrNo 			  = Long.parseLong(lrIds[i]);					} 	catch (NumberFormatException ex) {	}	
+			
+			LR lr = null;
+			if (llrNo > 0) {
+				lr  = lrService.findLR(lrIds[i]);
+				if (null == lr) {  
+					 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table for "+lrIds[i], 500);
+					 response = new ErrorResponse(errorMsg);
+			     }else{
+			    	 
+			    	 LRChalan lrChalan = lr.getLrchalanId();
+			    	 if(lrChalan != null) {
+			    		 //Chalan should be updated
+			    		 lrChalan = lrChalanService.updateLRChalan(lrIds[i],chalanDetails,lrChalan); 
+			    		
+			    	 }else{
+			    		 //Expenditure should be newly added
+			    		 lrChalan = lrChalanService.newLRChalan(lrNos,chalanDetails);
+			    		
+			    	 }
+			    	 
+			    	 if (null != lrChalan ) {
+			    		 lr=lrService.updateChalanToLR(lrChalan,lr);
+				 		if (null == lr) {
+				 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating LR with chalan. Please try again", 500);
+					 		response = new ErrorResponse(errorMsg);
+				 		} else {
+				 			response = lrChalanService.createLRChalanResponse(lrChalan);	
+				 		}
+			 			
+			 		} else {
+			 			ErrorMessage errorMsg = new ErrorMessage("Issue In saving chalan details", 500);
+			 			response = new ErrorResponse(errorMsg);
+			 		}
+			    	 
+			     }
+				
+			}
+			
+		}		
 		
 		           		
 		return response;
     }
+	
+	//Create BILL
+	@POST
+    @Path("/lr-service/createBill" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse createBill(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrNos" )     String lrNos,
+        @FormParam( "billDetails" )     String billDetails)		
+    {
+		AppResponse response = null;
+		LRBillService lrBillService  = new LRBillService();
+		LrService lrService                       = new LrService();
+		
+		//validate Input
+		lrBillService.validateAuthData(lrNos);
+		
+		String[] lrIds = lrNos.split(",");
+		
+		for (int i=0;i<lrIds.length;i++) {
+			long llrNo = 0;
+			try {	llrNo 			  = Long.parseLong(lrIds[i]);					} 	catch (NumberFormatException ex) {	}	
+			LR lr = null;
+			if (llrNo > 0) {
+				lr  = lrService.findLR(lrIds[i]);
+				if (null == lr) {  
+					 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table for "+lrIds[i], 500);
+					 response = new ErrorResponse(errorMsg);
+			    }else{
+			    	
+			    	LRBill lrBill = lr.getLrbillId();
+			    	if(lrBill != null) {
+			    		//Bill should be updated
+			    		lrBill = lrBillService.updateLRBill(lrIds[i],billDetails,lrBill); 
+			    		
+			    	 }else{
+			    		 //Expenditure should be newly added
+			    		 lrBill = lrBillService.newLRBill(lrNos,billDetails);
+			    		
+			    	 }
+			    	 
+			    	 if (null != lrBill ) {
+			    		 lr=lrService.updateBillToLR(lrBill,lr);
+				 		if (null == lr) {
+				 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating LR with bill. Please try again", 500);
+					 		response = new ErrorResponse(errorMsg);
+				 		} else {
+				 			response = lrBillService.createLRBillResponse(lrBill);	
+				 		}
+			 			
+			 		} else {
+			 			ErrorMessage errorMsg = new ErrorMessage("Issue In saving bill details", 500);
+			 			response = new ErrorResponse(errorMsg);
+			 		}
+			    	 
+			    }
+			}
+		}
+		  		
+		return response;
+    }
+
 
 	@POST
     @Path("/lr-service/searchlr" )
@@ -206,7 +311,10 @@ public class LRResource {
 		@FormParam( "billingParty" 	) 	String billingParty,
 		@FormParam( "poNo" 	        ) 	String poNo,
 		@FormParam( "doNo" 	        ) 	String doNo,
-		@FormParam( "billingnameId" ) 	String billingnameId)		
+		@FormParam( "billingnameId" ) 	String billingnameId,
+		@FormParam( "multiLoad")     String multiLoad,
+		@FormParam( "userName")     String userName)		
+    
     {
 		AppResponse response    = null;
 		LrService lrService = new LrService();
@@ -216,7 +324,7 @@ public class LRResource {
 		LR lr = null;
 		if (lrNo != null && !lrNo.equals("") ) {
 			lr  = lrService.findLR(lrNo);
-			System.out.println("getting LR for LR No "+lrNo+ " value "+lr);
+			System.out.println("updating multilod "+multiLoad);
 			if (null == lr) {  
 				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table", 500);
 				 response = new ErrorResponse(errorMsg);
@@ -251,6 +359,9 @@ public class LRResource {
 		 		     }		 		      
 		 		}
 		 		
+		 		if (multiLoad == null || ( multiLoad != null && !multiLoad.equals("true") )) {
+					multiLoad = "false";
+				}
 		 		
 		 		
 		 		lr = lrService.updateLR(vehileNo,
@@ -261,6 +372,8 @@ public class LRResource {
 		 								poNo,
 		 								doNo,
 		 								billingname,
+		 								multiLoad,
+		 								userName,
 		 								lr);
 		 		if (null == lr) {
 		 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating the lr. Please try again", 500);

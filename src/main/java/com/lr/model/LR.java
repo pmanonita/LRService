@@ -27,9 +27,12 @@ public class LR implements Serializable {
 	private Date          _updatetimestamp;	
 	private LRExpenditure _lrexpenditureId;
 	private LRIncome      _lrincomeId;
+	private LRChalan 	  _lrchalanId;
+	private LRBill        _lrbillId;
 	private Consigner     _consignerId;
 	private Consignee     _consigneeId;
 	private Set<LROthers> _otherExpenditures;
+	private Set<LROtherIncome> _otherIncomes;
 	private Billingname  _billingnameId;
 	private String         _poNo;
 	private String         _doNo;
@@ -64,12 +67,16 @@ public class LR implements Serializable {
 		_lrDate = ctrl.mLrDate();		
 		_userName = ctrl.mUserName();	
 		_lrexpenditureId = ctrl.mLrexpenditureId();
+		_lrchalanId 	=  ctrl.mLrchalanId();
+		_lrbillId       = ctrl.mLrbillId();
 		_lrincomeId = ctrl.mLrincomeId();
 		_otherExpenditures = ctrl.mOtherExpenditures();
+		_otherIncomes = ctrl.mOtherIncomes();
 		_poNo = ctrl.mPONo();
 		_doNo = ctrl.mDONo();
 		_billingnameId = ctrl.mBillingname();
 		_status = ctrl.mStatus();
+		_multiLoad = ctrl.mMultiLoad();
 	}
 	
 	public void changeTo(Controller ctrl) {		
@@ -84,12 +91,16 @@ public class LR implements Serializable {
 		_lrDate = ctrl.mLrDate();		
 		_userName = ctrl.mUserName();
 		_lrexpenditureId = ctrl.mLrexpenditureId();
+		_lrchalanId 	=  ctrl.mLrchalanId();
+		_lrbillId       = ctrl.mLrbillId();
 		_lrincomeId = ctrl.mLrincomeId();
 		_otherExpenditures = ctrl.mOtherExpenditures();
+		_otherIncomes = ctrl.mOtherIncomes();
 		_poNo = ctrl.mPONo();
 		_doNo = ctrl.mDONo();
 		_billingnameId = ctrl.mBillingname();
 		_status = ctrl.mStatus();
+		_multiLoad = ctrl.mMultiLoad();
 		
 	}
 
@@ -110,8 +121,14 @@ public class LR implements Serializable {
 		LRExpenditure mLrexpenditureId();
 		void mLrexpenditureId(LRExpenditure _lrexpenditureId);
 		
+		LRChalan mLrchalanId();
+		void mLrchalanId(LRChalan _lrchalanId);
+		
+		LRBill mLrbillId();
+		void mLrbillId(LRBill _lrbillId);
+		
 		LRIncome mLrincomeId();
-		void mLreincomeId(LRIncome _lrincomeId);	
+		void mLrincomeId(LRIncome _lrincomeId);	
 
 		String mVehicleOwner();
 		void mVehicleOwner(String _vehicleOwner);
@@ -130,6 +147,9 @@ public class LR implements Serializable {
 		
 		Set<LROthers> mOtherExpenditures();
 		void mOtherExpenditures(Set<LROthers> _otherExpenditures);
+		
+		Set<LROtherIncome> mOtherIncomes();
+		void mOtherIncomes(Set<LROtherIncome> _otherIncomes);
 		
 		String mPONo();
 		void mPONo(String _poNo);
@@ -150,14 +170,17 @@ public class LR implements Serializable {
 		public void mVehicleNo(String vehicleNo) 		{	}
 		public void mConsignerId(Consigner consignerId)	{	}
 		public void mConsigneeId(Consignee consigneeId) 		{	}	
-		public void mLrexpenditureId(LRExpenditure lrexpenditureId) 		{	}	
-		public void mLreincomeId(LRIncome lrincomeId) {	}
+		public void mLrexpenditureId(LRExpenditure lrexpenditureId) 		{	}
+		public void mLrchalanId(LRChalan lrchalanId) 		{	}
+		public void mLrbillId(LRBill lrbillId) 		{	}
+		public void mLrincomeId(LRIncome lrincomeId) {	}
 		public void mVehicleOwner(String vehicleOwner) 	{	}
 		public void mBillingToParty(String billingToParty) 		{	}
 		public void mLrDate(Date lrDate)	 			{	}
 		public void mMultiLoad(String multiLoad) 	{	}
 		public void mUserName(String userName) 	{	}		
 		public void mOtherExpenditures(Set otherExpenditures)	{	}
+		public void mOtherIncomes(Set otherIncomes)	{	}
 		public void mPONo(String poNo) 	{	}
 		public void mDONo(String doNo) 	{	}
 		public void mBillingname(Billingname _billingnameId) {	}
@@ -264,6 +287,22 @@ public class LR implements Serializable {
 		this._lrexpenditureId = lrexpenditureId;
 	}
 	
+	public LRChalan getLrchalanId() {
+		return _lrchalanId;
+	}
+
+	public void setLrchalanId(LRChalan lrchalanId) {
+		this._lrchalanId = lrchalanId;
+	}
+	
+	public LRBill getLrbillId() {
+		return _lrbillId;
+	}
+
+	public void setLrbillId(LRBill lrbillId) {
+		this._lrbillId = lrbillId;
+	}
+	
 	public LRIncome getLrincomeId() {
 		return _lrincomeId;
 	}
@@ -277,6 +316,13 @@ public class LR implements Serializable {
 	}
 	public void setOtherExpenditures(Set<LROthers> otherExpenditures){
 		this._otherExpenditures = otherExpenditures;
+	}
+	
+	public Set<LROtherIncome> getOtherIncomes() {
+		return _otherIncomes;
+	}
+	public void setOtherIncomes(Set<LROtherIncome> otherIncomes){
+		this._otherIncomes = otherIncomes;
 	}
 	public String getPoNo() {
 		return _poNo;
