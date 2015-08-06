@@ -7,6 +7,7 @@ import com.lr.model.Consigner;
 public class LRView {
 
 	private long    id;
+	private long    transid;	
 	private String vehicleNo;
 	private String vehicleOwner;
 	private Consigner consigner;
@@ -17,6 +18,8 @@ public class LRView {
 	private String doNo;
 	private Billingname billingname;
 	private String status;
+	private String multiLoad;
+	private String userName;
     
     
     public LRView() {}
@@ -29,8 +32,19 @@ public class LRView {
 
 	public void setId(long id) {
 		this.id = id;
-	}
+	}	
 	
+	
+	public long getTransid() {
+		return transid;
+	}
+
+
+	public void setTransid(long transid) {
+		this.transid = transid;
+	}
+
+
 	public String getVehicleNo() {
 		return vehicleNo;
 	}
@@ -127,6 +141,26 @@ public class LRView {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+
+	public String getMultiLoad() {
+		return multiLoad;
+	}
+
+
+	public void setMultiLoad(String multiLoad) {
+		this.multiLoad = multiLoad;
+	}
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	

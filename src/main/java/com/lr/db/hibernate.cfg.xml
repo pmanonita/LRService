@@ -22,6 +22,8 @@
     <mapping resource="com/lr/model/AccountSource.hbm.xml"></mapping>
     <mapping resource="com/lr/model/Billingname.hbm.xml"></mapping>
     <mapping resource="com/lr/model/LRChalan.hbm.xml"></mapping>
+    <mapping resource="com/lr/model/LRBill.hbm.xml"></mapping>
+    <mapping resource="com/lr/model/LROtherIncome.hbm.xml"></mapping>
 
   </session-factory>
 </hibernate-configuration>
