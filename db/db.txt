@@ -175,6 +175,15 @@ CREATE TABLE  `lr_test`.`transaction` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `lr_test`.`lrotherincome`;
+CREATE TABLE  `lr_test`.`lrotherincome` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lrId` bigint(20) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `remarks` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
 SELECT * FROM `user` u;
 insert into user(username,password,servicekey,role,createdate,mobile) values ('praja','praja123@','824bb1e8-de0c-401c-9f83-8b1d18a0ca9d','Admin','2015/07/23',6777788888);
 insert into user(username,password,servicekey,role,createdate,mobile) values ('pmanonita','pmanonita123@','824bb1e8-de0c-401c-9f83-8b1d18a0ca9d','Normal','2015/07/24',6777788889);
