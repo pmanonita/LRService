@@ -164,14 +164,6 @@ CREATE TABLE  `lr_test`.`lrbill` (
 DROP TABLE IF EXISTS `lr_test`.`transaction`;
 CREATE TABLE  `lr_test`.`transaction` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `lrIds` varchar(255) NOT NULL,
-  `freightToBroker` int(11) DEFAULT NULL,
-  `extraPayToBroker` int(11) DEFAULT NULL,
-  `advance` int(11) DEFAULT NULL,
-  `balanceFreight` int(11) DEFAULT NULL,
-  `multiLoadCharge` int(11) DEFAULT NULL,
-  `multiLoadBilling` int(11) DEFAULT NULL,
-  `freightToBrokerBilling` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

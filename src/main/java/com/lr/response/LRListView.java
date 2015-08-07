@@ -5,54 +5,63 @@ import java.util.List;
 import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
+import com.lr.model.LRTransaction;
 
 public class LRListView {
 
-	private long    id;
-	private String vehicleNo;
-	private String vehicleOwner;
-	private Consigner consigner;
-	private Consignee consignee;	
-	private String billingParty;
-	private String poNo;
-	private String doNo;
-	private Billingname billingname;
-	private String status;
+	private long    		id;
+	private LRTransaction  	transaction;	
+	private String 			vehicleNo;
+	private String 			vehicleOwner;
+	private Consigner 		consigner;
+	private Consignee 		consignee;	
+	private String 			billingParty;
+	private String 			lrDate;
+	private String 			poNo;
+	private String 			doNo;
+	private Billingname 	billingname;
+	private String 			status;
+	private String 			multiLoad;
+	private String 			userName;
 	
 	//Exp
 	private long    lrExpenditureId;
-	private long lrId;
-	private int freightToBroker;
-	private int extraPayToBroker;
-	private int advance;
-	private int   balanceFreight;
-	private int loadingCharges;
-	private int unloadingCharges;
-	private int loadingDetBroker;
-	private int unloadingDetBroker;
+	private long 	lrId;
+	private int 	freightToBroker;
+	private int 	extraPayToBroker;
+	private int 	advance;
+	private int   	balanceFreight;
+	private int 	loadingCharges;
+	private int 	unloadingCharges;
+	private int 	loadingDetBroker;
+	private int 	unloadingDetBroker;
 	
-	//LROthers
-	List<LROthersView> lrOthers;
+	//List
+	private List<LROthersView> 		lrOthers;
+	private List<LROtherIncomeView> lrOtherIncome;
 	
 	//LRIncome
 	private long    incomeId;
-	private long lrIdBilling;
-	private int freightToBrokerBilling;
-	private int extraPayToBrokerBilling;	
-	private int loadingChargesBilling;
-	private int unloadingChargesBilling;
-	private int loadingDetBrokerBilling;
-	private int unloadingDetBrokerBilling;
-    
-    
+	private long 	lrIdBilling;
+	private int 	freightToBrokerBilling;
+	private int 	extraPayToBrokerBilling;	
+	private int 	loadingChargesBilling;
+	private int 	unloadingChargesBilling;
+	private int 	loadingDetBrokerBilling;
+	private int 	unloadingDetBrokerBilling;
+	
+	//LRChalan
+	private LRChalanView chalan;
+	
+	//LRBill
+	private LRBillView bill;
+	
     public LRListView() {}
-
 
 	public long getId() {
 		return id;
 	}
-
-
+	
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -85,8 +94,6 @@ public class LRListView {
 	public void setBillingParty(String billingParty) {
 		this.billingParty = billingParty;
 	}
-	
-	
 
 
 	public String getPoNo() {
@@ -336,11 +343,75 @@ public class LRListView {
 	public void setUnloadingDetBrokerBilling(int unloadingDetBrokerBilling) {
 		this.unloadingDetBrokerBilling = unloadingDetBrokerBilling;
 	}
-	
-	
-	
-	
 
-   
+
+	public LRTransaction getTransaction() {
+		return transaction;
+	}
+
+
+	public void setTransaction(LRTransaction transaction) {
+		this.transaction = transaction;
+	}
+
+
+	public String getLrDate() {
+		return lrDate;
+	}
+
+
+	public void setLrDate(String lrDate) {
+		this.lrDate = lrDate;
+	}
+
+
+	public String getMultiLoad() {
+		return multiLoad;
+	}
+
+
+	public void setMultiLoad(String multiLoad) {
+		this.multiLoad = multiLoad;
+	}
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+
+	public List<LROtherIncomeView> getLrOtherIncome() {
+		return lrOtherIncome;
+	}
+
+
+	public void setLrOtherIncome(List<LROtherIncomeView> lrOtherIncome) {
+		this.lrOtherIncome = lrOtherIncome;
+	}
+
+
+	public LRChalanView getChalan() {
+		return chalan;
+	}
+
+
+	public void setChalan(LRChalanView chalan) {
+		this.chalan = chalan;
+	}
+
+
+	public LRBillView getBill() {
+		return bill;
+	}
+
+
+	public void setBill(LRBillView bill) {
+		this.bill = bill;
+	}  
 
 }

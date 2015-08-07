@@ -68,7 +68,7 @@ public class LRResource {
 		@FormParam( "doNo" )         String doNo,
 		@FormParam( "billingnameId") String billingnameId,
 		@FormParam( "multiLoad")     String multiLoad,
-		@FormParam( "userName")     String userName)		
+		@FormParam( "userName")      String userName)		
     {
 		AppResponse response = null;
 		LrService lrService  = new LrService();		
@@ -133,16 +133,16 @@ public class LRResource {
     {
 		AppResponse response = null;
 		LRChalanService lrChalanService  = new LRChalanService();
-		LrService lrService                       = new LrService();
+		LrService lrService              = new LrService();
 		
 		//validate Input
 		lrChalanService.validateAuthData(lrNos);
 		
 		String[] lrIds = lrNos.split(",");
 		
-		for (int i=0;i<lrIds.length;i++) {
+		for (int i=0; i < lrIds.length; i++) {
 			long llrNo = 0;
-			try {	llrNo 			  = Long.parseLong(lrIds[i]);					} 	catch (NumberFormatException ex) {	}	
+			try {	llrNo = Long.parseLong(lrIds[i]); } 	catch (NumberFormatException ex) {	}	
 			
 			LR lr = null;
 			if (llrNo > 0) {
@@ -207,7 +207,7 @@ public class LRResource {
 		
 		for (int i=0;i<lrIds.length;i++) {
 			long llrNo = 0;
-			try {	llrNo 			  = Long.parseLong(lrIds[i]);					} 	catch (NumberFormatException ex) {	}	
+			try {	llrNo = Long.parseLong(lrIds[i]);	} 	catch (NumberFormatException ex) {	}	
 			LR lr = null;
 			if (llrNo > 0) {
 				lr  = lrService.findLR(lrIds[i]);
@@ -287,6 +287,7 @@ public class LRResource {
 		LrService lrService  = new LrService();              
               
   		List<LR> lrList = lrService.listlr(lrDate, multiLoad, status, isLRAttached);
+  		System.out.println("list size "+lrList.size());
     		
   		if (lrList != null) {
   			response = lrService.createLRListResponse(lrList);    					

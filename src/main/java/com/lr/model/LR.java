@@ -4,12 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import com.lr.exceptions.InsufficientDataException;
+
 
 
 public class LR implements Serializable {	
@@ -17,7 +16,7 @@ public class LR implements Serializable {
 	private static final long serialVersionUID = -6779738051490200702L;
 	
 	private long          _id;
-	private long          _transid;	
+	private LRTransaction _transaction;	
 	private String        _vehicleNo;
 	private String         _vehicleOwner;
 	private String        _billingToParty;
@@ -44,6 +43,7 @@ public class LR implements Serializable {
 		createFrom(ctrl);		
 	}
 	
+	/*
 	private void validate(Controller ctrl) throws InsufficientDataException {
 		//Model level validation
 		String errorMsg = "";
@@ -53,137 +53,137 @@ public class LR implements Serializable {
 			throw new InsufficientDataException(errorMsg);
 		}	
 		
-	}
+	}*/
 	
 	private void createFrom(Controller ctrl) {
 		//validate(ctrl);
 		
-		_transid = ctrl.mTransid();		
-		_vehicleNo = ctrl.mVehicleNo();	
-		_consignerId = ctrl.mConsignerId();
-		_consigneeId = ctrl.mConsigneeId();		
-		_vehicleOwner = ctrl.mVehicleOwner();
-		_billingToParty = ctrl.mBillingToParty();
-		_lrDate = ctrl.mLrDate();		
-		_userName = ctrl.mUserName();	
-		_lrexpenditureId = ctrl.mLrexpenditureId();
-		_lrchalanId 	=  ctrl.mLrchalanId();
-		_lrbillId       = ctrl.mLrbillId();
-		_lrincomeId = ctrl.mLrincomeId();
-		_otherExpenditures = ctrl.mOtherExpenditures();
-		_otherIncomes = ctrl.mOtherIncomes();
-		_poNo = ctrl.mPONo();
-		_doNo = ctrl.mDONo();
-		_billingnameId = ctrl.mBillingname();
-		_status = ctrl.mStatus();
-		_multiLoad = ctrl.mMultiLoad();
+		_transaction 	 	= ctrl.mTransid();		
+		_vehicleNo 		 	= ctrl.mVehicleNo();	
+		_consignerId 	 	= ctrl.mConsignerId();
+		_consigneeId 	 	= ctrl.mConsigneeId();		
+		_vehicleOwner 	 	= ctrl.mVehicleOwner();
+		_billingToParty  	= ctrl.mBillingToParty();
+		_lrDate 		 	= ctrl.mLrDate();		
+		_userName 		 	= ctrl.mUserName();	
+		_lrexpenditureId 	= ctrl.mLrexpenditureId();
+		_lrchalanId 		=  ctrl.mLrchalanId();
+		_lrbillId       	= ctrl.mLrbillId();
+		_lrincomeId 		= ctrl.mLrincomeId();
+		_otherExpenditures 	= ctrl.mOtherExpenditures();
+		_otherIncomes 		= ctrl.mOtherIncomes();
+		_poNo 				= ctrl.mPONo();
+		_doNo 				= ctrl.mDONo();
+		_billingnameId 		= ctrl.mBillingname();
+		_status 			= ctrl.mStatus();
+		_multiLoad 			= ctrl.mMultiLoad();
 	}
 	
 	public void changeTo(Controller ctrl) {		
 		//validate(ctrl);
 		
-		_transid = ctrl.mTransid();		
-		_vehicleNo = ctrl.mVehicleNo();	
-		_consignerId = ctrl.mConsignerId();
-		_consigneeId = ctrl.mConsigneeId();		
-		_vehicleOwner = ctrl.mVehicleOwner();
-		_billingToParty = ctrl.mBillingToParty();
-		_lrDate = ctrl.mLrDate();		
-		_userName = ctrl.mUserName();
-		_lrexpenditureId = ctrl.mLrexpenditureId();
-		_lrchalanId 	=  ctrl.mLrchalanId();
-		_lrbillId       = ctrl.mLrbillId();
-		_lrincomeId = ctrl.mLrincomeId();
-		_otherExpenditures = ctrl.mOtherExpenditures();
-		_otherIncomes = ctrl.mOtherIncomes();
-		_poNo = ctrl.mPONo();
-		_doNo = ctrl.mDONo();
-		_billingnameId = ctrl.mBillingname();
-		_status = ctrl.mStatus();
-		_multiLoad = ctrl.mMultiLoad();
+		_transaction	 	= ctrl.mTransid();		
+		_vehicleNo 			= ctrl.mVehicleNo();	
+		_consignerId 		= ctrl.mConsignerId();
+		_consigneeId 		= ctrl.mConsigneeId();		
+		_vehicleOwner 		= ctrl.mVehicleOwner();
+		_billingToParty 	= ctrl.mBillingToParty();
+		_lrDate 			= ctrl.mLrDate();		
+		_userName 			= ctrl.mUserName();
+		_lrexpenditureId 	= ctrl.mLrexpenditureId();
+		_lrchalanId 		=  ctrl.mLrchalanId();
+		_lrbillId       	= ctrl.mLrbillId();
+		_lrincomeId 		= ctrl.mLrincomeId();
+		_otherExpenditures	= ctrl.mOtherExpenditures();
+		_otherIncomes 		= ctrl.mOtherIncomes();
+		_poNo 				= ctrl.mPONo();
+		_doNo 				= ctrl.mDONo();
+		_billingnameId 		= ctrl.mBillingname();
+		_status 			= ctrl.mStatus();
+		_multiLoad 			= ctrl.mMultiLoad();
 		
 	}
 
 	public interface Controller {
 				
-		long mTransid();
-		void mTransid(long transid);		
+		LRTransaction mTransid();
+		void mTransid(LRTransaction transid);		
 
 		String mVehicleNo();
-		void mVehicleNo(String _vehicleNo);
+		void mVehicleNo(String vehicleNo);
 
 		Consigner mConsignerId();
-		void mConsignerId(Consigner _consignerId);
+		void mConsignerId(Consigner consignerId);
 
 		Consignee mConsigneeId();
-		void mConsigneeId(Consignee _consigneeId);
+		void mConsigneeId(Consignee consigneeId);
 		
 		LRExpenditure mLrexpenditureId();
-		void mLrexpenditureId(LRExpenditure _lrexpenditureId);
+		void mLrexpenditureId(LRExpenditure lrexpenditureId);
 		
 		LRChalan mLrchalanId();
-		void mLrchalanId(LRChalan _lrchalanId);
+		void mLrchalanId(LRChalan lrchalanId);
 		
 		LRBill mLrbillId();
-		void mLrbillId(LRBill _lrbillId);
+		void mLrbillId(LRBill lrbillId);
 		
 		LRIncome mLrincomeId();
-		void mLrincomeId(LRIncome _lrincomeId);	
+		void mLrincomeId(LRIncome lrincomeId);	
 
 		String mVehicleOwner();
-		void mVehicleOwner(String _vehicleOwner);
+		void mVehicleOwner(String vehicleOwner);
 
 		String mBillingToParty();
-		void mBillingToParty(String _billingToParty);
+		void mBillingToParty(String billingToParty);
 
 		Date mLrDate();
-		void mLrDate(Date _lrDate);		
+		void mLrDate(Date lrDate);		
 
 		String mMultiLoad();
-		void mMultiLoad(String _multiLoad);
+		
+		void mMultiLoad(String multiLoad);
 		
 		String mUserName();
-		void mUserName(String _userName);
+		void mUserName(String userName);
 		
 		Set<LROthers> mOtherExpenditures();
-		void mOtherExpenditures(Set<LROthers> _otherExpenditures);
+		void mOtherExpenditures(Set<LROthers> otherExpenditures);
 		
 		Set<LROtherIncome> mOtherIncomes();
-		void mOtherIncomes(Set<LROtherIncome> _otherIncomes);
+		void mOtherIncomes(Set<LROtherIncome> otherIncomes);
 		
 		String mPONo();
-		void mPONo(String _poNo);
+		void mPONo(String poNo);
 		
 		String mDONo();
-		void mDONo(String _doNo);
+		void mDONo(String doNo);
 		
 		Billingname mBillingname();
-		void mBillingname(Billingname _billingnameId);
+		void mBillingname(Billingname billingnameId);
 		
 		String mStatus();
-		void mStatus(String _status);
-		
+		void mStatus(String status);
 	}
 	
 	public abstract static class DefaultController implements Controller {
-		public void mTransid(long transid) 		{	}
-		public void mVehicleNo(String vehicleNo) 		{	}
-		public void mConsignerId(Consigner consignerId)	{	}
-		public void mConsigneeId(Consignee consigneeId) 		{	}	
-		public void mLrexpenditureId(LRExpenditure lrexpenditureId) 		{	}
-		public void mLrchalanId(LRChalan lrchalanId) 		{	}
-		public void mLrbillId(LRBill lrbillId) 		{	}
-		public void mLrincomeId(LRIncome lrincomeId) {	}
-		public void mVehicleOwner(String vehicleOwner) 	{	}
-		public void mBillingToParty(String billingToParty) 		{	}
-		public void mLrDate(Date lrDate)	 			{	}
-		public void mMultiLoad(String multiLoad) 	{	}
-		public void mUserName(String userName) 	{	}		
-		public void mOtherExpenditures(Set otherExpenditures)	{	}
-		public void mOtherIncomes(Set otherIncomes)	{	}
-		public void mPONo(String poNo) 	{	}
-		public void mDONo(String doNo) 	{	}
-		public void mBillingname(Billingname _billingnameId) {	}
+		public void mTransid(LRTransaction transid) 					{	}
+		public void mVehicleNo(String vehicleNo) 						{	}
+		public void mConsignerId(Consigner consignerId)					{	}
+		public void mConsigneeId(Consignee consigneeId) 				{	}	
+		public void mLrexpenditureId(LRExpenditure lrexpenditureId)		{	}
+		public void mLrchalanId(LRChalan lrchalanId) 					{	}
+		public void mLrbillId(LRBill lrbillId) 							{	}
+		public void mLrincomeId(LRIncome lrincomeId) 					{	}
+		public void mVehicleOwner(String vehicleOwner) 					{	}
+		public void mBillingToParty(String billingToParty) 				{	}
+		public void mLrDate(Date lrDate)	 							{	}
+		public void mMultiLoad(String multiLoad) 						{	}
+		public void mUserName(String userName) 							{	}		
+		public void mOtherExpenditures(Set<LROthers> otherExpenditures)	{	}
+		public void mOtherIncomes(Set<LROtherIncome> otherIncomes)		{	}
+		public void mPONo(String poNo) 									{	}
+		public void mDONo(String doNo) 									{	}
+		public void mBillingname(Billingname _billingnameId) 			{	}
 		public void mStatus(String status) 	{	}
 	}
 
@@ -198,12 +198,12 @@ public class LR implements Serializable {
 		this._id = id;
 	}
 
-	public long getTransid() {
-		return _transid;
+	public LRTransaction getTransaction() {
+		return _transaction;
 	}
 
-	void setTransid(long transid) {
-		this._transid = transid;
+	public void setTransaction(LRTransaction _transaction) {
+		this._transaction = _transaction;
 	}
 
 	public String getVehicleNo() {
@@ -525,7 +525,6 @@ public class LR implements Serializable {
 	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_BY_DATE_MULTILOAD_NOATTACHED);
 	 	qry.setDate("lrDate", lrDate);
 	 	qry.setString("multiLoad", multiLoad);
-	 	qry.setLong("transid", 0);
 	 	
 	 	final List<LR> lrList = qry.list();
 	 	return lrList;

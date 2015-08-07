@@ -6,20 +6,20 @@ import com.lr.model.Consigner;
 
 public class LRView {
 
-	private long    id;
-	private long    transid;	
-	private String vehicleNo;
-	private String vehicleOwner;
-	private Consigner consigner;
-	private Consignee consignee;	
-	private String billingParty;
-	private String lrDate;
-	private String poNo;
-	private String doNo;
-	private Billingname billingname;
-	private String status;
-	private String multiLoad;
-	private String userName;
+	private long    		id;
+	private long    		transid;	
+	private String 			vehicleNo;
+	private String 			vehicleOwner;
+	private Consigner 		consigner;
+	private Consignee 		consignee;	
+	private String 			billingParty;
+	private String 			lrDate;
+	private String 			poNo;
+	private String 			doNo;
+	private Billingname 	billingname;
+	private String 			status;
+	private String 			multiLoad;
+	private String 			userName;
     
     
     public LRView() {}

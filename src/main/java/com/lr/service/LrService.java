@@ -23,6 +23,7 @@ import java.util.UUID;
 
 
 
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -42,6 +43,7 @@ import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROtherIncome;
 import com.lr.model.LROthers;
+import com.lr.model.LRTransaction;
 import com.lr.model.User;
 import com.lr.response.AppResponse;
 import com.lr.response.BillingnameListResponse;
@@ -50,6 +52,8 @@ import com.lr.response.ConsigneeListResponse;
 import com.lr.response.ConsigneeView;
 import com.lr.response.ConsignerListResponse;
 import com.lr.response.ConsignerView;
+import com.lr.response.LRBillView;
+import com.lr.response.LRChalanView;
 import com.lr.response.LRExpeditureView;
 import com.lr.response.LRIncomeView;
 import com.lr.response.LRListResponse;
@@ -89,7 +93,7 @@ public class LrService {
 	{
 		
 		return new LR.DefaultController() {
-			public long mTransid() 						{	return 0;				}			
+			public LRTransaction mTransid() 			{	return null;			}			
 			public String mVehicleNo() 					{	return vehileNo;		}
 			public Consigner mConsignerId() 			{	return consigner;		}
 			public Consignee mConsigneeId() 			{	return consignee;		}
@@ -132,7 +136,7 @@ public class LrService {
 										  final Set<LROtherIncome> otherincomes) 
 	{
 		return new LR.DefaultController() {		
-			public long mTransid() 						{	return 0;				}
+			public LRTransaction mTransid() 			{	return null;			}
 			public String mVehicleNo() 					{	return vehileNo;		}		
 			public Consigner mConsignerId() 			{	return consigner;		}
 			public Consignee mConsigneeId() 			{	return consignee;		}
@@ -157,8 +161,7 @@ public class LrService {
 	}
 
 	//Create new LR
-	public LR newLR(
-					final String vehileNo,
+	public LR newLR(final String vehileNo,
 					final String vehicleOwner,
 					final Consigner consigner,
 					final Consignee consignee,						  
@@ -860,7 +863,12 @@ public class LrService {
 	{			
 		LRView lrView = new LRView();
 		lrView.setId(lr.getId());
-		lrView.setTransid(lr.getTransid());
+		
+		LRTransaction lrt = lr.getTransaction();
+		if(null != lrt) {
+			lrView.setTransid(lr.getTransaction().getId());
+		}
+		
 		lrView.setVehicleNo(lr.getVehicleNo());
 		lrView.setVehicleOwner(lr.getVehicleOwner());
 		lrView.setConsigner(lr.getConsignerId());
@@ -941,7 +949,11 @@ public class LrService {
 		if (lr != null) {
 			lrView = new LRView();
 			lrView.setId(lr.getId());
-			lrView.setTransid(lr.getTransid());
+			
+			LRTransaction lrt = lr.getTransaction();
+			if(null != lrt) {
+				lrView.setTransid(lrt.getId());
+			}
 			lrView.setVehicleNo(lr.getVehicleNo());
 			lrView.setVehicleOwner(lr.getVehicleOwner());
 			lrView.setBillingParty(lr.getBillingToParty());
@@ -1038,6 +1050,10 @@ public class LrService {
 		LRListView lrListView     = null;
 		LROthersView lrOthersView = null;
 		List<LRListView> lrViews  = new ArrayList<LRListView>();
+		LROtherIncomeView lrOtherIncomeView = null;
+		LRChalanView lrChalanView = null;
+		LRBillView lrBillView = null;
+		
 		
 
 		//LR	
@@ -1046,6 +1062,10 @@ public class LrService {
 				if(lr != null) {
 					lrListView = new LRListView();
 					lrListView.setId(lr.getId());
+					
+					if(null != lr.getTransaction()) {
+						lrListView.setTransaction(lr.getTransaction());	
+					}					
 					lrListView.setVehicleNo(lr.getVehicleNo());
 					lrListView.setVehicleOwner(lr.getVehicleOwner());
 					lrListView.setBillingParty(lr.getBillingToParty());		
@@ -1053,6 +1073,10 @@ public class LrService {
 					lrListView.setDoNo(lr.getDoNo());
 					lrListView.setBillingname(lr.getBillingnameId());
 					lrListView.setStatus(lr.getStatus());
+					lrListView.setMultiLoad(lr.getMultiLoad());
+					lrListView.setUserName(lr.getUserName());
+					
+					System.out.println("basic information is set");
 					
 					
 					Consigner consigner = lr.getConsignerId();
@@ -1090,6 +1114,23 @@ public class LrService {
 						lrListView.setLrOthers(lrOthers);
 					}
 					
+					// use a list of otherincomes exp view
+					Set<LROtherIncome> lrOtherIncomes = lr.getOtherIncomes();
+					List<LROtherIncomeView> lrOtherIncomeViews = new ArrayList<LROtherIncomeView>();
+					if (null != lrOtherIncomes && lrOtherIncomes.size() > 0) {
+						for (LROtherIncome lrOtherIncome : lrOtherIncomes) {
+							if(lrOtherIncome != null) {
+								lrOtherIncomeView = new LROtherIncomeView();
+								lrOtherIncomeView.setId(lrOtherIncome.getId());
+								lrOtherIncomeView.setLrId(lrOtherIncome.getLrId());
+								lrOtherIncomeView.setAmount(lrOtherIncome.getAmount());
+								lrOtherIncomeView.setRemarks(lrOtherIncome.getRemarks());
+								lrOtherIncomeViews.add(lrOtherIncomeView);
+							}
+						}
+						lrListView.setLrOtherIncome(lrOtherIncomeViews);
+					}
+					
 					//Get Income
 					LRIncome lrIncome = lr.getLrincomeId();
 					if (lrIncome != null) {								
@@ -1099,6 +1140,31 @@ public class LrService {
 						lrListView.setUnloadingChargesBilling(lrIncome.getUnloadingCharges());	
 						lrListView.setLoadingDetBrokerBilling(lrIncome.getLoadingDetBroker());	
 						lrListView.setUnloadingDetBrokerBilling(lrIncome.getUnloadingDetBroker());			
+					}
+					System.out.println("getting chalana ");
+					
+					//Get Chalan
+					LRChalan lrChalan = lr.getLrchalanId();
+					if (lrChalan != null) {		
+						lrChalanView= new LRChalanView();
+						lrChalanView.setId(lrChalan.getId());
+						lrChalanView.setLrIds(lrChalan.getLrIds());
+						lrChalanView.setChalanDetails(lrChalan.getChalanDetails());			
+						lrChalanView.setTotalCost();
+						lrListView.setChalan(lrChalanView);
+							
+					}
+					
+					//Get Bill
+					LRBill lrBill = lr.getLrbillId();
+					if (lrBill != null) {		
+						lrBillView= new LRBillView();
+						lrBillView.setId(lrBill.getId());
+						lrBillView.setLrIds(lrBill.getLrIds());
+						lrBillView.setBillDetails(lrBill.getBillDetails());			
+						lrBillView.setTotalCost();
+						lrListView.setBill(lrBillView);
+							
 					}
 					
 					

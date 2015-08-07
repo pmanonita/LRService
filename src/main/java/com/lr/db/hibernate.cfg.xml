@@ -9,8 +9,17 @@
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/lr_test?autoReconnect=true</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">root</property>
+    <property name="hibernate.connection.password">rootsecure@</property>    
     <property name="show_sql">true</property>
+    
+    <property name="validationQuery">SELECT 1</property>
+	<property name="testOnBorrow">true</property>
+    <property name="hibernate.c3p0.min_size" >3</property>
+	<property name="hibernate.c3p0.max_size">50</property>
+	<property name="hibernate.c3p0.timeout">1800</property>
+	<property name="hibernate.c3p0.max_statements">50</property>
+	<property name="hibernate.c3p0.idle_test_period">28680</property>
+	
     <mapping resource="com/lr/model/User.hbm.xml"></mapping>	
     <mapping resource="com/lr/model/LR.hbm.xml"></mapping>
     <mapping resource="com/lr/model/LRExpenditure.hbm.xml"></mapping>
@@ -24,6 +33,7 @@
     <mapping resource="com/lr/model/LRChalan.hbm.xml"></mapping>
     <mapping resource="com/lr/model/LRBill.hbm.xml"></mapping>
     <mapping resource="com/lr/model/LROtherIncome.hbm.xml"></mapping>
+    <mapping resource="com/lr/model/LRTransaction.hbm.xml"></mapping>
 
   </session-factory>
 </hibernate-configuration>

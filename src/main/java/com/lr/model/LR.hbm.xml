@@ -7,12 +7,11 @@
   <class name="com.lr.model.LR" table="LR">
     <id name="id" type="long" column="id" >
       <generator class="increment"/>
-    </id>
-   
+    </id>   
   
-    <property name="transid" type="long">
-      <column name="transid" />
-    </property> 
+  	<many-to-one name="transaction" column="transid"     
+       class="com.lr.model.LRTransaction" lazy="false"/>     
+    
     <property name="vehicleNo" type="string">
       <column name="vehicleNo" />
     </property>     
@@ -128,7 +127,7 @@
      where lr.lrDate = :lrDate
        and lr.multiLoad = :multiLoad
        and lr.status = :status
-       and lr.transid = 0
+       and lr.transaction is null
        order by lrDate desc 
  </query>
  
@@ -138,7 +137,7 @@
      where lr.lrDate = :lrDate
        and lr.multiLoad = :multiLoad
        and lr.status = :status
-       and lr.transid > 0
+       and lr.transaction is not null
        order by lrDate desc 
  </query>
  
@@ -147,7 +146,7 @@
        from com.lr.model.LR as lr
      where lr.lrDate = :lrDate
        and lr.multiLoad = :multiLoad
-       and lr.transid = 0
+       and lr.transaction is null
        order by lrDate desc 
  </query>
  
@@ -156,7 +155,7 @@
        from com.lr.model.LR as lr
      where lr.lrDate = :lrDate
        and lr.multiLoad = :multiLoad
-       and lr.transid > 0
+       and lr.transaction is not null
        order by lrDate desc 
  </query>
  
