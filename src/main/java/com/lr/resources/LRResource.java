@@ -1,6 +1,7 @@
 package com.lr.resources;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -303,7 +304,7 @@ public class LRResource {
   		System.out.println("list size "+lrList.size());
     		
   		if (lrList != null) {
-  			response = lrService.createLRListResponse(lrList);    					
+  			response = lrService.createLRListResponse(lrList,"");    					
     	} else {
     		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LR List data. Please try again", 500);
     		response = new ErrorResponse(errorMsg);
@@ -389,6 +390,7 @@ public class LRResource {
 		 								billingname,
 		 								multiLoad,
 		 								userName,
+		 								lr.getStatus(),
 		 								lr);
 		 		if (null == lr) {
 		 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating the lr. Please try again", 500);
@@ -517,6 +519,82 @@ public class LRResource {
     		ErrorMessage errorMsg = new ErrorMessage("Issue while creating Multi LR. Please try again", 500);
     		response = new ErrorResponse(errorMsg);
     	}
+  		
+  		return response;
+    }
+	
+	@POST
+    @Path("/lr-service/updateStatus" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse updateStatus(
+        @Context HttpHeaders httpHeaders, 
+        @FormParam( "lrDate" ) String lrDate,
+        @FormParam( "multiLoad" ) String multiLoad,
+        @FormParam( "status" ) String status,
+        @FormParam( "isLRAttached" ) String isLRAttached,
+        @FormParam( "lrIds" ) String strLrIds)
+    {
+		AppResponse response = null;
+		LrService lrService  = new LrService();
+		
+		if(null == status || (null != status && status.equals(""))) {
+			ErrorMessage errorMsg = new ErrorMessage("Invalid status", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
+		if(null == strLrIds || (null != strLrIds && strLrIds.equals(""))) {
+			ErrorMessage errorMsg = new ErrorMessage("No LR ids found for updating status. Please check", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
+		
+		String[] lrIds = strLrIds.split(",");		
+		List<String> errorLRIds =new ArrayList<String>();
+		for (String lrid : lrIds) {			
+			LR lr = lrService.findLR(lrid);
+			if (null != lr) {
+				lr = lrService.updateLR(lr.getVehicleNo(),
+										lr.getVehicleOwner(),
+										lr.getConsignerId(),
+										lr.getConsigneeId(),						
+										lr.getBillingToParty(),
+										lr.getPoNo(),
+										lr.getDoNo(),
+										lr.getBillingnameId(),
+										lr.getMultiLoad(),
+										lr.getUserName(),
+										status,
+										lr);
+				if (null == lr) {
+					ErrorMessage errorMsg = new ErrorMessage("Issue while updating the lr with status. Please try again", 500);
+					response = new ErrorResponse(errorMsg);
+					errorLRIds.add(lrid);
+				} else {
+					response = lrService.createLRResponse(lr);		
+				}
+			} else {
+				ErrorMessage errorMsg = new ErrorMessage("Not able to find lr with id "+ lrid, 500);
+	    		response = new ErrorResponse(errorMsg);
+	    		errorLRIds.add(lrid);	    		
+			}
+		}		
+		
+		List<LR> lrList = lrService.listlr(lrDate, multiLoad, status, isLRAttached);
+  		
+    		
+  		if (lrList != null) {
+  			String message = "";
+  			if (errorLRIds.size() > 0) {
+  				message = "Issue in updating status for lrnos "+errorLRIds;
+  			}else{
+  				message = "All lrnos are updated with status successfully";
+  			}
+  			response = lrService.createLRListResponse(lrList,message);    					
+    	} else {
+    		ErrorMessage errorMsg = new ErrorMessage("Issue while getting LR List data. Please try again", 500);
+    		response = new ErrorResponse(errorMsg);
+    	}
+  		
   		
   		return response;
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public class LRListResponse implements AppResponse {
 	private static final int code = 1; //Success
+	private static String message = "";
 	private List<LRListView> lrs;
 	
 	public LRListResponse()	{}
@@ -24,6 +25,13 @@ public class LRListResponse implements AppResponse {
 		this.lrs = lrs;
 	}
 
-	
+	public static String getMessage() {
+		return message;
+	}
 
+	public static void setMessage(String message) {
+		LRListResponse.message = message;
+	}
+	
+	
 }

@@ -199,7 +199,7 @@ public class LR implements Serializable {
 		return _transaction;
 	}
 
-	public void setTransaction(LRTransaction _transaction) {
+	void setTransaction(LRTransaction _transaction) {
 		this._transaction = _transaction;
 	}
 
@@ -207,7 +207,7 @@ public class LR implements Serializable {
 		return _vehicleNo;
 	}
 
-	public void setVehicleNo(String vehicleNo) {
+	void setVehicleNo(String vehicleNo) {
 		this._vehicleNo = vehicleNo;
 	}
 
@@ -215,7 +215,7 @@ public class LR implements Serializable {
 		return _consignerId;
 	}
 
-	public void setConsignerId(Consigner consignerId) {
+	void setConsignerId(Consigner consignerId) {
 		this._consignerId = consignerId;
 	}
 
@@ -223,7 +223,7 @@ public class LR implements Serializable {
 		return _consigneeId;
 	}
 
-	public void setConsigneeId(Consignee consigneeId) {
+	void setConsigneeId(Consignee consigneeId) {
 		this._consigneeId = consigneeId;
 	}	
 
@@ -231,7 +231,7 @@ public class LR implements Serializable {
 		return _vehicleOwner;
 	}
 
-	public void setVehicleOwner(String vehicleOwner) {
+	void setVehicleOwner(String vehicleOwner) {
 		this._vehicleOwner = vehicleOwner;
 	}
 
@@ -239,7 +239,7 @@ public class LR implements Serializable {
 		return _billingToParty;
 	}
 
-	public void setBillingToParty(String billingToParty) {
+	void setBillingToParty(String billingToParty) {
 		this._billingToParty = billingToParty;
 	}
 
@@ -247,7 +247,7 @@ public class LR implements Serializable {
 		return _lrDate;
 	}
 
-	public void setLrDate(Date lrDate) {
+	void setLrDate(Date lrDate) {
 		this._lrDate = lrDate;
 	}
 
@@ -255,7 +255,7 @@ public class LR implements Serializable {
 		return _multiLoad;
 	}
 
-	public void setMultiLoad(String multiLoad) {
+	void setMultiLoad(String multiLoad) {
 		this._multiLoad = multiLoad;
 	}
 
@@ -263,7 +263,7 @@ public class LR implements Serializable {
 		return _userName;
 	}
 
-	public void setUserName(String userName) {
+	void setUserName(String userName) {
 		this._userName = userName;
 	}	
 
@@ -271,7 +271,7 @@ public class LR implements Serializable {
 		return _updatetimestamp;
 	}
 
-	public void setUpdatetimestamp(Date updatetimestamp) {
+	void setUpdatetimestamp(Date updatetimestamp) {
 		this._updatetimestamp = updatetimestamp;
 	}
 
@@ -280,7 +280,7 @@ public class LR implements Serializable {
 		return _lrexpenditureId;
 	}
 
-	public void setLrexpenditureId(LRExpenditure lrexpenditureId) {
+	void setLrexpenditureId(LRExpenditure lrexpenditureId) {
 		this._lrexpenditureId = lrexpenditureId;
 	}
 	
@@ -288,7 +288,7 @@ public class LR implements Serializable {
 		return _lrchalanId;
 	}
 
-	public void setLrchalanId(LRChalan lrchalanId) {
+	void setLrchalanId(LRChalan lrchalanId) {
 		this._lrchalanId = lrchalanId;
 	}
 	
@@ -296,7 +296,7 @@ public class LR implements Serializable {
 		return _lrbillId;
 	}
 
-	public void setLrbillId(LRBill lrbillId) {
+	void setLrbillId(LRBill lrbillId) {
 		this._lrbillId = lrbillId;
 	}
 	
@@ -304,35 +304,35 @@ public class LR implements Serializable {
 		return _lrincomeId;
 	}
 
-	public void setLrincomeId(LRIncome lrincomeId) {
+	void setLrincomeId(LRIncome lrincomeId) {
 		this._lrincomeId = lrincomeId;
 	}
 	
 	public Set<LROthers> getOtherExpenditures() {
 		return _otherExpenditures;
 	}
-	public void setOtherExpenditures(Set<LROthers> otherExpenditures){
+	void setOtherExpenditures(Set<LROthers> otherExpenditures){
 		this._otherExpenditures = otherExpenditures;
 	}
 	
 	public Set<LROtherIncome> getOtherIncomes() {
 		return _otherIncomes;
 	}
-	public void setOtherIncomes(Set<LROtherIncome> otherIncomes){
+	void setOtherIncomes(Set<LROtherIncome> otherIncomes){
 		this._otherIncomes = otherIncomes;
 	}
 	public String getPoNo() {
 		return _poNo;
 	}
 
-	public void setPoNo(String poNo) {
+	void setPoNo(String poNo) {
 		this._poNo = poNo;
 	}
 	public String getDoNo() {
 		return _doNo;
 	}
 
-	public void setDoNo(String doNo) {
+	void setDoNo(String doNo) {
 		this._doNo = doNo;
 	}
 	
@@ -340,7 +340,7 @@ public class LR implements Serializable {
 		return _billingnameId;
 	}
 
-	public void setBillingnameId(Billingname billingnameId) {
+	void setBillingnameId(Billingname billingnameId) {
 		this._billingnameId = billingnameId;
 	}
 	
@@ -348,7 +348,7 @@ public class LR implements Serializable {
 		return _status;
 	}
 
-	public void setStatus(String status) {
+	void setStatus(String status) {
 		this._status = status;
 	}
 

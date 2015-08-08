@@ -500,7 +500,8 @@ public class LrService {
 			  		   final String doNo,
 			  		   final Billingname billingname,
 			  		   final String multiLoad,
-			  		   final String userName,			  		   
+			  		   final String userName,
+			  		   final String status,
 			  		   LR lr)
 	{
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
@@ -520,14 +521,14 @@ public class LrService {
 												 billingname,
 												 multiLoad,
 												 userName,
-												 lr.getStatus(),
+												 status,
 												 lr.getLrDate(),
-												lr.getLrexpenditureId(),
-												lr.getLrchalanId(),
-												lr.getLrbillId(),
-												lr.getLrincomeId(),
-												lr.getOtherExpenditures(),
-												lr.getOtherIncomes());
+												 lr.getLrexpenditureId(),
+												 lr.getLrchalanId(),
+												 lr.getLrbillId(),
+												 lr.getLrincomeId(),
+												 lr.getOtherExpenditures(),
+												 lr.getOtherIncomes());
 								
 			//Update Data
 			lr.changeTo(ctrl);
@@ -1046,7 +1047,7 @@ public class LrService {
 		return response;
 	}
 	
-	public AppResponse createLRListResponse(List<LR> lrList) {
+	public AppResponse createLRListResponse(List<LR> lrList,String message) {
 		
 		LRListView lrListView     = null;
 		LROthersView lrOthersView = null;
@@ -1178,7 +1179,10 @@ public class LrService {
 	
 
 		LRListResponse response = new LRListResponse();
-		if (lrViews            != null )		{	response.setLrs(lrViews);						}		
+		if (lrViews            != null )		{	
+			response.setLrs(lrViews);
+			response.setMessage(message);
+		}		
 		return response;
 	}
 		
