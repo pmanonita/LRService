@@ -72,7 +72,7 @@ public class LRResource {
 		@FormParam( "billingnameId") String billingnameId,
 		@FormParam( "multiLoad")     String multiLoad,
 		@FormParam( "userName")      String userName,
-		@FormParam( "status ")       String status)		
+		@FormParam( "status")        String status)		
     {
 		AppResponse response = null;
 		LrService lrService  = new LrService();
@@ -468,9 +468,8 @@ public class LRResource {
 	@POST
     @Path("/lr-service/createtransaction" )
     @Produces( MediaType.APPLICATION_JSON )
-    public AppResponse getLRByDate(
-        @Context HttpHeaders httpHeaders,       
-        @FormParam( "lrIds" ) String strLrIds,
+    public AppResponse createTransaction(       
+        @FormParam( "lrIds" ) String  strLrIds,
         @FormParam( "status" ) String status)
     {
 		AppResponse response = null;
@@ -511,7 +510,6 @@ public class LRResource {
 		
         LRTransactionService lrTransService = new LRTransactionService();
   		LRTransaction trans = lrTransService.createLRTransaction(lrs, status);
-
     		
   		if (trans != null) {
   			response = lrTransService.createTransactionResponse(trans);  			
