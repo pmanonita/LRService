@@ -24,6 +24,7 @@ import java.util.UUID;
 
 
 
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -202,7 +203,7 @@ public class LrService {
 			
 			tx.commit();		
 
-		} catch(RuntimeException  ex) {
+		} catch(HibernateException  ex) {
 			lr = null;
 			if (tx != null) 	{ tx.rollback(); }
 			ex.printStackTrace();			
@@ -259,7 +260,7 @@ public class LrService {
 		
 		Session session  = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx   = null;
-		List<LR> lrList            = null;
+		List<LR> lrList  = null;
 	
 		try {
 			tx = session.beginTransaction();
@@ -1075,6 +1076,7 @@ public class LrService {
 					lrListView.setStatus(lr.getStatus());
 					lrListView.setMultiLoad(lr.getMultiLoad());
 					lrListView.setUserName(lr.getUserName());
+					lrListView.setLrDate(lr.getLrDate());
 					
 					System.out.println("basic information is set");
 					
@@ -1173,11 +1175,11 @@ public class LrService {
 				lrViews.add(lrListView);
 			}
 		}		
-		
-		//Create Response (to-do: need to add lr exp others)
+	
+
 		LRListResponse response = new LRListResponse();
 		if (lrViews            != null )		{	response.setLrs(lrViews);						}		
 		return response;
 	}
-	
+		
 }

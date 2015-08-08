@@ -8,27 +8,30 @@ import com.lr.model.LR.Controller;
 
 public class LRTransaction implements Serializable {
 
-	private static final long serialVersionUID = -1277884600127776153L;
-
-	private long     _id;
-	private Set<LR>  _lrs;
+	private static final long serialVersionUID = 8345028283786868393L;
+	
+	private long    _id;
+	private Set<LR> _lrs;
+	private String  _status;
+	private Date	_createDate;
 	
 	
 	public LRTransaction() {	}
 	
 	public LRTransaction (Controller ctrl) {
 		createFrom(ctrl);		
-	}
-	
-	
+	}	
 
 	private void createFrom(Controller ctrl) {		
-		_lrs	= ctrl.mLRs();
-		
+		_lrs        = ctrl.mLRs();
+		_status     = ctrl.mStatus();
+		_createDate = ctrl.mCreateDate();		
 	}
 	
 	public void changeTo(Controller ctrl) {		
-		_lrs	= ctrl.mLRs();		
+		_lrs        = ctrl.mLRs();
+		_status     = ctrl.mStatus();
+		_createDate = ctrl.mCreateDate();		 
 	}
 
 	public interface Controller {				
@@ -36,11 +39,17 @@ public class LRTransaction implements Serializable {
 		Set<LR> mLRs();
 		void mLRs(Set<LR> lrs);	
 		
+		String mStatus();
+		void mStatus(String status);
+		
+		Date mCreateDate();
+		void mCreateDate(Date createDate);
 	}
 	
 	public abstract static class DefaultController implements Controller {
-		public void mLRs(Set<LR> lrs)		{	}
-		
+		public void mLRs(Set<LR> lrs)			{	}
+		public void mStatus(String status)		{	}
+		public void mCreateDate(Date createDate){	}		
 	}
 	
 	
@@ -58,6 +67,24 @@ public class LRTransaction implements Serializable {
 	private void setLrs(Set<LR> lrs) {
 		this._lrs = lrs;
 	}
+
+	public String getStatus() {
+		return _status;
+	}
+
+	public void setStatus(String status) {
+		this._status = status;
+	}
+
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this._createDate = createDate;
+	}
+	
+	public static long mSerialversionuid() 	{ return serialVersionUID;	}
 	
 	
 	

@@ -1,5 +1,6 @@
 package com.lr.response;
 
+import java.util.Date;
 import java.util.List;
 
 import com.lr.model.Billingname;
@@ -16,7 +17,7 @@ public class LRListView {
 	private Consigner 		consigner;
 	private Consignee 		consignee;	
 	private String 			billingParty;
-	private String 			lrDate;
+	private Date 			lrDate;
 	private String 			poNo;
 	private String 			doNo;
 	private Billingname 	billingname;
@@ -355,12 +356,12 @@ public class LRListView {
 	}
 
 
-	public String getLrDate() {
+	public Date getLrDate() {
 		return lrDate;
 	}
 
 
-	public void setLrDate(String lrDate) {
+	public void setLrDate(Date lrDate) {
 		this.lrDate = lrDate;
 	}
 

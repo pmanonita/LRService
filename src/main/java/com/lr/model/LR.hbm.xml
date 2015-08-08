@@ -10,69 +10,72 @@
     </id>   
   
   	<many-to-one name="transaction" column="transid"     
-       class="com.lr.model.LRTransaction" lazy="false"/>     
+      class="com.lr.model.LRTransaction" lazy="false"/>     
     
     <property name="vehicleNo" type="string">
       <column name="vehicleNo" />
     </property>     
     
    	<many-to-one name="consignerId" column="consignerId"  
-       class="com.lr.model.Consigner" lazy="false" />
+      class="com.lr.model.Consigner" lazy="false" />
        
     <many-to-one name="consigneeId" column="consigneeId" 
-       class="com.lr.model.Consignee" lazy="false"/>  
+      class="com.lr.model.Consignee" lazy="false"/>  
        
     <many-to-one name="lrexpenditureId" column="lrexpenditureId" unique="true"     
-       class="com.lr.model.LRExpenditure" lazy="false"/>
+      class="com.lr.model.LRExpenditure" lazy="false"/>
        
     <many-to-one name="lrincomeId" column="lrincomeId" unique="true"     
-       class="com.lr.model.LRIncome" lazy="false"/>
+      class="com.lr.model.LRIncome" lazy="false"/>
        
     <many-to-one name="lrchalanId" column="lrchalanId" unique="true"     
-       class="com.lr.model.LRChalan" lazy="false"/>
+      class="com.lr.model.LRChalan" lazy="false"/>
        
     <many-to-one name="lrbillId" column="lrbillId" unique="true"     
-       class="com.lr.model.LRBill" lazy="false"/>   
+      class="com.lr.model.LRBill" lazy="false"/>   
        
        
     <many-to-one name="billingnameId" column="billingnameId" unique="true"     
-       class="com.lr.model.Billingname" lazy="false"/>
+      class="com.lr.model.Billingname" lazy="false"/>
        
     <set name="otherExpenditures" cascade="all" lazy="false">
-         <key column="lrId"/>
-         <one-to-many class="com.lr.model.LROthers"/>
+      <key column="lrId"/>
+      <one-to-many class="com.lr.model.LROthers"/>
     </set>
     
     <set name="otherIncomes" cascade="all" lazy="false">
-         <key column="lrId"/>
-         <one-to-many class="com.lr.model.LROtherIncome"/>
-    </set>
-         
+      <key column="lrId"/>
+      <one-to-many class="com.lr.model.LROtherIncome"/>
+    </set>         
         
     <property name="vehicleOwner" type="string">
       <column name="vehicleOwner" />
     </property>
+    
     <property name="billingToParty" type="string">
       <column name="billingToParty" />
     </property>
-    <property name="lrDate" type="date">
+    
+    <property name="lrDate" type="date" not-null="true">
       <column name="lrDate" />
     </property>
-     <property name="multiLoad" type="string">
+    
+    <property name="multiLoad" type="string">
       <column name="multiLoad"/>
-    </property>   
+    </property>
+       
     <property name="userName" type="string">
       <column name="userName"/>
     </property>
-    <property name="updatetimestamp" type="date">
-      <column name="updatetimestamp"/>
-    </property>
-     <property name="poNo" type="string">
+    
+    <property name="poNo" type="string">
       <column name="poNo" />
     </property>
-     <property name="doNo" type="string">
+    
+    <property name="doNo" type="string">
       <column name="doNo" />
     </property>
+    
     <property name="status" type="string" not-null="true">
       <column name="status" />
     </property> 

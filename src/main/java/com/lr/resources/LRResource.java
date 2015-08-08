@@ -33,6 +33,7 @@ import com.lr.model.LRChalan;
 import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
+import com.lr.model.LRTransaction;
 import com.lr.model.User;
 import com.lr.response.AppResponse;
 import com.lr.response.ErrorMessage;
@@ -42,6 +43,7 @@ import com.lr.response.Result;
 import com.lr.service.AutheticationService;
 import com.lr.service.LRBillService;
 import com.lr.service.LRChalanService;
+import com.lr.service.LRTransactionService;
 import com.lr.service.LrService;
 import com.lr.service.UserService;
 
@@ -68,10 +70,18 @@ public class LRResource {
 		@FormParam( "doNo" )         String doNo,
 		@FormParam( "billingnameId") String billingnameId,
 		@FormParam( "multiLoad")     String multiLoad,
-		@FormParam( "userName")      String userName)		
+		@FormParam( "userName")      String userName,
+		@FormParam( "status ")       String status)		
     {
 		AppResponse response = null;
-		LrService lrService  = new LrService();		
+		LrService lrService  = new LrService();
+		
+		if(null == status || (null != status && status.equals("") 
+				|| (null != status && !status.equals("Open") ))) {
+			ErrorMessage errorMsg = new ErrorMessage("Invalid status while creating the LR", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
 				
 		//get Consigner object
 		Consigner consigner = null;
@@ -97,28 +107,31 @@ public class LRResource {
 		}
 		
 		//get partyname object
-		if(billingnameId!=null && !billingnameId.equals("")){
+		if(billingnameId !=null && !billingnameId.equals("")){
 			billingname  = lrService.getBillingname(billingnameId);
-			if(null == billingnameId) {  
+			if(null == billingname) {  
 				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from billingname table", 500);
 				response = new ErrorResponse(errorMsg);
 				return response;
 		     }		      
 		}
           
-		String status = "OPENED";
-		if(multiLoad != null && !multiLoad.equals("true")) {
-			multiLoad = "false";
-		}
+//		String status = "OPENED";
+//		if(multiLoad != null && !multiLoad.equals("true")) {
+//			multiLoad = "false";
+//		}
 
     	//Send to model using service              
-		LR lr = lrService.newLR(vehileNo, vehicleOwner, consigner, consignee, billingParty,poNo,doNo,billingname,status,multiLoad,userName);        
+		LR lr = lrService.newLR(vehileNo, vehicleOwner, consigner, consignee, billingParty,
+				poNo, doNo, billingname, status, multiLoad, userName);
+		
 		if (lr != null) {
 			response = lrService.createLRResponse(lr);			
 		} else {
 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
 			response = new ErrorResponse(errorMsg);
-		}               		
+		}
+		
 		return response;
     }
 	
@@ -314,8 +327,8 @@ public class LRResource {
 		@FormParam( "poNo" 	        ) 	String poNo,
 		@FormParam( "doNo" 	        ) 	String doNo,
 		@FormParam( "billingnameId" ) 	String billingnameId,
-		@FormParam( "multiLoad")     String multiLoad,
-		@FormParam( "userName")     String userName)		
+		@FormParam( "multiLoad"		)  	String multiLoad,
+		@FormParam( "userName"		)  	String userName)		
     
     {
 		AppResponse response    = null;
@@ -449,6 +462,65 @@ public class LRResource {
               		
 		return response;
     }
+	
+	@POST
+    @Path("/lr-service/createtransaction" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse getLRByDate(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrIds" ) String strLrIds,
+        @FormParam( "status" ) String status)
+    {
+		AppResponse response = null;
+		LrService lrService  = new LrService();
+		
+		if(null == status || (null != status && status.equals("") 
+				|| (null != status && !status.equals("Open") ))) {
+			ErrorMessage errorMsg = new ErrorMessage("Invalid status while creating the transaction", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
+		if(null == strLrIds || (null != strLrIds && strLrIds.equals(""))) {
+			ErrorMessage errorMsg = new ErrorMessage("No LR ids found for attaching. Please check", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
+		
+		String[] lrIds = null;
+		if(strLrIds.indexOf(",") != -1) {
+			lrIds = strLrIds.split(",");
+		} else {
+			ErrorMessage errorMsg = new ErrorMessage("No LR ids found for attaching. Please check", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
+		
+		Set<LR> lrs = new HashSet<LR>();
+		for (String lrid : lrIds) {			
+			LR lr = lrService.findLR(lrid);
+			if (null != lr) {
+				lrs.add(lr);
+			} else {
+				ErrorMessage errorMsg = new ErrorMessage("Not able to find lr with id "+ lrid, 500);
+	    		response = new ErrorResponse(errorMsg);
+	    		return response;
+			}
+		}		
+		
+        LRTransactionService lrTransService = new LRTransactionService();
+  		LRTransaction trans = lrTransService.createLRTransaction(lrs, status);
+
+    		
+  		if (trans != null) {
+  			response = lrTransService.createTransactionResponse(trans);  			
+    	} else {
+    		ErrorMessage errorMsg = new ErrorMessage("Issue while creating Multi LR. Please try again", 500);
+    		response = new ErrorResponse(errorMsg);
+    	}
+  		
+  		return response;
+    }
+
 	
 
 }

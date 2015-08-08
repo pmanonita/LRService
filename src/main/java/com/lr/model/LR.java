@@ -8,9 +8,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-
-
-
 public class LR implements Serializable {	
 
 	private static final long serialVersionUID = -6779738051490200702L;

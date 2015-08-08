@@ -36,7 +36,7 @@
     <property name="role">
       <column name="role" />
     </property>    
-    <property name="createDate" type="date">
+    <property name="createDate" type="date" not-null="true">
       <column name="createDate"/>
     </property>
  </class>
