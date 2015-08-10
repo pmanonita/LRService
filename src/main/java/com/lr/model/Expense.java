@@ -95,7 +95,7 @@ public class Expense implements Serializable {
 	public int getAmount() {
 		return _amount;
 	}
-	public void setAmount(int amount) {
+	private void setAmount(int amount) {
 		this._amount = amount;
 	}
 
@@ -103,28 +103,28 @@ public class Expense implements Serializable {
 		return _accountSource;
 	}
 
-	public void setAccountSource(AccountSource accountSource) {
+	private void setAccountSource(AccountSource accountSource) {
 		this._accountSource = accountSource;
 	}
 
 	public Date getDate() {
 		return _date;
 	}
-	public void setDate(Date date) {
+	private void setDate(Date date) {
 		this._date = date;
 	}
 
 	public String getStatus() {
 		return _status;
 	}
-	public void setStatus(String _status) {
+	private void setStatus(String _status) {
 		this._status = _status;
 	}
 
 	public String getRemark() {
 		return _remark;
 	}
-	public void setRemark(String _remark) {
+	private void setRemark(String _remark) {
 		this._remark = _remark;
 	}
 

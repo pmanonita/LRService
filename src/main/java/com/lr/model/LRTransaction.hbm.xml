@@ -7,17 +7,62 @@
   <class name="com.lr.model.LRTransaction" table="Transaction">
     <id name="id" type="long" column="id" >
       <generator class="increment"/>
-    </id>    
-   	   
+    </id>   	   
     <set name="Lrs" cascade="all" lazy="false">
       <key column="transid"/>
       <one-to-many class="com.lr.model.LR"/>
     </set>
     
-    <property name="status" type="string" not-null="true">
-      <column name="status" />
+    <property name="multiLoadCharge" type="int">
+      <column name="multiLoadCharge" />
+    </property>
+    <property name="freightToBroker" type="int">
+      <column name="freightToBroker" />
+    </property>
+    <property name="extraPayToBroker" type="int">
+      <column name="extraPayToBroker" />
+    </property>    
+    <property name="advance" type="int">
+      <column name="advance" />
+    </property>    
+    <property name="balanceFreight" type="int">
+      <column name="balanceFreight" />
+    </property>    
+    <property name="loadingCharges" type="int">
+      <column name="loadingCharges" />
+    </property>
+    <property name="unloadingCharges" type="int">
+      <column name="unloadingCharges" />
+    </property>
+    <property name="loadingDetBroker" type="int">
+      <column name="loadingDetBroker" />
+    </property>
+    <property name="unloadingDetBroker" type="int">
+      <column name="unloadingDetBroker" />
+    </property>
+
+    <property name="multiLoadChargeBilling" type="int">
+      <column name="multiLoadChargeBilling" />
+    </property>    
+    <property name="freightToBrokerBilling" type="int">
+      <column name="freightToBrokerBilling" />
+    </property>     
+    <property name="loadingChargesBilling" type="int">
+      <column name="loadingChargesBilling" />
+    </property>
+    <property name="unloadingChargesBilling" type="int">
+      <column name="unloadingChargesBilling" />
+    </property>
+    <property name="loadingDetBrokerBilling" type="int">
+      <column name="loadingDetBrokerBilling" />
+    </property>
+    <property name="unloadingDetBrokerBilling" type="int">
+      <column name="unloadingDetBrokerBilling" />
     </property>
     
+    <property name="status" type="string" not-null="true">
+      <column name="status" />
+    </property>    
     <property name="createDate" type="date" not-null="true">
       <column name="createDate" />
     </property>
