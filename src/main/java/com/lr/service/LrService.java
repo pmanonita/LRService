@@ -239,7 +239,7 @@ public class LrService {
 			if (null == lr) {
 				tx.rollback();
 				session.close();    			
-				throw new AuthException("LR Not found"); 
+				throw new DataNotFoundException("LR Not found"); 
 			}		
 			tx.commit();    		
 		

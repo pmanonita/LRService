@@ -28,6 +28,7 @@ import com.lr.filters.LRHTTPHeaders;
 import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
+import com.lr.model.Expense;
 import com.lr.model.LR;
 import com.lr.model.LRBill;
 import com.lr.model.LRChalan;
@@ -44,6 +45,7 @@ import com.lr.response.Result;
 import com.lr.service.AutheticationService;
 import com.lr.service.LRBillService;
 import com.lr.service.LRChalanService;
+import com.lr.service.LRExpenditureService;
 import com.lr.service.LRTransactionService;
 import com.lr.service.LrService;
 import com.lr.service.UserService;
@@ -596,7 +598,80 @@ public class LRResource {
   		
   		return response;
     }
-
 	
+	@POST
+    @Path("/lr-service/edittransaction" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse addlrexpenditure(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "id" 				 		) 	String transId,
+        @FormParam( "multiLoadCharge" 	 		) 	String multiLoadCharge,
+        @FormParam( "freightToBroker" 	 		) 	String freightToBroker,
+        @FormParam( "extraPayToBroker" 	 		) 	String extraPayToBroker,
+        @FormParam( "advance" 			 		)	String advance,
+        @FormParam( "balanceFreight" 	 		) 	String balanceFreight,
+        @FormParam( "loadingCharges" 	 		) 	String loadingCharges,
+		@FormParam( "unloadingCharges" 	 		) 	String unloadingCharges,
+		@FormParam( "loadingDetBroker" 	 		)	String loadingDetBroker,
+		@FormParam( "unloadingDetBroker" 		)  	String unloadingDetBroker,
+		@FormParam( "multiLoadChargeBilling" 	) 	String multiLoadChargeBilling,
+        @FormParam( "freightToBrokerBilling" 	) 	String freightToBrokerBilling,
+        @FormParam( "loadingChargesBilling"		)	String loadingChargesBilling,
+        @FormParam( "unloadingChargesBilling" 	) 	String unloadingChargesBilling,
+        @FormParam( "loadingDetBrokerBilling" 	) 	String loadingDetBrokerBilling,
+        @FormParam( "unloadingDetBrokerBilling" ) 	String unloadingDetBrokerBilling)		
+    {
+		AppResponse response = null;		
+
+		int imultiLoadCharge = 0, ifreightToBroker = 0, iextraPayToBroker = 0, iadvance = 0, ibalanceFreight = 0;
+		int iloadingCharges = 0, iloadingDetBroker = 0, iunloadingCharges = 0, iunloadingDetBroker = 0;
+		int imultiLoadChargeBilling = 0, ifreightToBrokerBilling = 0, iloadingChargesBilling =0;
+		int iunloadingChargesBilling = 0, iloadingDetBrokerBilling = 0, iunloadingDetBrokerBilling = 0;
+		
+		
+		try { imultiLoadCharge    = Integer.parseInt(multiLoadCharge);	  } catch (NumberFormatException ex) {	}
+		try { ifreightToBroker    = Integer.parseInt(freightToBroker);	  } catch (NumberFormatException ex) {	}				
+		try { iextraPayToBroker   = Integer.parseInt(extraPayToBroker);	  } catch (NumberFormatException ex) {	}
+		try { iadvance 		      = Integer.parseInt(advance);			  } catch (NumberFormatException ex) {	}		
+		try { ibalanceFreight     = Integer.parseInt(balanceFreight);	  } catch (NumberFormatException ex) {	}		
+		try { iloadingCharges     = Integer.parseInt(loadingCharges);	  } catch (NumberFormatException ex) {	}
+		try { iunloadingCharges   = Integer.parseInt(unloadingCharges);	  } catch (NumberFormatException ex) {	}
+		try { iloadingDetBroker   = Integer.parseInt(loadingDetBroker);	  } catch (NumberFormatException ex) {	}			
+		try { iunloadingDetBroker = Integer.parseInt(unloadingDetBroker); } catch (NumberFormatException ex) {	}
+		
+		try { imultiLoadChargeBilling    = Integer.parseInt(multiLoadChargeBilling);	} catch (NumberFormatException ex) {	}
+		try { ifreightToBrokerBilling    = Integer.parseInt(freightToBrokerBilling);	} catch (NumberFormatException ex) {	}				
+		try { iloadingChargesBilling   	 = Integer.parseInt(loadingChargesBilling);		} catch (NumberFormatException ex) {	}
+		try { iunloadingChargesBilling 	 = Integer.parseInt(unloadingChargesBilling);	} catch (NumberFormatException ex) {	}		
+		try { iloadingDetBrokerBilling   = Integer.parseInt(loadingDetBrokerBilling);	} catch (NumberFormatException ex) {	}		
+		try { iunloadingDetBrokerBilling = Integer.parseInt(unloadingDetBrokerBilling); } catch (NumberFormatException ex) {	}
+		
+		
+		LRTransactionService lrTransactionService = new LRTransactionService();
+		LRTransaction tranasaction  = lrTransactionService.findTransaction(transId);
+
+		if (null == tranasaction) {  
+			 ErrorMessage errorMsg = new ErrorMessage("Tranasaction not found", 500);
+			 response = new ErrorResponse(errorMsg);
+			 return response;
+		} 		
+		 
+		LRTransaction updatedTranasaction = null;
+		updatedTranasaction = lrTransactionService.editTransaction(imultiLoadCharge, ifreightToBroker, iextraPayToBroker,
+																   iadvance, ibalanceFreight, iloadingCharges,
+															       iunloadingCharges, iloadingDetBroker, iunloadingDetBroker,
+															       imultiLoadChargeBilling, ifreightToBrokerBilling,
+															       iloadingChargesBilling, iunloadingChargesBilling,
+															       iloadingDetBrokerBilling, iunloadingDetBrokerBilling,
+															       tranasaction);        
+		if (updatedTranasaction != null) {
+			response = lrTransactionService.createTransactionResponse(updatedTranasaction);			
+		} else {
+			ErrorMessage errorMsg = new ErrorMessage("Issue while editing Multi LR. Please try again", 500);
+			response = new ErrorResponse(errorMsg);
+		}   	 
+		   		
+		return response;
+    }
 
 }

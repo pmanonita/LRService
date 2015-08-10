@@ -108,7 +108,7 @@ public class GeneralExpenseResource {
 			return response;
 		}
 	
-		//Create expense              
+		//Edit expense              
 		Expense expense = expenseService.editExpense(id, amount, account, date, status, remark);        
 		if (expense != null) {
 			response = expenseService.createExpenseResponse(expense);			

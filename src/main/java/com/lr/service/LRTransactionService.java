@@ -8,10 +8,15 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.lr.db.HibernateSessionManager;
+import com.lr.exceptions.AuthException;
+import com.lr.exceptions.DataNotFoundException;
+import com.lr.model.Expense;
 import com.lr.model.LR;
 import com.lr.model.LRTransaction;
 import com.lr.model.LRTransaction.Controller;
 import com.lr.response.AppResponse;
+import com.lr.response.ErrorMessage;
+import com.lr.response.ErrorResponse;
 import com.lr.response.lrtransaction.LRTrasactionResponse;
 
 public class LRTransactionService {	
@@ -94,24 +99,12 @@ public class LRTransactionService {
 			int loadingDetBrokerBilling		= 0;
 			int unloadingDetBrokerBilling	= 0;
 			
-			LRTransaction.Controller ctrl = createController(lrs,
-															 status,
-															 createDate,
-															 multiLoadCharge,
-															 freightToBroker,
-															 extraPayToBroker,
-															 advance,
-															 balanceFreight,
-															 loadingCharges,
-															 unloadingCharges,
-															 loadingDetBroker,
-															 unloadingDetBroker,
-															 multiLoadChargeBilling,
-															 freightToBrokerBilling,
-															 loadingChargesBilling,
-															 unloadingChargesBilling,
-															 loadingDetBrokerBilling,
-															 unloadingDetBrokerBilling);
+			LRTransaction.Controller ctrl = createController(lrs, status, createDate, multiLoadCharge,
+															 freightToBroker, extraPayToBroker, advance,
+															 balanceFreight, loadingCharges, unloadingCharges,
+															 loadingDetBroker, unloadingDetBroker, multiLoadChargeBilling,
+															 freightToBrokerBilling, loadingChargesBilling, unloadingChargesBilling,
+															 loadingDetBrokerBilling, unloadingDetBrokerBilling);
 
 			lrTransaction = new LRTransaction(ctrl);
 			
@@ -147,6 +140,100 @@ public class LRTransactionService {
 		}
 		return response;
 	}
+	
+	/**
+	 * 
+	 * @param strTransactionId
+	 * @return
+	 */
+	
+	public LRTransaction findTransaction( String strTransactionId ) {
+
+		if ( strTransactionId == null || strTransactionId.equals("") ) return null;
+		
+		Long lTransactionId = null;		
+		try {
+			lTransactionId = Long.parseLong(strTransactionId);
+		}	catch (NumberFormatException ex) { 
+			return null;
+		}
+
+		Session session  			= HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx   			= null;
+		LRTransaction lrTransaction = null;
+	
+		try {
+			tx = session.beginTransaction();        	
+			lrTransaction = LRTransaction.findById(session, lTransactionId);
+		
+			if (null == lrTransaction) {
+				tx.rollback();
+				session.close();    			
+				throw new DataNotFoundException("Transaction Not found"); 
+			}		
+			tx.commit();    		
+		
+		} catch (HibernateException e) {
+			lrTransaction = null;
+	        if (tx != null) tx.rollback();
+	        e.printStackTrace();
+        
+		} finally {
+	    	if (session.isOpen()) {
+	    		session.close();
+	    	}
+		}	
+		return lrTransaction;        
+	}
+
+
+	public LRTransaction editTransaction(int multiLoadCharge,
+			int freightToBroker, int extraPayToBroker, int advance,
+			int balanceFreight, int loadingCharges, int unloadingCharges,
+			int loadingDetBroker, int unloadingDetBroker,
+			int multiLoadChargeBilling, int freightToBrokerBilling,
+			int loadingChargesBilling, int unloadingChargesBilling,
+			int loadingDetBrokerBilling, int unloadingDetBrokerBilling,
+			LRTransaction tranasaction) 
+	{		
+		Session session = HibernateSessionManager.getSessionFactory().openSession();
+		Transaction tx 	= null;
+
+				
+		try {
+			
+			tx = session.beginTransaction();
+			
+			//Note - we haven't supported LR attach and detach yet. So can't edit them
+			// Status can't be edited time being
+			Set<LR> lrs     = tranasaction.getLrs();
+			String status   = tranasaction.getStatus();
+			Date createDate = tranasaction.getCreateDate();			
+			
+			LRTransaction.Controller ctrl = createController(lrs, status, createDate, multiLoadCharge,
+															 freightToBroker, extraPayToBroker, advance,
+															 balanceFreight, loadingCharges, unloadingCharges,
+															 loadingDetBroker, unloadingDetBroker, multiLoadChargeBilling,
+															 freightToBrokerBilling, loadingChargesBilling, unloadingChargesBilling,
+															 loadingDetBrokerBilling, unloadingDetBrokerBilling);
+
+			//Update Data
+			tranasaction.changeTo(ctrl);			
+			session.saveOrUpdate(tranasaction);			
+			session.flush();    		
+    		tx.commit();
+
+		} catch(RuntimeException  ex) {
+			tranasaction = null;
+			if (tx != null) 	{ tx.rollback(); }
+			ex.printStackTrace();			
+		} finally {
+			session.close();
+		}
+
+		return tranasaction;
+	}
+
 
 
 }

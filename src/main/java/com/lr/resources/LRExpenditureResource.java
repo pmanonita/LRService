@@ -120,7 +120,7 @@ public class LRExpenditureResource {
 		 			}
 		 		
 		 		} else {
-		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the lr. Please try again", 500);
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating/modifying LR expenditure. Please try again", 500);
 		 			response = new ErrorResponse(errorMsg);
 		 		}            
 		    	 
