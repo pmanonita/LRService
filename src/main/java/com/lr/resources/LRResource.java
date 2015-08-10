@@ -290,7 +290,7 @@ public class LRResource {
 	@POST
     @Path("/lr-service/list" )
     @Produces( MediaType.APPLICATION_JSON )
-    public AppResponse getLRByDate(
+    public AppResponse lrList (
         @Context HttpHeaders httpHeaders,       
         @FormParam( "lrDate" ) String lrDate,
         @FormParam( "multiLoad" ) String multiLoad,
