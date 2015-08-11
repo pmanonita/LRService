@@ -522,9 +522,9 @@ public class LRResource {
     }
 	
 	@POST
-    @Path("/lr-service/updateStatus" )
+    @Path("/lr-service/updateStatusInLRList" )
     @Produces( MediaType.APPLICATION_JSON )
-    public AppResponse updateStatus(
+    public AppResponse updateStatusInLRList(
         @Context HttpHeaders httpHeaders, 
         @FormParam( "lrDate" ) String lrDate,
         @FormParam( "multiLoad" ) String multiLoad,

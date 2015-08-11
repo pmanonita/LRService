@@ -964,6 +964,9 @@ public class LrService {
 			lrView.setDoNo(lr.getDoNo());
 			lrView.setBillingname(lr.getBillingnameId());
 			lrView.setStatus(lr.getStatus());
+			lrView.setMultiLoad(lr.getMultiLoad());
+			lrView.setUserName(lr.getUserName());
+			
 			
 			Consigner consigner = lr.getConsignerId();
 			lrView.setConsigner(consigner);
