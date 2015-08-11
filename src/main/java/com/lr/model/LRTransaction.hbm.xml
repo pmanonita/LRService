@@ -69,7 +69,7 @@
     
   </class>
  
-  <query name="com.lr.model.LR.findById">
+  <query name="com.lr.model.LRTransaction.findById">
     select lrt
       from com.lr.model.LRTransaction as lrt
     where lrt.id = :id     

@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
 import com.lr.model.LR.Controller;
 
 public class LRTransaction implements Serializable {
@@ -312,5 +316,22 @@ public class LRTransaction implements Serializable {
 	public static long mSerialversionuid() 	{ return serialVersionUID;	}
 	
 	
+	private static final String QUERY_FOR_LR_TRANSACTION_BY_ID =
+			LRTransaction.class.getName() + ".findById";	
+	public static LRTransaction findById(Session session, Long id)
+		throws HibernateException
+	{
+	 	if (id == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LR_TRANSACTION_BY_ID);
+	 	qry.setLong("id", id);		 	
+ 
+	 	qry.setMaxResults(1);
+ 
+	 	final LRTransaction lr = (LRTransaction)(qry.uniqueResult());
+	 	return lr;
+	}
 	
 }
