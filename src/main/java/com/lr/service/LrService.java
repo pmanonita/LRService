@@ -240,7 +240,7 @@ public class LrService {
 			if (null == lr) {
 				tx.rollback();
 				session.close();    			
-				throw new DataNotFoundException("LR Not found"); 
+				throw new DataNotFoundException("LR Not found with the given id " + lrId); 
 			}		
 			tx.commit();    		
 		
