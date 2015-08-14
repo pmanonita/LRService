@@ -2,6 +2,7 @@ package com.lr.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.HibernateException;
@@ -33,6 +34,10 @@ public class LRTransaction implements Serializable {
 	private int  	_unloadingDetBrokerBilling;
 	private String  _status;
 	private Date	_createDate;
+	private LRChalan _transchalanId;
+	private LRBill   _transbillId;
+	private Set<LRTransOtherExp> _lrtransotherExpenditures;
+	private Set<LRTransOtherIncome> _lrtransotherIncomes;
 
 	
 	public LRTransaction() {	}
@@ -59,7 +64,11 @@ public class LRTransaction implements Serializable {
 		_loadingDetBrokerBilling   	= ctrl.mLoadingDetBrokerBilling();
 		_unloadingDetBrokerBilling 	= ctrl.mUnloadingDetBrokerBilling();
 		_status     				= ctrl.mStatus();
-		_createDate 				= ctrl.mCreateDate();		
+		_createDate 				= ctrl.mCreateDate();	
+		_transchalanId              = ctrl.mTranschalanId();
+		_transbillId                = ctrl.mTransbillId();
+		_lrtransotherExpenditures   = ctrl.mLRtransotherExpenditures();
+		_lrtransotherIncomes        = ctrl.mLRtransotherIncomes();
 	}
 	
 	public void changeTo(Controller ctrl) {		
@@ -80,7 +89,11 @@ public class LRTransaction implements Serializable {
 		_loadingDetBrokerBilling   	= ctrl.mLoadingDetBrokerBilling();
 		_unloadingDetBrokerBilling	= ctrl.mUnloadingDetBrokerBilling();		
 		_status     				= ctrl.mStatus();
-		_createDate 				= ctrl.mCreateDate();		 
+		_createDate 				= ctrl.mCreateDate();	
+		_transchalanId              = ctrl.mTranschalanId();
+		_transbillId                = ctrl.mTransbillId();
+		_lrtransotherExpenditures   = ctrl.mLRtransotherExpenditures();
+		_lrtransotherIncomes        = ctrl.mLRtransotherIncomes();
 	}
 
 	public interface Controller {				
@@ -138,27 +151,44 @@ public class LRTransaction implements Serializable {
 		
 		Date mCreateDate();
 		void mCreateDate(Date createDate);
+		
+		LRChalan mTranschalanId();
+		void mTranschalanId(LRChalan lrchalanId);
+		
+		LRBill mTransbillId();
+		void mTransbillId(LRBill lrbillId);
+		
+		Set<LRTransOtherExp> mLRtransotherExpenditures();
+		void mLRtransotherExpenditures(Set<LRTransOtherExp> lrTransOtherExp);
+		
+		Set<LRTransOtherIncome> mLRtransotherIncomes();
+		void mLRtransotherIncomes(Set<LRTransOtherIncome> lrTransOtherIncomes);
+
 	}
 	
 	public abstract static class DefaultController implements Controller {
-		public void mLRs(Set<LR> lrs)											{ }
-		public void mMultiLoadCharge(int multiLoadCharge) 						{ }
-		public void mFreightToBroker(int freightToBroker) 						{ }
-		public void mExtraPayToBrokersignor(int extraPayToBroker) 				{ }
-		public void mAdvance(int advance) 										{ }
-		public void mBalanceFreight(int balanceFreight) 						{ }
-		public void mLoadingCharges(int loadingCharges) 						{ }
-		public void mUnloadingCharges(int unloadingCharges) 					{ }
-		public void mLoadingDetBroker(int loadingDetBroker) 					{ }
-		public void mUnloadingDetBroker(int unloadingDetBroker) 				{ }		
-		public void mMultiLoadChargeBilling(int multiLoadChargeBilling) 		{ }
-		public void mFreightToBrokerBilling(int freightToBrokerBilling) 		{ }
-		public void mLoadingChargesBilling(int loadingChargesBilling) 			{ }
-		public void mUnloadingChargesBilling(int unloadingChargesBilling) 		{ }
-		public void mLoadingDetBrokerBilling(int loadingDetBrokerBilling) 		{ }
-		public void mUnloadingDetBrokerBilling(int unloadingDetBrokerBilling) 	{ }		
-		public void mStatus(String status)										{ }
-		public void mCreateDate(Date createDate)								{ }		
+		public void mLRs(Set<LR> lrs)											     { }
+		public void mMultiLoadCharge(int multiLoadCharge) 						     { }
+		public void mFreightToBroker(int freightToBroker) 						     { }
+		public void mExtraPayToBrokersignor(int extraPayToBroker) 				     { }
+		public void mAdvance(int advance) 										     { }
+		public void mBalanceFreight(int balanceFreight) 						     { }
+		public void mLoadingCharges(int loadingCharges) 						     { }
+		public void mUnloadingCharges(int unloadingCharges) 					     { }
+		public void mLoadingDetBroker(int loadingDetBroker) 					     { }
+		public void mUnloadingDetBroker(int unloadingDetBroker) 				     { }		
+		public void mMultiLoadChargeBilling(int multiLoadChargeBilling) 		     { }
+		public void mFreightToBrokerBilling(int freightToBrokerBilling) 		     { }
+		public void mLoadingChargesBilling(int loadingChargesBilling) 			     { }
+		public void mUnloadingChargesBilling(int unloadingChargesBilling) 		     { }
+		public void mLoadingDetBrokerBilling(int loadingDetBrokerBilling) 		     { }
+		public void mUnloadingDetBrokerBilling(int unloadingDetBrokerBilling) 	     { }		
+		public void mStatus(String status)										     { }
+		public void mCreateDate(Date createDate)								     { }	
+		public void mTranschalanId(LRChalan lrchalanId)							     { }	
+		public void mTransbillId(LRBill lrbillId)							         { }	
+		public void mLRtransotherExpenditures(Set<LRTransOtherExp> lrTransOtherExps) { }
+		public void mLRtransotherIncomes(Set<LRTransOtherIncome> lrTransOtherIncomes){ }
 	}
 	
 	
@@ -313,6 +343,38 @@ public class LRTransaction implements Serializable {
 		this._createDate = createDate;
 	}
 	
+	public LRChalan getTranschalanId() {
+		return _transchalanId;
+	}
+
+	private void setTranschalanId(LRChalan transchalanId) {
+		this._transchalanId = transchalanId;
+	}
+	
+	public LRBill getTransbillId() {
+		return _transbillId;
+	}
+
+	private void setTransbillId(LRBill transbillId) {
+		this._transbillId = transbillId;
+	}
+	
+	public Set<LRTransOtherExp> getLrtransotherExpenditures() {
+		return _lrtransotherExpenditures;
+	}
+
+	private void setLrtransotherExpenditures(Set<LRTransOtherExp> lrTransOtherExps) {
+		this._lrtransotherExpenditures = lrTransOtherExps;
+	}
+	
+	public Set<LRTransOtherIncome> getLrtransotherIncomes() {
+		return _lrtransotherIncomes;
+	}
+
+	private void setLrtransotherIncomes(Set<LRTransOtherIncome> lrTransOtherIcomes) {
+		this._lrtransotherIncomes = lrTransOtherIcomes;
+	}
+	
 	public static long mSerialversionuid() 	{ return serialVersionUID;	}
 	
 	
@@ -332,6 +394,38 @@ public class LRTransaction implements Serializable {
  
 	 	final LRTransaction lr = (LRTransaction)(qry.uniqueResult());
 	 	return lr;
+	}
+	
+	private static final String QUERY_FOR_LRTRANSACTION_BY_DATE_STATUS =
+		LRTransaction.class.getName() + ".findLRTransactionByDateStatus";	
+	@SuppressWarnings("unchecked")
+	public static List<LRTransaction> findByDateStatus(Session session, Date lrTransDate, String status) {
+		if (lrTransDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LRTRANSACTION_BY_DATE_STATUS);
+	 	qry.setDate("lrTransDate", lrTransDate);
+	 	qry.setString("status", status);
+	 	
+	 	final List<LRTransaction> lrTransList = qry.list();
+	 	return lrTransList;
+	}
+	
+	private static final String QUERY_FOR_LRTRANSACTION_BY_DATE =
+		LRTransaction.class.getName() + ".findLRTransByDate";	
+	@SuppressWarnings("unchecked")
+	public static List<LRTransaction> findLRTransByDate(Session session, Date lrTransDate)
+		throws HibernateException
+	{
+	 	if (lrTransDate == null) {
+	 		return null;
+	 	}
+	 	
+	 	Query qry = session.getNamedQuery(QUERY_FOR_LRTRANSACTION_BY_DATE);
+	 	qry.setDate("lrTransDate", lrTransDate); 
+	 	final List<LRTransaction> lrTransList = qry.list();
+	 	return lrTransList;
 	}
 	
 }

@@ -9,7 +9,7 @@
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/lr_test?autoReconnect=true</property>
     <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">rootsecure@</property>    
+    <property name="hibernate.connection.password">root</property>    
     <property name="show_sql">true</property>
     
     <property name="validationQuery">SELECT 1</property>
@@ -34,6 +34,8 @@
     <mapping resource="com/lr/model/LRBill.hbm.xml"></mapping>
     <mapping resource="com/lr/model/LROtherIncome.hbm.xml"></mapping>
     <mapping resource="com/lr/model/LRTransaction.hbm.xml"></mapping>
-
+    <mapping resource="com/lr/model/LRTransOtherExp.hbm.xml"></mapping>
+    <mapping resource="com/lr/model/LRTransOtherIncome.hbm.xml"></mapping>
+    
   </session-factory>
 </hibernate-configuration>

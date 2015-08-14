@@ -51,16 +51,16 @@ public class LRChalanView {
 		int totalExpenditure = 0;
 		if (chalanDetails != null) {
 			String[] expenditureArr = chalanDetails.split(",");
+			int amount = 0;
 			for (int i=0;i<expenditureArr.length;i++){
 				expenditureArr[i] = expenditureArr[i].replaceAll("\"","");
 				String[] expeditureColumnArr = expenditureArr[i].split("-");
-				if( expeditureColumnArr.length>1 ){
-					int amount = 0;
+				if( expeditureColumnArr.length>1 ){					
 					if (expeditureColumnArr[0].contains("EXTRA PAY TO BROKER") || expeditureColumnArr[0].contains("ADVANCE") || expeditureColumnArr[0].contains("BALANCE FREIGHT") ) {
 						continue;
 					} else {
 						try{
-							amount = Integer.parseInt(expeditureColumnArr[1]);
+							amount = Integer.parseInt(expeditureColumnArr[1].trim());
 							totalExpenditure = totalExpenditure+amount;
 							
 						}catch(Exception e){	}

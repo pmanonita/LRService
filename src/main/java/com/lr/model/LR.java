@@ -181,7 +181,7 @@ public class LR implements Serializable {
 		public void mPONo(String poNo) 									{	}
 		public void mDONo(String doNo) 									{	}
 		public void mBillingname(Billingname _billingnameId) 			{	}
-		public void mStatus(String status) 	{	}
+		public void mStatus(String status) 	                            {	}
 	}
 
 	

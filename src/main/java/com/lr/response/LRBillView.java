@@ -60,7 +60,7 @@ public class LRBillView {
 						continue;
 					} else {
 						try{
-							amount = Integer.parseInt(incomeColumnArr[1]);
+							amount = Integer.parseInt(incomeColumnArr[1].trim());
 							totalIncome = totalIncome+amount;
 							
 						}catch(Exception e){	}

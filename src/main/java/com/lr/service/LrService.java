@@ -66,6 +66,7 @@ import com.lr.response.LRSearchResponse;
 import com.lr.response.LRView;
 
 
+
 public class LrService {
 	
 	//view level validation

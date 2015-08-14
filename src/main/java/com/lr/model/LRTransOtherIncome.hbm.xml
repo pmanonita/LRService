@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+  <class name="com.lr.model.LRTransOtherIncome" table="lrtransotherincome">
+    <id name="id" type="long" column="id" >
+      <generator class="increment"/>
+    </id>
+  
+    <property name="transid" type="long" not-null="true">
+      <column name="transid" />
+    </property> 
+    <property name="amount" type="int" not-null="true">
+      <column name="amount" />
+    </property>
+    <property name="remarks" type="string" not-null="true">
+      <column name="remarks" />
+    </property> 
+    
+     </class>
+     
+     <query name="com.lr.model.LRTransOtherIncome.findLRTransOtherIncomeById">
+     select lrTransOtherIncome
+       from com.lr.model.LRTransOtherIncome as lrTransOtherIncome
+     where lrTransOtherIncome.id = :id     
+ 	</query>
+ 
+ 
+ 
+</hibernate-mapping>
