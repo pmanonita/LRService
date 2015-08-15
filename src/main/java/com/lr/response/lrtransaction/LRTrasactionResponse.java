@@ -6,7 +6,7 @@ import com.lr.response.UserView;
 
 public class LRTrasactionResponse implements AppResponse {
 	private static final int code = 1; //Success
-	private LRTransaction transaction;
+	private LRTransactionView transaction;
 	
 	public LRTrasactionResponse() {}
 	
@@ -14,14 +14,15 @@ public class LRTrasactionResponse implements AppResponse {
 		return code;
 	}
 
-	public LRTransaction getTransaction() {
+	public LRTransactionView getTransaction() {
 		return transaction;
 	}
 
-	public void setTransaction(LRTransaction transaction) {
+	public void setTransaction(LRTransactionView transaction) {
 		this.transaction = transaction;
 	}
 
+	
 	
 
 }

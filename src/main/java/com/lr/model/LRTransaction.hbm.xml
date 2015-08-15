@@ -13,6 +13,22 @@
       <one-to-many class="com.lr.model.LR"/>
     </set>
     
+    <many-to-one name="transchalanId" column="transchalanId" unique="true"     
+      class="com.lr.model.LRChalan" lazy="false"/>
+      
+    <many-to-one name="transbillId" column="transbillId" unique="true"     
+      class="com.lr.model.LRBill" lazy="false"/>
+      
+    <set name="lrtransotherExpenditures" cascade="all" lazy="false">
+      <key column="transid"/>
+      <one-to-many class="com.lr.model.LRTransOtherExp"/>
+    </set>
+    
+    <set name="lrtransotherIncomes" cascade="all" lazy="false">
+      <key column="transid"/>
+      <one-to-many class="com.lr.model.LRTransOtherIncome"/>
+    </set> 
+    
     <property name="multiLoadCharge" type="int">
       <column name="multiLoadCharge" />
     </property>
@@ -74,6 +90,20 @@
       from com.lr.model.LRTransaction as lrt
     where lrt.id = :id     
   </query>
+  
+  <query name="com.lr.model.LRTransaction.findLRTransactionByDateStatus">
+     select lrtrans
+       from com.lr.model.LRTransaction as lrtrans
+     where lrtrans.createDate = :lrTransDate
+       and lrtrans.status = :status
+       order by createDate desc
+ </query>
+ 
+ <query name="com.lr.model.LRTransaction.findLRTransByDate">
+     select lrtrans
+       from com.lr.model.LRTransaction as lrtrans
+     where lrtrans.createDate = :lrTransDate
+ </query>
  
  
 </hibernate-mapping>

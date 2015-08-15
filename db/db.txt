@@ -178,12 +178,14 @@ CREATE TABLE  `lr_test`.`transaction` (
   `loadingChargesBilling` int(11) DEFAULT NULL,
   `unloadingChargesBilling` int(11) DEFAULT NULL,
   `loadingDetBrokerBilling` int(11) DEFAULT NULL,
-  `unloadingDetBrokerBilling` int(11) DEFAULT NULL,  
+  `unloadingDetBrokerBilling` int(11) DEFAULT NULL,
   `status` varchar(20) NOT NULL,
-  `createDate` date NOT NULL,  
+  `createDate` date NOT NULL,
   `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `transchalanId` bigint(20) DEFAULT NULL,
+  `transbillId` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `lr_test`.`lrotherincome`;
 CREATE TABLE  `lr_test`.`lrotherincome` (
@@ -193,6 +195,24 @@ CREATE TABLE  `lr_test`.`lrotherincome` (
   `remarks` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`lrtransotherexp`;
+CREATE TABLE  `lr_test`.`lrtransotherexp` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `transid` bigint(20) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `remarks` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `lr_test`.`lrtransotherincome`;
+CREATE TABLE  `lr_test`.`lrtransotherincome` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `transid` bigint(20) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `remarks` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
 
 SELECT * FROM `user` u;
 insert into user(username,password,servicekey,role,createdate,mobile) values ('praja','praja123@','824bb1e8-de0c-401c-9f83-8b1d18a0ca9d','Admin','2015/07/23',6777788888);

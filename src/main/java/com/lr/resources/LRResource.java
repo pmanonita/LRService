@@ -35,6 +35,8 @@ import com.lr.model.LRChalan;
 import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
+import com.lr.model.LRTransOtherExp;
+import com.lr.model.LRTransOtherIncome;
 import com.lr.model.LRTransaction;
 import com.lr.model.User;
 import com.lr.response.AppResponse;
@@ -46,6 +48,10 @@ import com.lr.service.AutheticationService;
 import com.lr.service.LRBillService;
 import com.lr.service.LRChalanService;
 import com.lr.service.LRExpenditureService;
+import com.lr.service.LROtherIncomeService;
+import com.lr.service.LROthersService;
+import com.lr.service.LRTransOtherExpService;
+import com.lr.service.LRTransOtherIncomeService;
 import com.lr.service.LRTransactionService;
 import com.lr.service.LrService;
 import com.lr.service.UserService;
@@ -145,36 +151,77 @@ public class LRResource {
     public AppResponse createChalan(
         @Context HttpHeaders httpHeaders,       
         @FormParam( "lrNos" )     String lrNos,
-        @FormParam( "chalanDetails" )     String chalanDetails)		
+        @FormParam( "chalanDetails" )     String chalanDetails,
+        @FormParam( "transId" )           String transId)		
     {
 		AppResponse response = null;
 		LRChalanService lrChalanService  = new LRChalanService();
 		LrService lrService              = new LrService();
 		
+		
 		//validate Input
 		lrChalanService.validateAuthData(lrNos);
-		
-		String[] lrIds = lrNos.split(",");
-		
-		for (int i=0; i < lrIds.length; i++) {
+		long ltransid = 0;
+		try {	ltransid = Long.parseLong(transId); } 	catch (NumberFormatException ex) {	}	
+		if (ltransid > 0) {
+			System.out.println("multichalan");
+			LRTransactionService transactionService = new LRTransactionService();
+			LRTransaction lrTransaction = null;
+			lrTransaction  = transactionService.findTransaction(transId);
+			if (null == lrTransaction) {  
+				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from Transaction table for "+lrNos, 500);
+				 response = new ErrorResponse(errorMsg);
+				 return response;
+			}else {
+				 LRChalan lrChalan = lrTransaction.getTranschalanId();
+		    	 if(lrChalan != null) {
+		    		 //Chalan should be updated
+		    		 lrChalan = lrChalanService.updateLRChalan(lrNos,chalanDetails,lrChalan); 
+		    		
+		    	 }else{
+		    		 //Expenditure should be newly added
+		    		 lrChalan = lrChalanService.newLRChalan(lrNos,chalanDetails);
+		    		
+		    	 }
+		    	 
+		    	 if (null != lrChalan ) {
+		    		 lrTransaction = transactionService.updateChalanToTransaction(lrChalan,lrTransaction);
+			 		if (null == lrTransaction) {
+			 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating Transaction with chalan. Please try again", 500);
+				 		response = new ErrorResponse(errorMsg);
+				 		return response;
+			 		} else {
+			 			response = lrChalanService.createLRChalanResponse(lrChalan);	
+			 		}
+		 			
+		 		} else {
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue In saving chalan details", 500);
+		 			response = new ErrorResponse(errorMsg);
+		 		}
+				
+			}
+		}else {
+			if(lrNos.indexOf(",")>-1) {
+				ErrorMessage errorMsg = new ErrorMessage("Issue In saving chalan details,Transaction Id is missing", 500);
+	 			response = new ErrorResponse(errorMsg);
+	 			return response;
+			}
 			long llrNo = 0;
-			try {	llrNo = Long.parseLong(lrIds[i]); } 	catch (NumberFormatException ex) {	}	
-			
-			LR lr = null;
-			if (llrNo > 0) {
-				lr  = lrService.findLR(lrIds[i]);
+			try {	llrNo = Long.parseLong(lrNos); } 	catch (NumberFormatException ex) {	}	
+			if ( llrNo > 0) {
+				LR lr = null;
+				lr  = lrService.findLR(lrNos);
 				if (null == lr) {  
-					 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table for "+lrIds[i], 500);
+					 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table for "+lrNos, 500);
 					 response = new ErrorResponse(errorMsg);
-			     }else{
-			    	 
-			    	 LRChalan lrChalan = lr.getLrchalanId();
+				}else {
+					 LRChalan lrChalan = lr.getLrchalanId();
 			    	 if(lrChalan != null) {
 			    		 //Chalan should be updated
-			    		 lrChalan = lrChalanService.updateLRChalan(lrIds[i],chalanDetails,lrChalan); 
+			    		 lrChalan = lrChalanService.updateLRChalan(lrNos,chalanDetails,lrChalan); 
 			    		
 			    	 }else{
-			    		 //Expenditure should be newly added
+			    		 //Chalan should be newly added
 			    		 lrChalan = lrChalanService.newLRChalan(lrNos,chalanDetails);
 			    		
 			    	 }
@@ -192,13 +239,15 @@ public class LRResource {
 			 			ErrorMessage errorMsg = new ErrorMessage("Issue In saving chalan details", 500);
 			 			response = new ErrorResponse(errorMsg);
 			 		}
-			    	 
-			     }
-				
+					
+				}
+			}else {
+				ErrorMessage errorMsg = new ErrorMessage("Issue In saving chalan details", 500);
+	 			response = new ErrorResponse(errorMsg);
+	 			return response;
 			}
 			
-		}		
-		
+		}
 		           		
 		return response;
     }
@@ -210,35 +259,77 @@ public class LRResource {
     public AppResponse createBill(
         @Context HttpHeaders httpHeaders,       
         @FormParam( "lrNos" )     String lrNos,
-        @FormParam( "billDetails" )     String billDetails)		
+        @FormParam( "billDetails" )     String billDetails,
+        @FormParam( "transId" )           String transId)		
     {
 		AppResponse response = null;
 		LRBillService lrBillService  = new LRBillService();
-		LrService lrService                       = new LrService();
+		LrService lrService              = new LrService();
+		
 		
 		//validate Input
 		lrBillService.validateAuthData(lrNos);
-		
-		String[] lrIds = lrNos.split(",");
-		
-		for (int i=0;i<lrIds.length;i++) {
+		long ltransid = 0;
+		try {	ltransid = Long.parseLong(transId); } 	catch (NumberFormatException ex) {	}	
+		if (ltransid > 0) {
+			System.out.println("multichalan");
+			LRTransactionService transactionService = new LRTransactionService();
+			LRTransaction lrTransaction = null;
+			lrTransaction  = transactionService.findTransaction(transId);
+			if (null == lrTransaction) {  
+				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from Transaction table for "+lrNos, 500);
+				 response = new ErrorResponse(errorMsg);
+				 return response;
+			}else {
+				 LRBill lrBill = lrTransaction.getTransbillId();
+		    	 if(lrBill != null) {
+		    		 //Bill should be updated
+		    		 lrBill = lrBillService.updateLRBill(lrNos,billDetails,lrBill); 
+		    		
+		    	 }else{
+		    		 //Bill should be newly added
+		    		 lrBill = lrBillService.newLRBill(lrNos,billDetails);
+		    		
+		    	 }
+		    	 
+		    	 if (null != lrBill ) {
+		    		 lrTransaction = transactionService.updateBillToTransaction(lrBill,lrTransaction);
+			 		if (null == lrTransaction) {
+			 			ErrorMessage errorMsg = new ErrorMessage("Issue while updating Transaction with bill. Please try again", 500);
+				 		response = new ErrorResponse(errorMsg);
+				 		return response;
+			 		} else {
+			 			response = lrBillService.createLRBillResponse(lrBill);	
+			 		}
+		 			
+		 		} else {
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue In saving bill details", 500);
+		 			response = new ErrorResponse(errorMsg);
+		 		}
+				
+			}
+		}else {
+			if(lrNos.indexOf(",")>-1) {
+				ErrorMessage errorMsg = new ErrorMessage("Issue In saving bill details,Transaction Id is missing", 500);
+	 			response = new ErrorResponse(errorMsg);
+	 			return response;
+			}
 			long llrNo = 0;
-			try {	llrNo = Long.parseLong(lrIds[i]);	} 	catch (NumberFormatException ex) {	}	
-			LR lr = null;
-			if (llrNo > 0) {
-				lr  = lrService.findLR(lrIds[i]);
+			try {	llrNo = Long.parseLong(lrNos); } 	catch (NumberFormatException ex) {	}	
+			if ( llrNo > 0) {
+				LR lr = null;
+				lr  = lrService.findLR(lrNos);
 				if (null == lr) {  
-					 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table for "+lrIds[i], 500);
+					 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LR table for "+lrNos, 500);
 					 response = new ErrorResponse(errorMsg);
-			    }else{
-			    	
-			    	LRBill lrBill = lr.getLrbillId();
-			    	if(lrBill != null) {
-			    		//Bill should be updated
-			    		lrBill = lrBillService.updateLRBill(lrIds[i],billDetails,lrBill); 
+				}else {
+					 LRBill lrBill = lr.getLrbillId();
+			    	 if(lrBill != null) {
+			    		 //Bill should be updated
+			    		 lrBill = lrBillService.updateLRBill(lrNos,billDetails,lrBill); 
 			    		
 			    	 }else{
-			    		 //Expenditure should be newly added
+			    		 //Bill should be newly added
 			    		 lrBill = lrBillService.newLRBill(lrNos,billDetails);
 			    		
 			    	 }
@@ -256,11 +347,16 @@ public class LRResource {
 			 			ErrorMessage errorMsg = new ErrorMessage("Issue In saving bill details", 500);
 			 			response = new ErrorResponse(errorMsg);
 			 		}
-			    	 
-			    }
+					
+				}
+			}else {
+				ErrorMessage errorMsg = new ErrorMessage("Issue In saving bill details", 500);
+	 			response = new ErrorResponse(errorMsg);
+	 			return response;
 			}
+			
 		}
-		  		
+		           		
 		return response;
     }
 
@@ -524,9 +620,9 @@ public class LRResource {
     }
 	
 	@POST
-    @Path("/lr-service/updateStatus" )
+    @Path("/lr-service/updateStatusInLRList" )
     @Produces( MediaType.APPLICATION_JSON )
-    public AppResponse updateStatus(
+    public AppResponse updateStatusInLRList(
         @Context HttpHeaders httpHeaders, 
         @FormParam( "lrDate" ) String lrDate,
         @FormParam( "multiLoad" ) String multiLoad,
@@ -672,6 +768,300 @@ public class LRResource {
 		}   	 
 		   		
 		return response;
+    }
+	//Create LRTransOtherExpenditure	
+	@POST
+    @Path("/lr-service/addLRTransOtherExp" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse addLRTransOtherExp(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "transId" 		) String transId,
+        @FormParam( "amount" 	) String amount,
+        @FormParam( "remarks" 	) String remarks)		
+    {
+		AppResponse response            = null;
+		LRTransOtherExpService lrTransOtherExpService = new LRTransOtherExpService();
+		LRTransactionService lrTransService             = new LRTransactionService();		
+
+		long ltransId = 0;
+		int iamount = 0;		
+		try {	ltransId = Long.parseLong(transId);		} 	catch (NumberFormatException ex) {	}			
+		try {	iamount = Integer.parseInt(amount);	} 	catch (NumberFormatException ex) {	}
+		
+		LRTransaction lrTransaction = null;
+		if (ltransId > 0) { 
+			lrTransaction  = lrTransService.findTransaction(transId);
+
+			if (null == lrTransaction) {  
+				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LRTransaction table", 500);
+				 response = new ErrorResponse(errorMsg);
+		     } else {
+		    	//Send to model using service              
+		 		LRTransOtherExp lrTransOtherExp = lrTransOtherExpService.newLRTransOtherExp(ltransId,
+		 														iamount,
+		 														remarks);
+		 								      
+		 		if (lrTransOtherExp != null) {
+		 			Set<LRTransOtherExp> lrTransOtherExps = lrTransaction.getLrtransotherExpenditures();
+		 			
+		 			if(null == lrTransOtherExps) {
+		 				lrTransOtherExps = new HashSet();		 				
+		 			}
+		 			lrTransOtherExps.add(lrTransOtherExp);
+		 			response = lrTransOtherExpService.createLRTransOtherExpResponse(lrTransOtherExps);			
+		 		} else {
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the LRTransOtherExpenditure. Please try again", 500);
+		 			response = new ErrorResponse(errorMsg);
+		 		}
+		     }
+		}	
+		
+               		
+		return response;
+    }
+	
+	@POST
+    @Path("/lr-service/removeLRTransOtherExp" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse removeLRTransOtherExp(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrTransOtherExpenditureId" 		) String lrTransOtherExpenditureId,
+        @FormParam( "transId" 		                    ) String transId)       		
+    {
+		AppResponse response            = null;
+		LRTransOtherExpService lrTransOtherExpService = new LRTransOtherExpService();
+		LRTransactionService lrTransService             = new LRTransactionService();	
+
+		long llrOtherExpenditureId = 0;
+		long ltransId                 = 0;
+		try {	llrOtherExpenditureId = Long.parseLong(lrTransOtherExpenditureId);		} 	catch (NumberFormatException ex) {	}
+		try {	ltransId                = Long.parseLong(transId);		                } 	catch (NumberFormatException ex) {	}	
+				
+		LRTransaction lrTransaction = null;
+		if ( llrOtherExpenditureId > 0 && ltransId > 0 ) {		
+				//Send to model using service              
+				LRTransOtherExp lrTransOtherExp = lrTransOtherExpService.findLROtherExpenditure(llrOtherExpenditureId);
+			 								      
+				if ( lrTransOtherExp != null ) {
+					if ( lrTransOtherExpService.removeLRTransOtherExpenditure(lrTransOtherExp) ) {
+						lrTransaction  = lrTransService.findTransaction(transId);
+						if ( null == lrTransaction ) {  
+							ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from Transaction table", 500);
+							response = new ErrorResponse(errorMsg);
+						} else {
+							Set<LRTransOtherExp> lrTransOtherExps = lrTransaction.getLrtransotherExpenditures();	 						 				
+				 			response = lrTransOtherExpService.createLRTransOtherExpResponse(lrTransOtherExps);	
+						}
+			 				
+			 		} else {
+			 			ErrorMessage errorMsg = new ErrorMessage("Issue while Removing MultiLR OtherExpenditure. Please try again", 500);
+			 			response = new ErrorResponse(errorMsg);
+			 		}		
+			 			
+			 	} else {
+			 		ErrorMessage errorMsg = new ErrorMessage("Issue while getting Multi LR OtherExpenditure. Please try again", 500);
+			 		response = new ErrorResponse(errorMsg);
+			 	}	
+			
+		} else {
+	 		ErrorMessage errorMsg = new ErrorMessage("LrExpenditureID is wrong.", 500);
+	 		response = new ErrorResponse(errorMsg);
+	 	}	
+		
+		return response;
+    }
+	
+	//Create LRTransOtherIncome	
+	@POST
+    @Path("/lr-service/addLRTransOtherIncome" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse addLRTransOtherIncome(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "transId" 		) String transId,
+        @FormParam( "amount" 	) String amount,
+        @FormParam( "remarks" 	) String remarks)		
+    {
+		AppResponse response            = null;
+		LRTransOtherIncomeService lrTransOtherIncomeService = new LRTransOtherIncomeService();
+		LRTransactionService lrTransService             = new LRTransactionService();		
+
+		long ltransId = 0;
+		int iamount = 0;		
+		try {	ltransId = Long.parseLong(transId);		} 	catch (NumberFormatException ex) {	}			
+		try {	iamount = Integer.parseInt(amount);	} 	catch (NumberFormatException ex) {	}
+		
+		LRTransaction lrTransaction = null;
+		if (ltransId > 0) { 
+			lrTransaction  = lrTransService.findTransaction(transId);
+
+			if (null == lrTransaction) {  
+				 ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from LRTransaction Other Income table", 500);
+				 response = new ErrorResponse(errorMsg);
+		     } else {
+		    	//Send to model using service              
+		 		LRTransOtherIncome lrTransOtherIncome = lrTransOtherIncomeService.newLRTransOtherIncome(ltransId,
+		 														iamount,
+		 														remarks);
+		 								      
+		 		if (lrTransOtherIncome != null) {
+		 			Set<LRTransOtherIncome> lrTransOtherIncomes = lrTransaction.getLrtransotherIncomes();	 			
+		 			if(null == lrTransOtherIncomes) {
+		 				lrTransOtherIncomes = new HashSet();		 				
+		 			}
+		 			lrTransOtherIncomes.add(lrTransOtherIncome);
+		 			response = lrTransOtherIncomeService.createLRTransOtherIncomeResponse(lrTransOtherIncomes);			
+		 		} else {
+		 			ErrorMessage errorMsg = new ErrorMessage("Issue while creating the LRTransOtherIncome. Please try again", 500);
+		 			response = new ErrorResponse(errorMsg);
+		 		}
+		     }
+		}	
+		
+               		
+		return response;
+    }
+	
+	@POST
+    @Path("/lr-service/removeLRTransOtherIncome" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse removeLRTransOtherIncome(
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrTransOtherIncomeId" 		        ) String lrTransOtherIncomeId,
+        @FormParam( "transId" 		                    ) String transId)       		
+    {
+		AppResponse response            = null;
+		LRTransOtherIncomeService lrTransOtherIncomeService = new LRTransOtherIncomeService();
+		LRTransactionService lrTransService                 = new LRTransactionService();	
+
+		long llrTransOtherIncomeId = 0;
+		long ltransId                 = 0;
+		try {	llrTransOtherIncomeId = Long.parseLong(lrTransOtherIncomeId);		    } 	catch (NumberFormatException ex) {	}
+		try {	ltransId                = Long.parseLong(transId);		                } 	catch (NumberFormatException ex) {	}	
+				
+		LRTransaction lrTransaction = null;
+		if ( llrTransOtherIncomeId > 0 && ltransId > 0 ) {		
+				//Send to model using service              
+				LRTransOtherIncome lrTransOtherIncome = lrTransOtherIncomeService.findLRTransOtherIncome(llrTransOtherIncomeId);
+			 								      
+				if ( lrTransOtherIncome != null ) {
+					if ( lrTransOtherIncomeService.removeLRTransOtherIncome(lrTransOtherIncome) ) {
+						lrTransaction  = lrTransService.findTransaction(transId);
+						if ( null == lrTransaction ) {  
+							ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from Transaction table", 500);
+							response = new ErrorResponse(errorMsg);
+						} else {
+							Set<LRTransOtherIncome> lrTransOtherIncomes = lrTransaction.getLrtransotherIncomes();	 						 				
+				 			response = lrTransOtherIncomeService.createLRTransOtherIncomeResponse(lrTransOtherIncomes);	
+						}
+			 				
+			 		} else {
+			 			ErrorMessage errorMsg = new ErrorMessage("Issue while Removing MultiLR OtherIcome Please try again", 500);
+			 			response = new ErrorResponse(errorMsg);
+			 		}		
+			 			
+			 	} else {
+			 		ErrorMessage errorMsg = new ErrorMessage("Issue while getting Multi LR OtherExpenditure. Please try again", 500);
+			 		response = new ErrorResponse(errorMsg);
+			 	}	
+			
+		} else {
+	 		ErrorMessage errorMsg = new ErrorMessage("LrExpenditureID is wrong.", 500);
+	 		response = new ErrorResponse(errorMsg);
+	 	}	
+		
+		return response;
+    }
+	
+	@POST
+    @Path("/lr-service/listTransactions" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse lrTransactionList (
+        @Context HttpHeaders httpHeaders,       
+        @FormParam( "lrTransDate" ) String lrTransDate,        
+        @FormParam( "status" )      String status)        
+    {
+		AppResponse response = null;
+		LRTransactionService lrTransService                 = new LRTransactionService();              
+              
+  		List<LRTransaction> transList = lrTransService.listTranslr(lrTransDate,status);
+  		System.out.println("list size "+transList.size());
+    		
+  		if (transList != null) {
+  			response = lrTransService.createLRTransListResponse(transList,"");    					
+    	} else {
+    		ErrorMessage errorMsg = new ErrorMessage("Issue while getting Transaction List data. Please try again", 500);
+    		response = new ErrorResponse(errorMsg);
+    	}
+  		
+  		return response;
+    }
+	
+	@POST
+    @Path("/lr-service/updateStatusInLRTransList" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public AppResponse updateStatusInLRTransList(
+        @Context HttpHeaders httpHeaders, 
+        @FormParam( "lrTransDate" ) String lrTransDate,        
+        @FormParam( "status" ) String status,        
+        @FormParam( "lrTransIds" ) String lrTransIds)
+    {
+		AppResponse response = null;
+		LRTransactionService lrTransService  = new LRTransactionService();
+		
+		if(null == status || (null != status && status.equals(""))) {
+			ErrorMessage errorMsg = new ErrorMessage("Invalid status", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
+		if(null == lrTransIds || (null != lrTransIds && lrTransIds.equals(""))) {
+			ErrorMessage errorMsg = new ErrorMessage("No Transaction ids found for updating status. Please check", 500);
+    		response = new ErrorResponse(errorMsg);
+    		return response;
+		}
+		
+		String[] transIds = lrTransIds.split(",");		
+		List<String> errorTransIds =new ArrayList<String>();
+		for (String transid : errorTransIds) {			
+			LRTransaction lrTrans = lrTransService.findTransaction(transid);
+			if (null != lrTrans) {
+				lrTrans = lrTransService.editTransaction(lrTrans.getMultiLoadCharge(), lrTrans.getFreightToBroker(), lrTrans.getExtraPayToBroker(),
+														 lrTrans.getAdvance(), lrTrans.getBalanceFreight(), lrTrans.getLoadingCharges(),
+														 lrTrans.getUnloadingCharges(), lrTrans.getLoadingDetBroker(), lrTrans.getUnloadingDetBroker(),
+														 lrTrans.getMultiLoadChargeBilling(), lrTrans.getFreightToBrokerBilling(),
+														 lrTrans.getLoadingChargesBilling(), lrTrans.getUnloadingChargesBilling(),
+														 lrTrans.getLoadingDetBrokerBilling(), lrTrans.getUnloadingDetBrokerBilling(),
+														 lrTrans);   
+			
+				if (null == lrTrans) {
+					ErrorMessage errorMsg = new ErrorMessage("Issue while updating the Transaction with status. Please try again", 500);
+					response = new ErrorResponse(errorMsg);
+					errorTransIds.add(transid);
+				}
+			} else {
+				ErrorMessage errorMsg = new ErrorMessage("Not able to find transaction with id "+ transid, 500);
+	    		response = new ErrorResponse(errorMsg);
+	    		errorTransIds.add(transid);	    		
+			}
+		}		
+		
+		List<LRTransaction> lrTransList = lrTransService.listTranslr(lrTransDate, status);
+  		
+    		
+  		if (lrTransList != null) {
+  			String message = "";
+  			if (errorTransIds.size() > 0) {
+  				message = "Issue in updating status for transaction ids "+errorTransIds;
+  			}else{
+  				message = "All transactions are updated with status successfully";
+  			}
+  			response = lrTransService.createLRTransListResponse(lrTransList,message);    					
+    	} else {
+    		ErrorMessage errorMsg = new ErrorMessage("Issue while getting Transaction List data. Please try again", 500);
+    		response = new ErrorResponse(errorMsg);
+    	}
+  		
+  		
+  		return response;
     }
 
 }
