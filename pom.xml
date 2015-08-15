@@ -93,6 +93,12 @@
     		<artifactId>jersey-bean-validation</artifactId>
     		<version>${jersey.version}</version>
 		</dependency>
+		
+		<dependency>
+        	<groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
 
 		<!-- if you are using Jersey client specific features -->
 		<!--
