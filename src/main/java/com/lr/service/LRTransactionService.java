@@ -202,6 +202,12 @@ public class LRTransactionService {
 			String lrIds=getLRids(lrTransaction.getLrs());
 			lrTransactionView.setLrs(lrIds);
 			
+			String poNos=getPoNos(lrTransaction.getLrs());
+			lrTransactionView.setPoNos(poNos);
+			
+			String doNos=getDoNos(lrTransaction.getLrs());
+			lrTransactionView.setDoNos(doNos);
+			
 			response.setTransaction(lrTransactionView);		
 					
 		}
@@ -222,6 +228,42 @@ public class LRTransactionService {
 			lrids =lrids.replaceFirst(",","");
 		}
 		return lrids;
+	}
+	
+	private String getPoNos(Set<LR> lrs) {
+		// TODO Auto-generated method stub
+		String poNos= "";
+		if (lrs != null && lrs.size() > 0) {
+			Iterator<LR> lrIterator = lrs.iterator();
+			while(lrIterator.hasNext()) {
+				LR lr = lrIterator.next();
+				if (lr.getPoNo() != null && lr.getPoNo().trim().length()>0) {
+					poNos= poNos +","+lr.getPoNo();
+				}				
+			}
+		}
+		if (poNos.startsWith(",")) {
+			poNos =poNos.replaceFirst(",","");
+		}
+		return poNos;
+	}
+	
+	private String getDoNos(Set<LR> lrs) {
+		// TODO Auto-generated method stub
+		String doNos = "";
+		if (lrs != null && lrs.size() > 0) {
+			Iterator<LR> lrIterator = lrs.iterator();
+			while(lrIterator.hasNext()) {
+				LR lr = lrIterator.next();
+				if (lr.getDoNo() != null && lr.getDoNo().trim().length()>0) {
+					doNos= doNos +","+lr.getDoNo();
+				}				
+			}
+		}
+		if (doNos.startsWith(",")) {
+			doNos = doNos.replaceFirst(",","");
+		}
+		return doNos;
 	}
 
 
@@ -518,7 +560,13 @@ public class LRTransactionService {
 					lrTransListView.setCreateDate(lrTransaction.getCreateDate());
 					
 					String lrIds=getLRids(lrTransaction.getLrs());
-					lrTransListView.setLrs(lrIds);					
+					lrTransListView.setLrs(lrIds);		
+					
+					String poNos=getPoNos(lrTransaction.getLrs());
+					lrTransListView.setPoNos(poNos);
+					
+					String doNos=getDoNos(lrTransaction.getLrs());
+					lrTransListView.setDoNos(doNos);
 					
 					// use a list of others exp view
 					Set<LRTransOtherExp> lrTransOtherExps = lrTransaction.getLrtransotherExpenditures();

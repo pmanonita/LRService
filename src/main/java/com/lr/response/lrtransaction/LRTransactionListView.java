@@ -33,6 +33,8 @@ public class LRTransactionListView {
 	private int  	unloadingDetBrokerBilling;
 	private String  status;
 	private Date	createDate;	
+	private String 	poNos;
+	private String 	doNos;
 	
 	//List
 	private List<LRTransOtherExpView> 		lrTransOtherExp;
@@ -196,6 +198,23 @@ public class LRTransactionListView {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+	
+
+	public String getPoNos() {
+		return poNos;
+	}
+
+	public void setPoNos(String poNos) {
+		this.poNos = poNos;
+	}
+
+	public String getDoNos() {
+		return doNos;
+	}
+
+	public void setDoNos(String doNos) {
+		this.doNos = doNos;
 	}
 
 	public List<LRTransOtherExpView> getLrTransOtherExp() {

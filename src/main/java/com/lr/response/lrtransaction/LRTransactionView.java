@@ -35,6 +35,8 @@ public class LRTransactionView {
 	private int  	unloadingDetBrokerBilling;
 	private String  status;
 	private Date	createDate;
+	private String 	poNos;
+	private String 	doNos;
 	
 
 	
@@ -267,6 +269,32 @@ public class LRTransactionView {
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
+
+
+
+	public String getPoNos() {
+		return poNos;
+	}
+
+
+
+	public void setPoNos(String poNos) {
+		this.poNos = poNos;
+	}
+
+
+
+	public String getDoNos() {
+		return doNos;
+	}
+
+
+
+	public void setDoNos(String doNos) {
+		this.doNos = doNos;
+	}
+	
+	
 	
 	
 }
