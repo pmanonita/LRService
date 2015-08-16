@@ -17,8 +17,7 @@ CREATE TABLE  `lr_test`.`User` (
   `role` varchar(20) DEFAULT NULL,
   `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `userName` (`userName`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `userName` (`userName`),  
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 
@@ -43,8 +42,7 @@ CREATE TABLE  `lr_test`.`lr` (
   `status` varchar(20) NOT NULL,
   `lrchalanId` bigint(20) DEFAULT NULL,
   `lrbillId` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `transid` (`transid`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
 
 
