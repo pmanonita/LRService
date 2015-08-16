@@ -27,7 +27,10 @@
     <set name="lrtransotherIncomes" cascade="all" lazy="false">
       <key column="transid"/>
       <one-to-many class="com.lr.model.LRTransOtherIncome"/>
-    </set> 
+    </set>
+    
+    <many-to-one name="billingnameId" column="billingnameId" unique="true"     
+      class="com.lr.model.Billingname" lazy="false"/> 
     
     <property name="multiLoadCharge" type="int">
       <column name="multiLoadCharge" />

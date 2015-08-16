@@ -715,7 +715,8 @@ public class LRResource {
         @FormParam( "loadingChargesBilling"		)	String loadingChargesBilling,
         @FormParam( "unloadingChargesBilling" 	) 	String unloadingChargesBilling,
         @FormParam( "loadingDetBrokerBilling" 	) 	String loadingDetBrokerBilling,
-        @FormParam( "unloadingDetBrokerBilling" ) 	String unloadingDetBrokerBilling)		
+        @FormParam( "unloadingDetBrokerBilling" ) 	String unloadingDetBrokerBilling,
+        @FormParam( "billingnameId"             )   String billingnameId)		
     {
 		AppResponse response = null;		
 
@@ -723,6 +724,9 @@ public class LRResource {
 		int iloadingCharges = 0, iloadingDetBroker = 0, iunloadingCharges = 0, iunloadingDetBroker = 0;
 		int imultiLoadChargeBilling = 0, ifreightToBrokerBilling = 0, iloadingChargesBilling =0;
 		int iunloadingChargesBilling = 0, iloadingDetBrokerBilling = 0, iunloadingDetBrokerBilling = 0;
+		LrService lrService  = new LrService();
+		Billingname billingname = null;
+		
 		
 		
 		try { imultiLoadCharge    = Integer.parseInt(multiLoadCharge);	  } catch (NumberFormatException ex) {	}
@@ -742,6 +746,16 @@ public class LRResource {
 		try { iloadingDetBrokerBilling   = Integer.parseInt(loadingDetBrokerBilling);	} catch (NumberFormatException ex) {	}		
 		try { iunloadingDetBrokerBilling = Integer.parseInt(unloadingDetBrokerBilling); } catch (NumberFormatException ex) {	}
 		
+		//get partyname object
+		if(billingnameId !=null && !billingnameId.equals("")){
+			billingname  = lrService.getBillingname(billingnameId);
+			if(null == billingname) {  
+				ErrorMessage errorMsg = new ErrorMessage("Issue In getting record from billingname table", 500);
+				response = new ErrorResponse(errorMsg);
+				return response;
+		     }		      
+		}
+		
 		
 		LRTransactionService lrTransactionService = new LRTransactionService();
 		LRTransaction tranasaction  = lrTransactionService.findTransaction(transId);
@@ -752,13 +766,14 @@ public class LRResource {
 			 return response;
 		} 		
 		 
-		LRTransaction updatedTranasaction = null;
+		LRTransaction         updatedTranasaction = null;
 		updatedTranasaction = lrTransactionService.editTransaction(imultiLoadCharge, ifreightToBroker, iextraPayToBroker,
 																   iadvance, ibalanceFreight, iloadingCharges,
 															       iunloadingCharges, iloadingDetBroker, iunloadingDetBroker,
 															       imultiLoadChargeBilling, ifreightToBrokerBilling,
 															       iloadingChargesBilling, iunloadingChargesBilling,
 															       iloadingDetBrokerBilling, iunloadingDetBrokerBilling,
+															       billingname,
 															       tranasaction);        
 		if (updatedTranasaction != null) {
 			response = lrTransactionService.createTransactionResponse(updatedTranasaction);			
@@ -1030,6 +1045,7 @@ public class LRResource {
 														 lrTrans.getMultiLoadChargeBilling(), lrTrans.getFreightToBrokerBilling(),
 														 lrTrans.getLoadingChargesBilling(), lrTrans.getUnloadingChargesBilling(),
 														 lrTrans.getLoadingDetBrokerBilling(), lrTrans.getUnloadingDetBrokerBilling(),
+														 lrTrans.getBillingnameId(),
 														 lrTrans);   
 			
 				if (null == lrTrans) {

@@ -9,6 +9,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.lr.model.LR.Controller;
+import com.lr.model.Billingname;
 import com.lr.model.LRBill;
 import com.lr.model.LRChalan;
 import com.lr.model.LRTransOtherExp;
@@ -37,6 +38,7 @@ public class LRTransactionView {
 	private Date	createDate;
 	private String 	poNos;
 	private String 	doNos;
+	private Billingname 	billingname;
 	
 
 	
@@ -293,8 +295,18 @@ public class LRTransactionView {
 	public void setDoNos(String doNos) {
 		this.doNos = doNos;
 	}
-	
-	
+
+
+
+	public Billingname getBillingname() {
+		return billingname;
+	}
+
+
+
+	public void setBillingname(Billingname billingname) {
+		this.billingname = billingname;
+	}
 	
 	
 }
