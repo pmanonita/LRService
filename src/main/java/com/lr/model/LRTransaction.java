@@ -38,6 +38,7 @@ public class LRTransaction implements Serializable {
 	private LRBill   _transbillId;
 	private Set<LRTransOtherExp> _lrtransotherExpenditures;
 	private Set<LRTransOtherIncome> _lrtransotherIncomes;
+	private Billingname             _billingnameId;
 
 	
 	public LRTransaction() {	}
@@ -69,6 +70,7 @@ public class LRTransaction implements Serializable {
 		_transbillId                = ctrl.mTransbillId();
 		_lrtransotherExpenditures   = ctrl.mLRtransotherExpenditures();
 		_lrtransotherIncomes        = ctrl.mLRtransotherIncomes();
+		_billingnameId 		        = ctrl.mBillingname();
 	}
 	
 	public void changeTo(Controller ctrl) {		
@@ -94,6 +96,7 @@ public class LRTransaction implements Serializable {
 		_transbillId                = ctrl.mTransbillId();
 		_lrtransotherExpenditures   = ctrl.mLRtransotherExpenditures();
 		_lrtransotherIncomes        = ctrl.mLRtransotherIncomes();
+		_billingnameId 		        = ctrl.mBillingname();
 	}
 
 	public interface Controller {				
@@ -155,14 +158,17 @@ public class LRTransaction implements Serializable {
 		LRChalan mTranschalanId();
 		void mTranschalanId(LRChalan lrchalanId);
 		
-		LRBill mTransbillId();
-		void mTransbillId(LRBill lrbillId);
+		Billingname mBillingname();
+		void mBillingname(Billingname billingnameId);
 		
 		Set<LRTransOtherExp> mLRtransotherExpenditures();
 		void mLRtransotherExpenditures(Set<LRTransOtherExp> lrTransOtherExp);
 		
 		Set<LRTransOtherIncome> mLRtransotherIncomes();
 		void mLRtransotherIncomes(Set<LRTransOtherIncome> lrTransOtherIncomes);
+		
+		LRBill mTransbillId();
+		void mTransbillId(LRBill lrbillId);
 
 	}
 	
@@ -189,6 +195,7 @@ public class LRTransaction implements Serializable {
 		public void mTransbillId(LRBill lrbillId)							         { }	
 		public void mLRtransotherExpenditures(Set<LRTransOtherExp> lrTransOtherExps) { }
 		public void mLRtransotherIncomes(Set<LRTransOtherIncome> lrTransOtherIncomes){ }
+		public void mBillingname(Billingname _billingnameId) 			             { }
 	}
 	
 	
@@ -373,6 +380,14 @@ public class LRTransaction implements Serializable {
 
 	private void setLrtransotherIncomes(Set<LRTransOtherIncome> lrTransOtherIcomes) {
 		this._lrtransotherIncomes = lrTransOtherIcomes;
+	}
+	
+	public Billingname getBillingnameId() {
+		return _billingnameId;
+	}
+
+	void setBillingnameId(Billingname billingnameId) {
+		this._billingnameId = billingnameId;
 	}
 	
 	public static long mSerialversionuid() 	{ return serialVersionUID;	}

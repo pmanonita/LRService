@@ -184,6 +184,7 @@ CREATE TABLE  `lr_test`.`transaction` (
   `updatetimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `transchalanId` bigint(20) DEFAULT NULL,
   `transbillId` bigint(20) DEFAULT NULL,
+  `billingnameId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 

@@ -35,6 +35,7 @@ public class LRTransactionListView {
 	private Date	createDate;	
 	private String 	poNos;
 	private String 	doNos;
+	private Billingname 	billingname;
 	
 	//List
 	private List<LRTransOtherExpView> 		lrTransOtherExp;
@@ -215,6 +216,14 @@ public class LRTransactionListView {
 
 	public void setDoNos(String doNos) {
 		this.doNos = doNos;
+	}
+	
+	public Billingname getBillingname() {
+		return billingname;
+	}
+
+	public void setBillingname(Billingname billingname) {
+		this.billingname = billingname;
 	}
 
 	public List<LRTransOtherExpView> getLrTransOtherExp() {

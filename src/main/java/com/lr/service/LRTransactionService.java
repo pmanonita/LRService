@@ -15,6 +15,7 @@ import org.hibernate.Transaction;
 import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
 import com.lr.exceptions.DataNotFoundException;
+import com.lr.model.Billingname;
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.Expense;
@@ -70,7 +71,8 @@ public class LRTransactionService {
 										final LRChalan transChalanId,
 										final LRBill transBillId,
 										final Set<LRTransOtherExp> lrTransOtherExps,
-										final Set<LRTransOtherIncome> lrTransOtherIncomes) 
+										final Set<LRTransOtherIncome> lrTransOtherIncomes,
+										final Billingname             billingnameId) 
 	{
 		return new LRTransaction.DefaultController() 					{
 			public Set<LR> mLRs() 										{	return lrs;							}			
@@ -95,6 +97,7 @@ public class LRTransactionService {
 			public LRBill mTransbillId()            					{	return transBillId;	                }
 			public Set<LRTransOtherExp> mLRtransotherExpenditures()     {	return lrTransOtherExps;	        }
 			public Set<LRTransOtherIncome> mLRtransotherIncomes()       {	return lrTransOtherIncomes;	        }
+			public Billingname             mBillingname()               {   return billingnameId;               } 
 		};
 	}
 	
@@ -137,6 +140,7 @@ public class LRTransactionService {
 			LRBill transBill                = null;
 			Set<LRTransOtherExp> lrTransOtherExp      = null;
 			Set<LRTransOtherIncome> lrTransOtherIcome = null;
+			Billingname             billingnameId     = null;      
 			
 			LRTransaction.Controller ctrl = createController(lrs, status, createDate, multiLoadCharge,
 															 freightToBroker, extraPayToBroker, advance,
@@ -144,7 +148,7 @@ public class LRTransactionService {
 															 loadingDetBroker, unloadingDetBroker, multiLoadChargeBilling,
 															 freightToBrokerBilling, loadingChargesBilling, unloadingChargesBilling,
 															 loadingDetBrokerBilling, unloadingDetBrokerBilling,
-															 transChalan,transBill,lrTransOtherExp,lrTransOtherIcome);
+															 transChalan,transBill,lrTransOtherExp,lrTransOtherIcome,billingnameId);
 
 			lrTransaction = new LRTransaction(ctrl);
 			
@@ -198,6 +202,7 @@ public class LRTransactionService {
 			
 			lrTransactionView.setStatus(lrTransaction.getStatus());
 			lrTransactionView.setCreateDate(lrTransaction.getCreateDate());
+			lrTransactionView.setBillingname(lrTransaction.getBillingnameId());
 			
 			String lrIds=getLRids(lrTransaction.getLrs());
 			lrTransactionView.setLrs(lrIds);
@@ -207,6 +212,7 @@ public class LRTransactionService {
 			
 			String doNos=getDoNos(lrTransaction.getLrs());
 			lrTransactionView.setDoNos(doNos);
+			
 			
 			response.setTransaction(lrTransactionView);		
 					
@@ -320,7 +326,9 @@ public class LRTransactionService {
 			int multiLoadChargeBilling, int freightToBrokerBilling,
 			int loadingChargesBilling, int unloadingChargesBilling,
 			int loadingDetBrokerBilling, int unloadingDetBrokerBilling,
-			LRTransaction tranasaction) 
+			Billingname billingnameId,
+			LRTransaction tranasaction)
+			
 	{		
 		Session session = HibernateSessionManager.getSessionFactory().openSession();
 		Transaction tx 	= null;
@@ -343,7 +351,7 @@ public class LRTransactionService {
 															 freightToBrokerBilling, loadingChargesBilling, unloadingChargesBilling,
 															 loadingDetBrokerBilling, unloadingDetBrokerBilling,
 															 tranasaction.getTranschalanId(),tranasaction.getTransbillId(),
-															 tranasaction.getLrtransotherExpenditures(),tranasaction.getLrtransotherIncomes());
+															 tranasaction.getLrtransotherExpenditures(),tranasaction.getLrtransotherIncomes(),billingnameId);
 			//Update Data
 			tranasaction.changeTo(ctrl);			
 			session.saveOrUpdate(tranasaction);			
@@ -390,7 +398,8 @@ public class LRTransactionService {
 															 lrChalan,
 															 tranasaction.getTransbillId(),
 															 tranasaction.getLrtransotherExpenditures(),
-															 tranasaction.getLrtransotherIncomes());
+															 tranasaction.getLrtransotherIncomes(),
+															 tranasaction.getBillingnameId());
 								
 			//Update Data
 			tranasaction.changeTo(ctrl);			
@@ -441,7 +450,8 @@ public class LRTransactionService {
 															 tranasaction.getTranschalanId(),
 															 lrBill,
 															 tranasaction.getLrtransotherExpenditures(),
-															 tranasaction.getLrtransotherIncomes());
+															 tranasaction.getLrtransotherIncomes(),
+															 tranasaction.getBillingnameId());
 								
 			//Update Data
 			tranasaction.changeTo(ctrl);			
@@ -558,6 +568,7 @@ public class LRTransactionService {
 					
 					lrTransListView.setStatus(lrTransaction.getStatus());
 					lrTransListView.setCreateDate(lrTransaction.getCreateDate());
+					lrTransListView.setBillingname(lrTransaction.getBillingnameId());
 					
 					String lrIds=getLRids(lrTransaction.getLrs());
 					lrTransListView.setLrs(lrIds);		
