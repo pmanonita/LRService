@@ -7,7 +7,7 @@ import com.lr.model.Consigner;
 public class LRView {
 
 	private long    		id;
-	private long    		transid;	
+	private Long    		transid;	
 	private String 			vehicleNo;
 	private String 			vehicleOwner;
 	private Consigner 		consigner;
@@ -35,12 +35,12 @@ public class LRView {
 	}	
 	
 	
-	public long getTransid() {
+	public Long getTransid() {
 		return transid;
 	}
 
 
-	public void setTransid(long transid) {
+	public void setTransid(Long transid) {
 		this.transid = transid;
 	}
 
