@@ -764,7 +764,9 @@ public class LRResource {
 			 ErrorMessage errorMsg = new ErrorMessage("Tranasaction not found", 500);
 			 response = new ErrorResponse(errorMsg);
 			 return response;
-		} 		
+		} 
+		
+		String status = tranasaction.getStatus();
 		 
 		LRTransaction         updatedTranasaction = null;
 		updatedTranasaction = lrTransactionService.editTransaction(imultiLoadCharge, ifreightToBroker, iextraPayToBroker,
@@ -773,7 +775,7 @@ public class LRResource {
 															       imultiLoadChargeBilling, ifreightToBrokerBilling,
 															       iloadingChargesBilling, iunloadingChargesBilling,
 															       iloadingDetBrokerBilling, iunloadingDetBrokerBilling,
-															       billingname,
+															       billingname,status,
 															       tranasaction);        
 		if (updatedTranasaction != null) {
 			response = lrTransactionService.createTransactionResponse(updatedTranasaction);			
@@ -1036,7 +1038,7 @@ public class LRResource {
 		
 		String[] transIds = lrTransIds.split(",");		
 		List<String> errorTransIds =new ArrayList<String>();
-		for (String transid : errorTransIds) {			
+		for (String transid : transIds) {			
 			LRTransaction lrTrans = lrTransService.findTransaction(transid);
 			if (null != lrTrans) {
 				lrTrans = lrTransService.editTransaction(lrTrans.getMultiLoadCharge(), lrTrans.getFreightToBroker(), lrTrans.getExtraPayToBroker(),
@@ -1045,8 +1047,7 @@ public class LRResource {
 														 lrTrans.getMultiLoadChargeBilling(), lrTrans.getFreightToBrokerBilling(),
 														 lrTrans.getLoadingChargesBilling(), lrTrans.getUnloadingChargesBilling(),
 														 lrTrans.getLoadingDetBrokerBilling(), lrTrans.getUnloadingDetBrokerBilling(),
-														 lrTrans.getBillingnameId(),
-														 lrTrans);   
+														 lrTrans.getBillingnameId(),status,lrTrans);   
 			
 				if (null == lrTrans) {
 					ErrorMessage errorMsg = new ErrorMessage("Issue while updating the Transaction with status. Please try again", 500);

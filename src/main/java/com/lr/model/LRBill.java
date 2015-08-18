@@ -12,7 +12,9 @@ public class LRBill implements Serializable {
 	
 	private long _id;
 	private String _lrIds;	
-	private String  _billDetails;	
+	private String  _billDetails;
+	private long    _totalBill;	
+	private Date	_createDate;
 	
 	
 	public LRBill() {	}
@@ -37,6 +39,8 @@ public class LRBill implements Serializable {
 		
 		_lrIds               = ctrl.mLRIds();	
 		_billDetails    = ctrl.mBillDetails();
+		_totalBill           = ctrl.mTotalBill();
+		_createDate          = ctrl.mCreateDate();
 		
 		
 			
@@ -48,6 +52,8 @@ public class LRBill implements Serializable {
 		
 		_lrIds               = ctrl.mLRIds();	
 		_billDetails    = ctrl.mBillDetails();
+		_totalBill           = ctrl.mTotalBill();
+		_createDate          = ctrl.mCreateDate();
 		
 		
 		
@@ -61,12 +67,20 @@ public class LRBill implements Serializable {
 		String mBillDetails();
 		void mBillDetails(String billDetails);	
 		
+		long mTotalBill();
+		void mTotalBill(long totalBill);	
+		
+		Date mCreateDate();
+		void mCreateDate(Date createDate);
+		
 		
 	}
 	
 	public abstract static class DefaultController implements Controller {
 		public void mLRIds(String lrIds) { }
 		public void mBillDetails(String billDetails) { }
+		public void mTotalBill(long totalBill) { }
+		public void mCreateDate(Date createDate) { }
 		
 		
 	}
@@ -97,6 +111,22 @@ public class LRBill implements Serializable {
 	
 	void setBillDetails(String billDetails) {
 		this._billDetails =  billDetails;
+	}
+	
+	public long getTotalBill() {
+		return _totalBill;
+	}
+
+	void setTotalBill(long totalBill) {
+		this._totalBill = totalBill;
+	}
+
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	void setCreateDate(Date createDate) {
+		this._createDate = createDate;
 	}
 
 	

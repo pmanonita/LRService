@@ -1,11 +1,14 @@
 package com.lr.response;
 
+import java.util.Date;
+
 public class LRChalanView {
 
 	private long    id;
 	private String lrIds;
 	private String chalanDetails;
-	private int totalCost;
+	private long totalCost;
+	private Date   createDate;
 	
     
     public LRChalanView() {}
@@ -41,45 +44,23 @@ public class LRChalanView {
 	}
 
 
-	public int getTotalCost() {
+	public long getTotalCost() {
 		return totalCost;
 	}
 
 
-	public void setTotalCost() {
-		//calculation of totalcost
-		int totalExpenditure = 0;
-		if (chalanDetails != null) {
-			String[] expenditureArr = chalanDetails.split(",");
-			int amount = 0;
-			for (int i=0;i<expenditureArr.length;i++){
-				expenditureArr[i] = expenditureArr[i].replaceAll("\"","");
-				String[] expeditureColumnArr = expenditureArr[i].split("-");
-				if( expeditureColumnArr.length>1 ){					
-					if (expeditureColumnArr[0].contains("EXTRA PAY TO BROKER") || expeditureColumnArr[0].contains("ADVANCE") || expeditureColumnArr[0].contains("BALANCE FREIGHT") ) {
-						continue;
-					} else {
-						try{
-							amount = Integer.parseInt(expeditureColumnArr[1].trim());
-							totalExpenditure = totalExpenditure+amount;
-							
-						}catch(Exception e){	}
-						
-					}
-					
-				}
-				
-			}
-		}
-		this.totalCost = totalExpenditure;
+	public void setTotalCost(long totalCost) {
+		this.totalCost = totalCost;
 	}
-	
-	
 
 
-	
+	public Date getCreateDate() {
+		return createDate;
+	}
 
-	
-   
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 
 }

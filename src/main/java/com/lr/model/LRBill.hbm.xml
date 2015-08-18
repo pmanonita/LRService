@@ -15,6 +15,12 @@
     <property name="billDetails" type="string">
       <column name="billDetails" />
     </property>
+    <property name="totalBill" type="long">
+      <column name="totalBill" />
+    </property>
+    <property name="createDate" type="date" not-null="true">
+      <column name="createDate" />
+    </property>
    
     
  </class>

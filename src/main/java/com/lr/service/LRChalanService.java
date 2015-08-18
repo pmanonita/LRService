@@ -11,7 +11,6 @@ import org.hibernate.Transaction;
 import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
 import com.lr.exceptions.InsufficientDataException;
-
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
@@ -20,7 +19,6 @@ import com.lr.model.LRExpenditure;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
 import com.lr.model.User;
-
 import com.lr.response.LRChalanView;
 import com.lr.response.LRExpeditureView;
 import com.lr.response.LRChalanResponse;
@@ -42,7 +40,8 @@ public class LRChalanService {
 		}		
 	}
 	
-	private LRChalan.DefaultController createControllerFromView(final String lrIds,	final String chalanDetails)					  
+	private LRChalan.DefaultController createControllerFromView(final String lrIds,	final String chalanDetails,
+																final long totalCost,final Date createDate)								  
 			  											
 	{
 		
@@ -50,21 +49,24 @@ public class LRChalanService {
 			
 			
 			public String mLRIds()				    {	return lrIds;	}		
-			public String mChalanDetails()	        {	return chalanDetails;	}			
+			public String mChalanDetails()	        {	return chalanDetails;	}		
+			public long mTotalCost()	            {	return totalCost;	}
+			public Date mCreateDate()	            {	return createDate;	}
 			
 		};
 	}
 	
-	private LRChalan.Controller createController(final String lrIds,	final String chalanDetails)
+	private LRChalan.Controller createController(final String lrIds,	final String chalanDetails,
+												 final long totalCost,final Date createDate)		
 	{
 	
 	return new LRChalan.DefaultController() {
 	
 	
 		public String mLRIds()	{return lrIds;}
-		
-		
-		public String mChalanDetails()	{return chalanDetails; }
+		public String mChalanDetails()	{return chalanDetails; }		
+		public long   mTotalCost()	{return totalCost; }
+		public Date   mCreateDate()	{return createDate; }
 		
 		
 	
@@ -81,9 +83,12 @@ public class LRChalanService {
 		
 		try {
 			
-			tx = session.beginTransaction();			
+			tx = session.beginTransaction();	
+			
+			Date createDate = new Date();
+			long totalCost  = calculateTotalCost(chalanDetails);
 		
-			LRChalan.Controller ctrl = createControllerFromView(lrNos,chalanDetails);
+			LRChalan.Controller ctrl = createControllerFromView(lrNos,chalanDetails,totalCost,createDate);
 		
 			lrChalan = new LRChalan(ctrl);
 			
@@ -103,6 +108,37 @@ public class LRChalanService {
 		return lrChalan;
 	}
 	
+	public long calculateTotalCost(String chalanDetails) {
+		//calculation of totalCost
+		long totalCost = 0;
+		if (chalanDetails != null) {
+			chalanDetails = chalanDetails.replaceAll("\"","");
+			String[] costArr = chalanDetails.split(",");
+			for (int i=0;i<costArr.length;i++){
+				costArr[i] = costArr[i].replaceAll("\"","");
+				String[] costColumnArr = costArr[i].split("-");
+				if( costColumnArr.length>1 ){
+					System.out.println("addingcost for "+costColumnArr[0]+" currenttotalbill is "+totalCost);
+					int amount = 0;
+					if (costColumnArr[0].contains("EXTRA PAY TO BROKER") || costColumnArr[0].contains("ADVANCE") || costColumnArr[0].contains("BALANCE FREIGHT") ) {
+						continue;
+					} else {
+						try{
+							amount = Integer.parseInt(costColumnArr[1].trim());
+							totalCost = totalCost+amount;
+							System.out.println("totl cost is "+totalCost);
+							
+						}catch(Exception e){	}
+						
+					}
+					
+				}
+				
+			}
+		}
+		return totalCost;		
+	}
+	
 	public LRChalan updateLRChalan(final String lrNo,final String chalanDetails,LRChalan lrChalan)
 	{
 		
@@ -114,8 +150,11 @@ public class LRChalanService {
 		try {
 		
 			tx = session.beginTransaction();
-		
-			LRChalan.Controller ctrl = createController(lrNo,chalanDetails);
+			
+			Date createDate = lrChalan.getCreateDate();
+			long totalCost  = calculateTotalCost(chalanDetails);
+			
+			LRChalan.Controller ctrl = createController(lrNo,chalanDetails,totalCost,createDate);
 					
 			//Create user object using controller
 			lrChalan.changeTo(ctrl);			
@@ -148,7 +187,8 @@ public class LRChalanService {
 		lrChalanView.setId(lrChalan.getId());
 		lrChalanView.setLrIds(lrChalan.getLrIds());
 		lrChalanView.setChalanDetails(lrChalan.getChalanDetails());			
-		lrChalanView.setTotalCost();
+		lrChalanView.setTotalCost(lrChalan.getTotalCost());
+		lrChalanView.setCreateDate(lrChalan.getCreateDate());
 		
 		LRChalanResponse response = new LRChalanResponse(lrChalanView);		
 		

@@ -11,7 +11,6 @@ import org.hibernate.Transaction;
 import com.lr.db.HibernateSessionManager;
 import com.lr.exceptions.AuthException;
 import com.lr.exceptions.InsufficientDataException;
-
 import com.lr.model.Consignee;
 import com.lr.model.Consigner;
 import com.lr.model.LR;
@@ -20,7 +19,6 @@ import com.lr.model.LRChalan;
 import com.lr.model.LRIncome;
 import com.lr.model.LROthers;
 import com.lr.model.User;
-
 import com.lr.response.LRBillView;
 import com.lr.response.LRExpeditureView;
 import com.lr.response.LRBillResponse;
@@ -42,7 +40,8 @@ public class LRBillService {
 		}		
 	}
 	
-	private LRBill.DefaultController createControllerFromView(final String lrIds,	final String billDetails)					  
+	private LRBill.DefaultController createControllerFromView(final String lrIds,	final String billDetails,
+															  final long totalBill,final Date createDate)					  
 			  											
 	{
 		
@@ -50,21 +49,23 @@ public class LRBillService {
 			
 			
 			public String mLRIds()				    {	return lrIds;	}		
-			public String mBillDetails()	        {	return billDetails;	}			
+			public String mBillDetails()	        {	return billDetails;	}	
+			public long mTotalBill()	            {	return totalBill;	}
+			public Date mCreateDate()	            {	return createDate;	}
 			
 		};
 	}
 	
-	private LRBill.Controller createController(final String lrIds,	final String billDetails)
+	private LRBill.Controller createController(final String lrIds,	final String billDetails,
+											   final long totalBill,final Date createDate)
 	{
 	
 	return new LRBill.DefaultController() {
 	
-	
 		public String mLRIds()	{return lrIds;}
-		
-		
 		public String mBillDetails()	{return billDetails; }
+		public long   mTotalBill()	{return totalBill; }
+		public Date mCreateDate()	{return createDate; }
 		
 		
 	
@@ -81,9 +82,12 @@ public class LRBillService {
 		
 		try {
 			
-			tx = session.beginTransaction();			
+			tx = session.beginTransaction();		
+			
+			Date createDate = new Date();
+			long totalBill  = calculateTotalBill(billDetails);
 		
-			LRBill.Controller ctrl = createControllerFromView(lrNos,billDetails);
+			LRBill.Controller ctrl = createControllerFromView(lrNos,billDetails,totalBill,createDate);
 		
 			lrBill = new LRBill(ctrl);
 			
@@ -103,6 +107,37 @@ public class LRBillService {
 		return lrBill;
 	}
 	
+	public long calculateTotalBill(String billDetails) {
+		//calculation of totalBill
+		long totalIncome = 0;
+		if (billDetails != null) {
+			billDetails = billDetails.replaceAll("\"","");
+			String[] incomeArr = billDetails.split(",");
+			for (int i=0;i<incomeArr.length;i++){
+				incomeArr[i] = incomeArr[i].replaceAll("\"","");
+				String[] incomeColumnArr = incomeArr[i].split("-");
+				if( incomeColumnArr.length>1 ){
+					System.out.println("addingbill for "+incomeColumnArr[0]+" currenttotalbill is "+totalIncome);
+					int amount = 0;
+					if (incomeColumnArr[0].contains("EXTRA PAY TO BROKER") || incomeColumnArr[0].contains("ADVANCE") || incomeColumnArr[0].contains("BALANCE FREIGHT") ) {
+						continue;
+					} else {
+						try{
+							amount = Integer.parseInt(incomeColumnArr[1].trim());
+							totalIncome = totalIncome+amount;
+							
+						}catch(Exception e){	}
+						
+					}
+					
+				}
+				
+			}
+		}
+		return totalIncome;		
+	}
+	
+	
 	public LRBill updateLRBill(final String lrNo,final String billDetails,LRBill lrBill)
 	{
 		
@@ -114,8 +149,11 @@ public class LRBillService {
 		try {
 		
 			tx = session.beginTransaction();
+			
+			Date createDate = lrBill.getCreateDate();
+			long totalBill  = calculateTotalBill(billDetails);
 		
-			LRBill.Controller ctrl = createController(lrNo,billDetails);
+			LRBill.Controller ctrl = createController(lrNo,billDetails,totalBill,createDate);
 					
 			//Create user object using controller
 			lrBill.changeTo(ctrl);			
@@ -147,9 +185,9 @@ public class LRBillService {
 		LRBillView lrBillView = new LRBillView();
 		lrBillView.setId(lrBill.getId());
 		lrBillView.setLrIds(lrBill.getLrIds());
-		lrBillView.setBillDetails(lrBill.getBillDetails());
-		String billDetails = lrBill.getBillDetails();		
-		lrBillView.setTotalCost();	
+		lrBillView.setBillDetails(lrBill.getBillDetails());		
+		lrBillView.setTotalBill(lrBill.getTotalBill());	
+		lrBillView.setCreateDate(lrBill.getCreateDate());
 				
 		LRBillResponse response = new LRBillResponse(lrBillView);		
 		

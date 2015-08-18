@@ -1157,7 +1157,7 @@ public class LrService {
 						lrChalanView.setId(lrChalan.getId());
 						lrChalanView.setLrIds(lrChalan.getLrIds());
 						lrChalanView.setChalanDetails(lrChalan.getChalanDetails());			
-						lrChalanView.setTotalCost();
+						lrChalanView.setTotalCost(lrChalan.getTotalCost());
 						lrListView.setChalan(lrChalanView);
 							
 					}
@@ -1169,7 +1169,7 @@ public class LrService {
 						lrBillView.setId(lrBill.getId());
 						lrBillView.setLrIds(lrBill.getLrIds());
 						lrBillView.setBillDetails(lrBill.getBillDetails());			
-						lrBillView.setTotalCost();
+						lrBillView.setTotalBill(lrBill.getTotalBill());
 						lrListView.setBill(lrBillView);
 							
 					}

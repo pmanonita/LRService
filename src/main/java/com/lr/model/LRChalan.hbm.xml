@@ -15,6 +15,12 @@
     <property name="chalanDetails" type="string">
       <column name="chalanDetails" />
     </property>
+    <property name="totalCost" type="long">
+      <column name="totalCost" />
+    </property>
+    <property name="createDate" type="date" not-null="true">
+      <column name="createDate" />
+    </property>
    
     
  </class>

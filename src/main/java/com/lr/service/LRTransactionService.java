@@ -326,8 +326,7 @@ public class LRTransactionService {
 			int multiLoadChargeBilling, int freightToBrokerBilling,
 			int loadingChargesBilling, int unloadingChargesBilling,
 			int loadingDetBrokerBilling, int unloadingDetBrokerBilling,
-			Billingname billingnameId,
-			LRTransaction tranasaction)
+			Billingname billingnameId,String status,LRTransaction tranasaction)
 			
 	{		
 		Session session = HibernateSessionManager.getSessionFactory().openSession();
@@ -340,8 +339,7 @@ public class LRTransactionService {
 			
 			//Note - we haven't supported LR attach and detach yet. So can't edit them
 			// Status can't be edited time being
-			Set<LR> lrs     = tranasaction.getLrs();
-			String status   = tranasaction.getStatus();
+			Set<LR> lrs     = tranasaction.getLrs();			
 			Date createDate = tranasaction.getCreateDate();			
 			
 			LRTransaction.Controller ctrl = createController(lrs, status, createDate, multiLoadCharge,
@@ -621,7 +619,7 @@ public class LRTransactionService {
 						lrChalanView.setId(lrChalan.getId());
 						lrChalanView.setLrIds(lrChalan.getLrIds());
 						lrChalanView.setChalanDetails(lrChalan.getChalanDetails());			
-						lrChalanView.setTotalCost();
+						lrChalanView.setTotalCost(lrChalan.getTotalCost());
 						lrTransListView.setChalan(lrChalanView);
 							
 					}
@@ -633,7 +631,8 @@ public class LRTransactionService {
 						lrBillView.setId(lrBill.getId());
 						lrBillView.setLrIds(lrBill.getLrIds());
 						lrBillView.setBillDetails(lrBill.getBillDetails());			
-						lrBillView.setTotalCost();
+						lrBillView.setTotalBill(lrBill.getTotalBill());
+						lrBillView.setCreateDate(lrBill.getCreateDate());
 						lrTransListView.setBill(lrBillView);
 							
 					}

@@ -10,9 +10,11 @@ public class LRChalan implements Serializable {
 
 	private static final long serialVersionUID = -181105947248849943L;
 	
-	private long _id;
-	private String _lrIds;	
+	private long    _id;
+	private String  _lrIds;	
 	private String  _chalanDetails;	
+	private long    _totalCost;	
+	private Date	_createDate;
 	
 	
 	public LRChalan() {	}
@@ -36,9 +38,9 @@ public class LRChalan implements Serializable {
 		validate(ctrl);
 		
 		_lrIds               = ctrl.mLRIds();	
-		_chalanDetails    = ctrl.mChalanDetails();
-		
-		
+		_chalanDetails       = ctrl.mChalanDetails();
+		_totalCost           = ctrl.mTotalCost();
+		_createDate          = ctrl.mCreateDate();
 			
 	}
 	
@@ -48,6 +50,8 @@ public class LRChalan implements Serializable {
 		
 		_lrIds               = ctrl.mLRIds();	
 		_chalanDetails    = ctrl.mChalanDetails();
+		_totalCost           = ctrl.mTotalCost();
+		_createDate          = ctrl.mCreateDate();
 		
 		
 		
@@ -61,12 +65,20 @@ public class LRChalan implements Serializable {
 		String mChalanDetails();
 		void mChalanDetails(String chalanDetails);	
 		
+		long mTotalCost();
+		void mTotalCost(long totalCost);	
+		
+		Date mCreateDate();
+		void mCreateDate(Date createDate);
+		
 		
 	}
 	
 	public abstract static class DefaultController implements Controller {
 		public void mLRIds(String lrIds) { }
 		public void mChalanDetails(String chalanDetails) { }
+		public void mTotalCost(long totalCost) { }
+		public void mCreateDate(Date createDate) { }
 		
 		
 	}
@@ -98,8 +110,22 @@ public class LRChalan implements Serializable {
 	void setChalanDetails(String chalanDetails) {
 		this._chalanDetails =  chalanDetails;
 	}
-
 	
+	public long getTotalCost() {
+		return _totalCost;
+	}
+
+	void setTotalCost(long totalCost) {
+		this._totalCost = totalCost;
+	}
+
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	void setCreateDate(Date createDate) {
+		this._createDate = createDate;
+	}
 	
 		
 	public static long mSerialversionuid() 		{ return serialVersionUID;		}	

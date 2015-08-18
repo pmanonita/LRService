@@ -1,11 +1,14 @@
 package com.lr.response;
 
+import java.util.Date;
+
 public class LRBillView {
 
 	private long    id;
 	private String lrIds;
 	private String billDetails;
-	private int totalCost;
+	private long   totalBill;
+	private Date   createDate;
 	
     
     public LRBillView() {}
@@ -41,42 +44,25 @@ public class LRBillView {
 	}
 
 
-	public int getTotalCost() {
-		return totalCost;
+	public long getTotalBill() {
+		return totalBill;
 	}
 
 
-	public void setTotalCost() {
-		//calculation of totalcost
-		int totalIncome = 0;
-		if (billDetails != null) {
-			String[] incomeArr = billDetails.split(",");
-			for (int i=0;i<incomeArr.length;i++){
-				incomeArr[i] = incomeArr[i].replaceAll("\"","");
-				String[] incomeColumnArr = incomeArr[i].split("-");
-				if( incomeColumnArr.length>1 ){
-					int amount = 0;
-					if (incomeColumnArr[0].contains("EXTRA PAY TO BROKER") || incomeColumnArr[0].contains("ADVANCE") || incomeColumnArr[0].contains("BALANCE FREIGHT") ) {
-						continue;
-					} else {
-						try{
-							amount = Integer.parseInt(incomeColumnArr[1].trim());
-							totalIncome = totalIncome+amount;
-							
-						}catch(Exception e){	}
-						
-					}
-					
-				}
-				
-			}
-		}
-		this.totalCost = totalIncome;		
+	public void setTotalBill(long totalBill) {
+		this.totalBill = totalBill;
+	}
+
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 	
-	
-
-
 	
 
 	
